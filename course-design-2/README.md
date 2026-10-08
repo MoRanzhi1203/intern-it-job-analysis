@@ -1,8 +1,8 @@
 # course-design-2：互联网 IT 实习岗位薪资影响因素分析与预测
 
 > 本 README 只描述**当前有效架构**；历史返工过程与旧方案已随本轮清理删除，仅存于 Git 历史
-> （提交历史即旧实现的长期存档）。方法论文档见
-> [`docs/methodology/data_preprocessing_pipeline.md`](docs/methodology/data_preprocessing_pipeline.md)。
+> （提交历史即旧实现的长期存档）。原方法论文档 `docs/methodology/data_preprocessing_pipeline.md`
+> 当前未随仓库保留（见第 8 节）。
 
 ## 1. 项目结构
 
@@ -52,42 +52,41 @@ python scripts/run_data_pipeline.py --force-export-raw
 # 单阶段独立运行（每个脚本均可独立执行）
 python scripts/01_localize_raw_columns.py
 
-# 静态检查与测试
-python -m compileall src scripts tests
-python -m pytest tests -q
+# 静态检查（tests/ 当前未建立，见第 8 节）
+python -m compileall src scripts
 ```
 
 ## 3. 阶段路线（Stage 00~11，编号固定不再变更）
 
-| Stage | 职责 | 唯一权威记录 |
+| Stage | 职责 | 实现脚本 |
 | --- | --- | --- |
-| 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `docs/records/01_raw_export_record.md` |
-| 01 | 源记录标准化与公司属性语义槽位异常修复 | `docs/records/02_column_localization_record.md` |
-| 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `docs/records/03_identity_audit_record.md` |
-| 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `docs/records/05_observation_snapshot_record.md` |
-| 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `docs/records/06_job_version_record.md` |
-| 05 | 最终岗位实体（最终核心版本优先） | `docs/records/07_final_entity_record.md` |
-| 06 | 岗位版本文本语料 | `docs/records/09_text_preprocessing_record.md` |
-| 07 | 技能与文本特征 | — （审计表 `16_job_text_preprocessing_audit.xlsx`） |
-| 08 | 岗位描述语义时序（完整 / 去薪资双口径） | `docs/records/10_job_text_semantic_record.md` |
-| 09 | 公司实体识别 | `docs/records/11_company_identity_record.md` |
-| 10 | 公司简介快照 / 版本 / 语义时序 | `docs/records/12_company_text_semantic_record.md` |
-| 11 | 结构化字段清洗与薪资目标解析 | `docs/records/14_salary_target_record.md` |
+| 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `scripts/00_export_raw.py` |
+| 01 | 源记录标准化与公司属性语义槽位异常修复 | `scripts/01_localize_raw_columns.py` |
+| 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `scripts/02_audit_job_identity.py` |
+| 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `scripts/03_build_job_observations.py` |
+| 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `scripts/04_build_job_versions.py` |
+| 05 | 最终岗位实体（最终核心版本优先） | `scripts/05_build_unique_jobs.py` |
+| 06 | 岗位版本文本语料 | `scripts/06_prepare_text_corpus.py` |
+| 07 | 技能与文本特征 | `scripts/07_extract_job_text_features.py` |
+| 08 | 岗位描述语义时序（完整 / 去薪资双口径） | `scripts/08_build_job_text_semantics.py` |
+| 09 | 公司实体识别 | `scripts/09_resolve_company_entities.py` |
+| 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/10_build_company_text_semantics.py` |
+| 11 | 结构化字段清洗与薪资目标解析 | `scripts/11_clean_structured_fields.py` |
 
-正式问题的专项记录：`13_text_semantic_refinement_record.md`（文本语义封版）、
-`15_company_attribute_semantic_anomaly_record.md`（源记录公司属性语义槽位异常）、
-`16_preprocessing_refactor_cleanup_record.md`（本轮预处理重构与冗余清理）。
+正式问题的专项审计表：`20_text_semantic_refinement_audit.xlsx`（文本语义封版）、
+`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
+`25_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）。
 
 ## 3.1 独立脚本层（Stage 12~17，不进入 Stage 00~11 流水线）
 
-| 脚本 | 职责 | 审计表 / 记录 |
+| 脚本 | 职责 | 审计表 |
 | --- | --- | --- |
-| `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `28_modeling_dataset_audit.xlsx` / `19_..._record.md` |
-| `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `29_eda_statistical_analysis.xlsx` / `20_..._record.md` |
-| `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `30_model_comparison.xlsx` / `21_..._record.md` |
-| `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `31_ablation_robustness_shap.xlsx` / `22_..._record.md` |
-| `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `32_company_field_semantic_audit.xlsx` / `23_..._record.md` |
-| `scripts/17_final_interpretation_audit.py` | 最终解释审计与封版 | `33_final_interpretation_audit.xlsx` / `24_..._record.md` |
+| `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `28_modeling_dataset_audit.xlsx` |
+| `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `29_eda_statistical_analysis.xlsx` |
+| `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `30_model_comparison.xlsx` |
+| `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `31_ablation_robustness_shap.xlsx` |
+| `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `32_company_field_semantic_audit.xlsx` |
+| `scripts/17_final_interpretation_audit.py` | 最终解释审计与封版 | `33_final_interpretation_audit.xlsx` |
 
 术语纪律：**公司认证**（公司认证标签，最佳雇主 / 行业认证）与**公司标签（福利标签）**
 （公司标签列表，免费健身设施等）必须严格区分；技能 SHAP 方向以 `presence_direction`
@@ -96,7 +95,7 @@ python -m pytest tests -q
 统计推断口径（封版）：公司认证 = 有限四类 Kruskal–Wallis + epsilon² + 成对 Mann–Whitney /
 Cliff's delta / BH-FDR；公司标签（福利标签）= 描述性统计 + 单标签 present vs absent 二元比较
 （两侧样本 ≥ 50，统一 BH-FDR）；**369 组整体 KW 已标记 `DEPRECATED_INFERENCE`（已废止推断）**，
-不再进入正式因素比较与论文主结论（追溯见 29 号表 16_已废止推断、32/33 号审计表与记录 20/23/24）。
+不再进入正式因素比较与论文主结论（追溯见 29 号表 16_已废止推断、32/33 号审计表）。
 
 实验状态：`EXPERIMENT_FREEZE = TRUE`（模型实验冻结）+ `ANALYSIS_FREEZE = TRUE`（EDA/统计推断口径冻结）。
 
@@ -120,9 +119,9 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 5. 正式审计
 
-- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号 00~25 全项目统一）；
-- `outputs/logs/gates/`：各阶段门禁 JSON；`outputs/logs/metrics/`：各阶段指标 JSON；
-- `outputs/logs/data_pipeline_latest.log`：最近一次流水线日志；
+- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号 00~74；存在重复编号，见第 8 节）；
+- 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
+  （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成，当前未随仓库保留（见第 8 节）；
 - 专项审计：`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
   含 MySQL↔raw 跨源证据）、`25_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
   `26_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
@@ -140,14 +139,10 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
   `05_..08_` 特征组消融 / Random vs Group Split / SHAP 蜂群图 / 技能 SHAP Top20）、
   `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 + 类别编码 schema + 文本降维 + 参数）。
 
-## 6. 正式 Notebook
+## 6. Notebook
 
-| Notebook | 用途 |
-| --- | --- |
-| `notebooks/01_data_governance_sci_visualization.ipynb` | 数据治理与岗位版本重构可视化（SCI 投稿风，图01~图34） |
-| `notebooks/02_formal_eda.ipynb` | Stage 13 正式 EDA：读取封版产物、展示关键表、校验/重绘论文图表（图件统一存 `outputs/figures/eda/`） |
-
-后续 EDA / 建模 / 论文出图 Notebook 按同一规范新增；Stage 00~11 不再保留 Notebook 双实现。
+`notebooks/` 目录当前未建立（见第 8 节）。后续 EDA / 建模 / 论文出图 Notebook 按统一规范新增；
+Stage 00~11 不再保留 Notebook 双实现。
 
 ## 7. 运行约定
 
@@ -171,8 +166,8 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
    `outputs/figures/evidence_native/`（现行，Stage27_0a，脚本 40~44）取代，旧脚本仍引用旧集。
 3. **顶层 `results/` 与 `outputs/` 功能重叠**：`results/` 为「补全任务」交付物
    （含 `补全任务_完成报告.md` 自述映射到论文段落），未纳入统一结构约定。
-4. **README 声明与实际不符**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、
-   `outputs/logs/` 当前不存在，相关叙述保留为待补充目标。
+4. **待补充目录**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
+   当前不存在；指向这些路径的失效引用已在本轮清理，相关叙述保留为待补充目标。
 5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于本轮删除。
 6. **返工脚本已归档**：13 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
    （Stage23.1、Stage26.x 中途稿、Stage27.0 装配链、Word 一次性补丁等）已移至
