@@ -409,7 +409,7 @@ def build_record_lines(metrics: dict, audit: dict) -> list:
         '（`scripts/01_localize_raw_columns.py` + `src/field_repair.py`，'
         f"观测行 {int(shift.get('上游 Stage 01 修复观测行数', 0))} 行、"
         f"涉及岗位 {int(shift.get('上游修复涉及岗位数', 0))} 个，"
-        '明细见 `outputs/tables/22_company_attribute_semantic_anomaly_audit.xlsx`）。',
+        '明细见 `outputs/tables/16_company_attribute_semantic_anomaly_audit.xlsx`）。',
         '',
         '本阶段为**残留复核**：公司规模栏位为地点文本、公司性质栏位为人数区间的残留行数均为 0，'
         '因此公司规模的解析不再存在槽位异常导致的缺失（剩余缺失仅为源数据本身为空的行）；'

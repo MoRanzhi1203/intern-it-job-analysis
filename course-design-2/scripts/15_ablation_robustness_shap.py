@@ -16,7 +16,7 @@
        并做多种子解释稳定性检查。
 
 输出：
-    outputs/tables/31_ablation_robustness_shap.xlsx
+    outputs/tables/23_ablation_robustness_shap.xlsx
     outputs/figures/modeling/05_..08_...
     docs/records/22_ablation_robustness_shap_record.md
     outputs/logs/metrics/stage_15_ablation.json

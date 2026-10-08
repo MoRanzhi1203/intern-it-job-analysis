@@ -39,8 +39,8 @@ from matplotlib import pyplot as plt  # noqa: E402
 
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
-STEM = '图S09_控制细分类前后技能薪资差异'
-TABLE29 = project_paths.TABLES_DIR / '29_eda_statistical_analysis.xlsx'
+STEM = 'fig_s09_skill_salary_control_dumbbell'
+TABLE29 = project_paths.TABLES_DIR / '21_eda_statistical_analysis.xlsx'
 OUT_DIR = project_paths.FIGURES_DIR / 'supplementary'
 # docx 侧图 6-3 不在 FIG_WIDTH_CM 名单，按默认 10.5 cm 插入
 PRINT_WIDTH_CM = 10.5
@@ -131,7 +131,7 @@ def main() -> int:
     fig, _ = build_figure(frame)
     diagnostics = figure_finalize.save_paper_figure(
         fig, OUT_DIR, STEM, subfigures=[],
-        meta={'数据来源': '29_eda_statistical_analysis.xlsx / 08_技能薪资、09_岗位内技能薪资',
+        meta={'数据来源': '21_eda_statistical_analysis.xlsx / 08_技能薪资、09_岗位内技能薪资',
               '口径': '控制后取值为同一岗位细分类内部对比、并按细分类内有技能岗位数加权平均；'
                       '虚线为零差异参考线；未控制口径即表 6-1 的整体中位数差',
               '呈现': '哑铃箭头图：空心点＝未控制岗位细分类，实心点＝控制岗位细分类后，'

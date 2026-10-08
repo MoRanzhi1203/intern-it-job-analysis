@@ -5,10 +5,10 @@
     data/processed/job_analysis_dataset.parquet     全量分析集（17,144）
     data/processed/job_salary_model_dataset.parquet 薪资建模集（14,883）
     data/features/job_skill_membership.parquet      岗位 × 规范技能 long-format
-    outputs/tables/27_skill_eda_scope_audit.xlsx    技能口径审计（复用，不重新设计口径）
+    outputs/tables/19_skill_eda_scope_audit.xlsx    技能口径审计（复用，不重新设计口径）
 
 输出：
-    outputs/tables/29_eda_statistical_analysis.xlsx 13 张子表（描述统计 / 因素检验 / 技能 / 共现 / 稳健性）
+    outputs/tables/21_eda_statistical_analysis.xlsx 13 张子表（描述统计 / 因素检验 / 技能 / 共现 / 稳健性）
     outputs/figures/eda/01_...10_...png / .pdf      10 张正文主图（PNG 600 dpi + PDF）
     docs/records/20_formal_eda_record.md            正式 EDA 记录
     outputs/logs/metrics/stage_13_eda.json

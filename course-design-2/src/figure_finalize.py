@@ -68,12 +68,12 @@ def _record(records: list, label: str, expected, actual, source: str,
 
 def validate_anchors() -> list:
     """读取冻结产物并逐项校验 Stage23 锚点，返回逐项记录（只读，不修改任何文件）。"""
-    table_13 = '13_observation_snapshot_audit.xlsx'
-    table_21 = '21_structured_field_salary_audit.xlsx'
-    table_29 = '29_eda_statistical_analysis.xlsx'
-    table_30 = '30_model_comparison.xlsx'
-    table_31 = '31_ablation_robustness_shap.xlsx'
-    table_32 = '32_company_field_semantic_audit.xlsx'
+    table_13 = '07_observation_snapshot_audit.xlsx'
+    table_21 = '15_structured_field_salary_audit.xlsx'
+    table_29 = '21_eda_statistical_analysis.xlsx'
+    table_30 = '22_model_comparison.xlsx'
+    table_31 = '23_ablation_robustness_shap.xlsx'
+    table_32 = '24_company_field_semantic_audit.xlsx'
 
     sample = _sheet(table_29, '01_样本概况').set_index('指标')['数值']
     salary = _sheet(table_29, '02_薪资描述统计').set_index('指标')['数值']

@@ -208,13 +208,13 @@ def main() -> int:
             '模型': key, 'test MAE': metrics['MAE'], 'test RMSE': metrics['RMSE'],
             'test R²': metrics['R2'], 'n': metrics['n']})
     pd.DataFrame(sensitivity_rows).to_csv(
-        RESULTS / 'final_model_preprocessing_scope_sensitivity.csv',
+        project_paths.RESULTS_E1_E3_E4_E5 / 'final_model_preprocessing_scope_sensitivity.csv',
         index=False, encoding='utf-8-sig')
 
     # ================= E1 =================
     e1 = paired_bootstrap_delta(y_test, final_pred['LightGBM'], final_pred['CatBoost'])
     e1_frame = pd.DataFrame([{'检验': 'LightGBM 与 CatBoost 测试集配对误差差', **e1}])
-    e1_frame.to_csv(RESULTS / 'model_comparison_paired_bootstrap.csv',
+    e1_frame.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'model_comparison_paired_bootstrap.csv',
                     index=False, encoding='utf-8-sig')
     print('[E1]', json.dumps({k: (round(v, 4) if isinstance(v, float) else v)
                               for k, v in e1.items()}, ensure_ascii=False))
@@ -244,7 +244,7 @@ def main() -> int:
 
     # ================= E3 =================
     e3 = quartile_relative_error(y_test, final_pred['LightGBM'])
-    e3.to_csv(RESULTS / 'test_error_by_salary_quartile.csv',
+    e3.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'test_error_by_salary_quartile.csv',
               index=False, encoding='utf-8-sig')
     print('[E3]'); print(e3.round(4).to_string(index=False))
     body = e3[e3['分组'] != '总体（测试集）']
@@ -277,8 +277,8 @@ def main() -> int:
     delta = delta.copy()
     delta['基准说明'] = delta['比较'].str.split(' 对 ').str[1].map(
         lambda text: '基准 = ' + str(text))
-    delta.to_csv(RESULTS / 'ablation_delta_mae_summary.csv', index=False, encoding='utf-8-sig')
-    ablation.to_excel(RESULTS / 'ablation_config_summary.xlsx', index=False)
+    delta.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'ablation_delta_mae_summary.csv', index=False, encoding='utf-8-sig')
+    ablation.to_excel(project_paths.RESULTS_E1_E3_E4_E5 / 'ablation_config_summary.xlsx', index=False)
     print('[E4] 消融配置 %d 行、增量检验 %d 行已写出' % (len(ablation), len(delta)))
 
     # ================= E5 =================
@@ -333,13 +333,13 @@ def main() -> int:
                      'MAE 增量 95% 分位': float(np.percentile(single_gain[tag], 95)),
                      '置换次数': PERMUTATION_ROUNDS, '基准 MAE': base_mae})
     perm = pd.DataFrame(rows)
-    perm.to_csv(RESULTS / 'benefit_cluster_permutation.csv', index=False, encoding='utf-8-sig')
+    perm.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'benefit_cluster_permutation.csv', index=False, encoding='utf-8-sig')
     descriptive = benefit_cluster_block(model_frame)
     descriptive['测试集上完全相同的簇内标签列'] = duplicate_pairs or '无'
     descriptive['簇内标签'] = BENEFIT_CLUSTER
     descriptive['置换口径'] = ('对测试集特征矩阵中对应的 one-hot 列做行置换；'
                                '簇置换 = 5 列使用同一次行置换；单列置换 = 每次只置换 1 列')
-    with (RESULTS / 'benefit_cluster_descriptive.json').open('w', encoding='utf-8') as handle:
+    with (project_paths.RESULTS_E1_E3_E4_E5 / 'benefit_cluster_descriptive.json').open('w', encoding='utf-8') as handle:
         json.dump(descriptive, handle, ensure_ascii=False, indent=1)
     print('[E5] 描述统计:', json.dumps(descriptive, ensure_ascii=False))
     print(perm.round(4).to_string(index=False))

@@ -49,7 +49,7 @@ from matplotlib.figure import Figure  # noqa: E402
 
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
-STEM = '图S64_主模型SHAP蜂群图'
+STEM = 'fig_s64_shap_beeswarm'
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
 METRICS_PATH = project_paths.METRICS_DIR / 'stage_60_shap_beeswarm_redraw.json'
 

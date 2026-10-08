@@ -9,7 +9,7 @@
     5. 登记 EXPERIMENT_FREEZE 状态。
 
 输出：
-    outputs/tables/33_final_interpretation_audit.xlsx
+    outputs/tables/25_final_interpretation_audit.xlsx
     docs/records/24_final_interpretation_freeze_record.md
     outputs/logs/metrics/stage_17_interpretation.json
 

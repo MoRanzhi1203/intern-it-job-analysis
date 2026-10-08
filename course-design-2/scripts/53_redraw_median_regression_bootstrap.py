@@ -3,7 +3,7 @@
 
 沿用 46 号实验（E7）的冻结结果，只重排呈现方式，不重跑 bootstrap、不改动任何数值：
 
-- 只读 ``outputs/results/quantile_regression_cluster_bootstrap.csv``（12 个代表性变量）；
+- 只读 ``outputs/results/E2_E7/quantile_regression_cluster_bootstrap.csv``（12 个代表性变量）；
 - 单面板森林图：隔行浅底纹 + 带端帽的两类 95% 区间（岗位级在上、公司级在下）+ 菱形点估计；
 - 横轴用 symlog：``|系数| ≤ 200`` 元/天 段保持线性（**100~200 不折叠**），更大值段按对数
   压缩，`每周到岗要求=7天／周` 的公司级区间宽 767 元/天，线性轴会把它之外的变量挤成一条线；
@@ -37,7 +37,7 @@ from matplotlib.ticker import FixedLocator, FuncFormatter  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_5_7_median_regression_cluster_bootstrap'
-CSV = project_paths.OUTPUTS_RESULTS_DIR / 'quantile_regression_cluster_bootstrap.csv'
+CSV = project_paths.RESULTS_E2_E7 / 'quantile_regression_cluster_bootstrap.csv'
 FIGDIR = project_paths.FIGURES_DIR
 PRINT_WIDTH_CM = 16.0
 PRINT_HEIGHT_CM = 16.5
@@ -131,7 +131,7 @@ def main() -> int:
     fig, _ = build_figure(frame)
     diagnostics = figure_finalize.save_paper_figure(
         fig, FIGDIR, STEM, subfigures=[],
-        meta={'数据来源': 'outputs/results/quantile_regression_cluster_bootstrap.csv（E7 冻结结果）',
+        meta={'数据来源': 'outputs/results/E2_E7/quantile_regression_cluster_bootstrap.csv（E7 冻结结果）',
               '口径': '只展示已定义的代表性变量，不做显著性筛选；岗位级 bootstrap 以岗位为重抽样单位，'
                       '公司级 cluster bootstrap 以公司为重抽样单位并带入该公司全部岗位，各 1,000 轮',
               '呈现': (f'单面板森林图：隔行浅底纹 + 带端帽的两类 95% 区间 + 菱形点估计；'

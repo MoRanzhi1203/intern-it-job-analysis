@@ -4,9 +4,9 @@
 只**新增**文件，不覆盖 Stage21/24/25/26/26.1~26.5 的 docx、QA 产物、既有图件
 （S18~S68）与既有结果表（55~69）：
 
-- ``outputs/tables/70_stage26_6_figure_retention_audit.xlsx``  图片去留审计
-- ``outputs/tables/71_stage26_6_feature_dimension_audit.xlsx`` 特征维度与 D 组核算
-- ``outputs/tables/72_stage26_6_region_caliber_audit.xlsx``    第 4.3 节样本口径对照
+- ``outputs/tables/56_stage26_6_figure_retention_audit.xlsx``  图片去留审计
+- ``outputs/tables/57_stage26_6_feature_dimension_audit.xlsx`` 特征维度与 D 组核算
+- ``outputs/tables/58_stage26_6_region_caliber_audit.xlsx``    第 4.3 节样本口径对照
 - ``outputs/figures/supplementary/图S69~图S73*.png/pdf``       本轮重绘图件
 
 运行::
@@ -35,9 +35,9 @@ SUPP = project_paths.FIGURES_DIR / 'supplementary'
 METRICS = project_paths.METRICS_DIR
 METRICS_PATH = METRICS / 'stage_26_6_final.json'
 PREV_METRICS = METRICS / 'stage_26_5_final.json'
-TABLE_AUDIT = TABLES / '70_stage26_6_figure_retention_audit.xlsx'
-TABLE_FEATURE = TABLES / '71_stage26_6_feature_dimension_audit.xlsx'
-TABLE_REGION = TABLES / '72_stage26_6_region_caliber_audit.xlsx'
+TABLE_AUDIT = TABLES / '56_stage26_6_figure_retention_audit.xlsx'
+TABLE_FEATURE = TABLES / '57_stage26_6_feature_dimension_audit.xlsx'
+TABLE_REGION = TABLES / '58_stage26_6_region_caliber_audit.xlsx'
 SEED = 42
 CM = 1.0 / 2.54
 FONT_SCALE = 11.0 / 12.0
@@ -86,7 +86,7 @@ FIGURE_AUDIT = [
                 '但图内注释框与表 3-2 逐项重复，故按提示词只保留'
                 '「唯一岗位 / 明确薪资可解析 / 纳入薪资分析 / 明确要求段落匹配 / 全文补充匹配 / 缺少可解析岗位描述」六项标签，'
                 '并统一为「样本构成 + 技能文本可用性」表述，避免「层级 / 口径」这类偏方法说明的词',
-         new='图 4-1', redraw='图S69_正式薪资分析样本与岗位描述处理结果'),
+         new='图 4-1', redraw='fig_s69_formal_sample_jd_processing_result'),
     dict(no='图 4-2', name='主要岗位细分类薪资中点中位数（误差线为 IQR/2）',
          section='4.2 岗位类别分布',
          role='对照主要岗位细分类的薪资中位水平',
@@ -95,7 +95,7 @@ FIGURE_AUDIT = [
          decision='正文保留但重绘',
          reason='原误差线为 IQR/2，对右偏薪资分布是对称伪误差线；必须改为真实四分位区间'
                 '（下误差 = Median − P25、上误差 = P75 − Median），图题改为「薪资中位数及四分位区间」',
-         new='图 4-2', redraw='图S70_主要岗位细分类薪资中位数及四分位区间'),
+         new='图 4-2', redraw='fig_s70_main_subcategory_salary_quartile'),
     dict(no='图 4-3', name='互联网 IT 实习岗位样本的省域分布', section='4.3 城市与企业结构',
          role='刻画样本的省域空间分布',
          dup_text='否（正文只给前 6 位占比）', dup_table='否',
@@ -146,7 +146,7 @@ FIGURE_AUDIT = [
          decision='正文保留但重绘',
          reason='4.5.4 的唯一图证；按提示词删除单子图的 (a) 标记并去掉与滚动中位数高度重合的逐日原始序列，'
                 '只保留 IQR 带与 7 日滚动中位数',
-         new='图 4-6', redraw='图S71_活跃计划周期薪资中位数与四分位区间'),
+         new='图 4-6', redraw='fig_s71_active_cycle_salary_quartile'),
     dict(no='图 5-1', name='城市、学历与公司规模的薪资中点中位数', section='5.3 城市、学历与薪资',
          role='横向对照三类单值因素的薪资中位水平',
          dup_text='部分：5.3 给出无锡 215、硕士 225、本科 175 等代表值',
@@ -225,7 +225,7 @@ FIGURE_AUDIT = [
          reason='流程图为第 7 章提供顺序性说明；按提示词压缩节点文字'
                 '（「缺失率、近常量、低频类别、数值冗余与子集分布对照」→「建模前特征诊断」），'
                 '方法与细节回到正文',
-         new='图 7-1', redraw='图S72_薪资预测模型构建与评估流程（节点简化）'),
+         new='图 7-1', redraw='fig_s72_salary_model_build_eval_flow'),
     dict(no='图 8-1', name='特征组消融实验的验证集与测试集 MAE', section='8.1 特征组消融',
          role='对照五种特征组配置的验证集与测试集 MAE',
          dup_text='部分：8.1 给出各配置 MAE',
@@ -234,7 +234,7 @@ FIGURE_AUDIT = [
          decision='正文保留但重绘',
          reason='按提示词把横轴改为「基础 / 基础+技能 / 基础+文本 / 完整模型 / 完整+时间位置」并删除单图的 (a) 标记，'
                 '降低工程命名感的同时保留配置对照',
-         new='图 8-1', redraw='图S73_特征组消融实验的验证集与测试集MAE（横轴标签简化）'),
+         new='图 8-1', redraw='fig_s73_feature_group_ablation_test_mae'),
     dict(no='图 8-2', name='正式主模型 SHAP 蜂群图（Top12 特征）', section='8.4.1 整体特征贡献',
          role='给出主模型 Top12 特征的贡献分布',
          dup_text='部分是：正文给出平均绝对 SHAP 前五项',
@@ -464,9 +464,9 @@ def run_region() -> int:
                              columns=['实习岗位ID', '工作城市'])
     entity_city = entity['工作城市'].astype(str).value_counts()
     # 薪资样本口径：与 5.3 节、表 5-1 同源的 EDA 结果表（29 号表 04_城市薪资）
-    city_salary = _read('29_eda_statistical_analysis.xlsx', '04_城市薪资')
+    city_salary = _read('21_eda_statistical_analysis.xlsx', '04_城市薪资')
     city_salary = city_salary[city_salary['因素'].eq('工作城市')].set_index('取值')['样本数']
-    province = _read('66_stage26_5_province_distribution.xlsx', '01_省级岗位数')
+    province = _read('55_stage26_5_province_distribution.xlsx', '01_省级岗位数')
     province = province.set_index('省级行政区')['岗位数']
     prev = load_prev_metrics().get('省级地图', {})
     top_prov = prev.get('Top8', [])
@@ -476,7 +476,7 @@ def run_region() -> int:
          % (prev.get('成功映射岗位数', 17040), prev.get('未映射岗位数', 104)),
          '分级依据': '非零岗位数的分位点（0.45 / 0.70 / 0.85 / 0.95 分位）',
          '来源': 'data/processed/job_analysis_dataset.parquet（17,144 行）+ '
-                 'outputs/tables/66_stage26_5_province_distribution.xlsx',
+                 'outputs/tables/55_stage26_5_province_distribution.xlsx',
          '代表取值': '、'.join('%s %s' % (row['省级行政区'], format(row['岗位数'], ','))
                           for row in top_prov[:6])},
         {'分析单位': '城市薪资比较（4.3 节后半与 5.3 节）',
@@ -484,7 +484,7 @@ def run_region() -> int:
          '样本量': 14883, '映射结果': '按城市原值统计，不聚合到省级行政区；'
                                  '04_城市薪资列出 %d 个城市取值（合计 %d 个岗位），'
                                  '其余取值未单列' % (len(city_salary), int(city_salary.sum())),
-         '分级依据': '不适用', '来源': 'outputs/tables/29_eda_statistical_analysis.xlsx / 04_城市薪资',
+         '分级依据': '不适用', '来源': 'outputs/tables/21_eda_statistical_analysis.xlsx / 04_城市薪资',
          '代表取值': '、'.join('%s %s' % (name, format(int(count), ','))
                           for name, count in city_salary.head(7).items())},
     ])
@@ -553,8 +553,8 @@ def _save(stem: str, fig, subs, meta: dict) -> dict:
 def fig_s69() -> dict:
     """图 4-1：正式薪资分析样本与岗位描述处理结果（样本构成 + 技能文本可用性）。"""
     import matplotlib.pyplot as plt
-    overview = _read('29_eda_statistical_analysis.xlsx', '01_样本概况').set_index('指标')['数值']
-    scope = _read('27_skill_eda_scope_audit.xlsx', '01_样本口径').set_index('口径')
+    overview = _read('21_eda_statistical_analysis.xlsx', '01_样本概况').set_index('指标')['数值']
+    scope = _read('19_skill_eda_scope_audit.xlsx', '01_样本口径').set_index('口径')
     values_a = [int(overview['全量岗位数（EDA 分析单元）']),
                 int(overview['正式薪资分析样本']) + int(overview['薪资逻辑异常岗位数']),
                 int(overview['正式薪资分析样本'])]
@@ -600,7 +600,7 @@ def fig_s69() -> dict:
     plot_style.add_subfigure_caption(ax2, 'b', '岗位描述的技能提取结果')
     fig.subplots_adjust(left=0.135, right=0.985, bottom=0.30, top=0.965, wspace=0.55)
     diagnostics = _save(
-        '图S69_正式薪资分析样本与岗位描述处理结果', fig,
+        'fig_s69_formal_sample_jd_processing_result', fig,
         [('a', '正式薪资分析样本构成', ax), ('b', '岗位描述的技能提取结果', ax2)],
         {'数据来源': '29 号表 01_样本概况；27 号表 01_样本口径', 'seed': SEED,
          '口径': '统一为「样本构成 + 技能文本可用性」表述，避免层级 / 口径类方法说明词；'
@@ -615,7 +615,7 @@ def fig_s70() -> dict:
     import matplotlib.pyplot as plt
     plot_style.FONT_SIZES.update({'axis_label': 13.0, 'tick': 12.0, 'legend': 11.5,
                                   'annotation': 11.5})
-    frame = _read('29_eda_statistical_analysis.xlsx', '03_岗位因素薪资')
+    frame = _read('21_eda_statistical_analysis.xlsx', '03_岗位因素薪资')
     frame = frame[frame['因素'].eq('岗位细分类')]
     frame = frame.sort_values('中位数', ascending=False).head(12).sort_values('中位数')
     lower = (frame['中位数'] - frame['P25']).to_numpy('float64')
@@ -639,7 +639,7 @@ def fig_s70() -> dict:
     plot_style.apply_sci_axis(ax, grid_axis='x')
     fig.subplots_adjust(left=0.235, right=0.985, bottom=0.165, top=0.965)
     diagnostics = _save(
-        '图S70_主要岗位细分类薪资中位数及四分位区间', fig, [],
+        'fig_s70_main_subcategory_salary_quartile', fig, [],
         {'数据来源': '29 号表 03_岗位因素薪资（岗位细分类，中位数/P25/P75）', 'seed': SEED,
          '口径': '误差线为 P25~P75 四分位区间（下误差 = 中位数 − P25、上误差 = P75 − 中位数，'
                  '非对称），数值标签为 P75',
@@ -661,7 +661,7 @@ def fig_s71() -> dict:
     sys.modules['_s26j_26c'] = module
     spec.loader.exec_module(module)
 
-    daily = _read('45_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
+    daily = _read('37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
     dates = pd.to_datetime(daily['date'])
     date_min, date_max = dates.min(), dates.max()
 
@@ -680,7 +680,7 @@ def fig_s71() -> dict:
     plot_style.apply_sci_axis(ax, grid_axis='y')
     fig.subplots_adjust(left=0.135, right=0.985, bottom=0.30, top=0.80)
     diagnostics = _save(
-        '图S71_活跃计划周期薪资中位数与四分位区间', fig, [],
+        'fig_s71_active_cycle_salary_quartile', fig, [],
         {'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级薪资聚合', 'seed': SEED,
          '口径': '时间轴由岗位发布时间或投递截止日期重构；阴影带为逐日横截面 P25~P75，'
                  '曲线为日横截面中位数的 7 日滚动中位数；只保留这两项，删除单子图的 (a) 标记',
@@ -728,7 +728,7 @@ def fig_s72() -> dict:
             ax.add_patch(arrow)
     fig.subplots_adjust()
     diagnostics = figure_finalize.save_paper_figure(
-        fig, SUPP, '图S72_薪资预测模型构建与评估流程（节点简化）', subfigures=[],
+        fig, SUPP, 'fig_s72_salary_model_build_eval_flow', subfigures=[],
         meta={'数据来源': '本文第 7 章与第 8 章的正式建模流程', 'seed': SEED,
               '口径': '节点只写流程名，诊断与筛选细节回到正文',
               '用途': '第7章 图 7-1 重绘'})
@@ -770,8 +770,8 @@ def fig_s73() -> dict:
     plot_style.apply_sci_axis(ax, grid_axis='y')
     fig.subplots_adjust(left=0.09, right=0.985, bottom=0.245, top=0.975)
     diagnostics = _save(
-        '图S73_特征组消融实验的验证集与测试集MAE（横轴标签简化）', fig, [],
-        {'数据来源': '61_stage26_4_metrics_final.xlsx / 02_消融五配置', 'seed': SEED,
+        'fig_s73_feature_group_ablation_test_mae', fig, [],
+        {'数据来源': '52_stage26_4_metrics_final.xlsx / 02_消融五配置', 'seed': SEED,
          '口径': '横轴改用中文配置名，对应关系：基础=A+B+C、基础+技能=A+B+C+D、'
                  '基础+文本=A+B+C+E、完整模型=A+B+C+D+E、完整+时间位置=A+B+C+D+E+时间位置扩展特征',
          '用途': '第8章 图 8-1 重绘'})

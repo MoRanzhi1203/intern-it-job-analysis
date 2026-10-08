@@ -10,7 +10,7 @@
    禁止人工硬编码任何基线数值。
 
 2. **总修复审计表**（``build_audit_tables`` / ``write_refinement_outputs``）：
-   生成 ``outputs/tables/20_text_semantic_refinement_audit.xlsx``，
+   生成 ``outputs/tables/14_text_semantic_refinement_audit.xlsx``，
    对新旧结果逐项给出 旧值 / 新值 / 绝对差 / 相对差 / 是否预期变化 / 变化原因，
    禁止把「新值 != 旧值」直接判为 FAIL。
 

@@ -35,9 +35,9 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_8_10_company_split_mae_distribution'
-REPEATS_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_repeats.csv'
-SUMMARY_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_summary.csv'
-METRICS_XLSX = project_paths.TABLES_DIR / '61_stage26_4_metrics_final.xlsx'
+REPEATS_CSV = project_paths.RESULTS_E2_E7 / 'company_group_split_repeats.csv'
+SUMMARY_CSV = project_paths.RESULTS_E2_E7 / 'company_group_split_summary.csv'
+METRICS_XLSX = project_paths.TABLES_DIR / '52_stage26_4_metrics_final.xlsx'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 8.2
 CM = 1.0 / 2.54
@@ -114,7 +114,7 @@ def main() -> int:
     diagnostics = figure_finalize.save_paper_figure(
         fig, project_paths.FIGURES_DIR, STEM, subfigures=[],
         meta={'数据来源': 'company_group_split_repeats.csv（5 次公司分组划分）＋ '
-                          '61_stage26_4_metrics_final.xlsx / 08_多种子明细（5 个随机种子）；'
+                          '52_stage26_4_metrics_final.xlsx / 08_多种子明细（5 个随机种子）；'
                           '基准线取 company_group_split_summary.csv 的「随机划分同口径 MAE 基准」行'
                           '（该行名沿用冻结 CSV 原样，仅作取值键，不出现在图中）',
               '计算说明': '公司分组划分按公司实体整体划分（训练 2,453 / 验证 526 / 测试 526 家公司），'

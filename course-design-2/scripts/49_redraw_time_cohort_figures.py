@@ -3,10 +3,10 @@
 
 只做版式与可读性优化，不改动任何统计口径与数值：
 
-- 图「发布时间队列的薪资中位数及四分位区间」（``02_salary_by_publish_time``）：
-  数据源为冻结结果表 ``outputs/tables/75_business_time_dimension_analysis.xlsx`` 的
+- 图「发布时间队列的薪资中位数及四分位区间」（``fig_02_salary_by_publish_time``）：
+  数据源为冻结结果表 ``outputs/tables/59_business_time_dimension_analysis.xlsx`` 的
   ``03_发布时间月度薪资分布`` 工作表，参考线取自 29 号表 ``02_薪资描述统计`` 的中位数；
-- 图「核心技能需求的发布时间队列变化」（``03_skill_or_category_time_structure``）：
+- 图「核心技能需求的发布时间队列变化」（``fig_03_skill_or_category_time_structure``）：
   数据源为同表的 ``04_发布时间技能或岗位结构`` 工作表（命中率列），横轴沿用原图口径，
   只排布主口径岗位数不少于 30、即给出命中率的窗口；
 - 版式为论文版：无图内总图题、600 dpi PNG + 矢量 PDF、四边框内向刻度、浅虚线网格，
@@ -41,8 +41,8 @@ FIGDIR = project_paths.FIGURES_DIR / 'time'
 METRICS = project_paths.METRICS_DIR
 TABLE33 = project_paths.TABLE_BUSINESS_TIME_DIMENSION
 
-STEM_SALARY = '02_salary_by_publish_time'
-STEM_SKILL = '03_skill_or_category_time_structure'
+STEM_SALARY = 'fig_02_salary_by_publish_time'
+STEM_SKILL = 'fig_03_skill_or_category_time_structure'
 MIN_WINDOW_N = 30
 SKILLS = ['Python', 'SQL', '人工智能', '大模型']
 # 与全文其他图件一致的色盲友好配色（plot_style.PALETTE 前四位）
@@ -97,7 +97,7 @@ def read_structure_table() -> pd.DataFrame:
 
 def read_full_median() -> float:
     """只读 29 号表给出的全样本薪资中点中位数。"""
-    stats = pd.read_excel(TABLES / '29_eda_statistical_analysis.xlsx',
+    stats = pd.read_excel(TABLES / '21_eda_statistical_analysis.xlsx',
                           sheet_name='02_薪资描述统计').set_index('指标')['数值']
     return float(stats['中位数'])
 

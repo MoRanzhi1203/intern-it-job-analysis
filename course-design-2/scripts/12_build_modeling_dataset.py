@@ -14,7 +14,7 @@
 输出：
     data/processed/job_analysis_dataset.parquet        全量分析集（17,144 × N）
     data/processed/job_salary_model_dataset.parquet    薪资建模集（14,883 × N）
-    outputs/tables/28_modeling_dataset_audit.xlsx      建模数据集与泄漏审计（10 张子表）
+    outputs/tables/20_modeling_dataset_audit.xlsx      建模数据集与泄漏审计（10 张子表）
     docs/records/19_modeling_dataset_record.md         建模数据集记录
     outputs/logs/metrics/stage_12_modeling.json
 

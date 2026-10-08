@@ -11,16 +11,16 @@
 |---|---|---|---|---|
 | 4-1  | eda/01_sample_structure        | 10.5 cm | 8.6 pt | ≈5.1 pt |
 | 4-3  | eda/02_salary_distribution     | 10.5 cm | 8.6 pt | ≈4.9 pt |
-| 4-4  | 图S29_招聘周期持续时长分布与累积分布 | 10.5 cm | 11.5 pt | ≈3.0 pt |
-| 4-5  | 图S30_样本计划招聘覆盖每日活跃与新增结束 | 15.5 cm | 11.5 pt | ≈4.2 pt |
+| 4-4  | fig_s29_recruitment_duration_distribution | 10.5 cm | 11.5 pt | ≈3.0 pt |
+| 4-5  | fig_s30_planned_coverage_daily_active | 15.5 cm | 11.5 pt | ≈4.2 pt |
 | 5-1  | eda/04_structured_factor_salary | 10.5 cm | 8.6 pt | ≈3.5 pt |
-| 5-2  | 图S04_公司认证四类薪资分布与组间比较 | 10.5 cm | 8.6 pt | ≈4.2 pt |
+| 5-2  | fig_s04_company_certification_four_class_salary | 10.5 cm | 8.6 pt | ≈4.2 pt |
 | 5-3  | 图S05S06_公司福利标签薪资关联与共现 | 10.5 cm | 8.6 pt | ≈4.1 pt |
-| 5-4  | 图S17_薪资因素关联证据与多值类别对照 | 10.5 cm | 8.6 pt | ≈5.2 pt |
+| 5-4  | fig_s17_salary_factor_evidence_multi_category | 10.5 cm | 8.6 pt | ≈5.2 pt |
 | 6-2  | eda/07_category_skill_heatmap  | 10.5 cm | 8.6 pt | ≈3.8 pt |
-| 8-1  | 图S28_特征组消融对比           | 10.5 cm | 11.5 pt | ≈3.1 pt |
-| 8-3  | 图S22_不同泛化场景性能比较     | 10.5 cm | 8.6 pt | ≈4.5 pt |
-| 8-4  | 图S10_稳健性检查对照           | 10.5 cm | 8.6 pt | ≈4.3 pt |
+| 8-1  | fig_s28_feature_group_ablation_comparison           | 10.5 cm | 11.5 pt | ≈3.1 pt |
+| 8-3  | fig_s22_generalization_scenario_comparison     | 10.5 cm | 8.6 pt | ≈4.5 pt |
+| 8-4  | fig_s10_robustness_check_comparison           | 10.5 cm | 8.6 pt | ≈4.3 pt |
 
 做法：把每个图件的**画布物理宽度**设为与其论文打印宽度一致（约 1:1），
 并统一放大图内字号到 11～12 pt，同时把横排 1×2 / 1×3 子图改为
@@ -159,7 +159,7 @@ def run_reused() -> None:
 
     # ---- 时间序列图件所需的冻结数据（与 26c.main 完全一致：冻结日级表） ---- #
     episodes = pd.read_parquet(c26.EPISODE_PATH)
-    daily = read_table('45_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
+    daily = read_table('37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
     dates = pd.to_datetime(daily['date'])
     date_min, date_max = dates.min(), dates.max()
 
@@ -170,19 +170,19 @@ def run_reused() -> None:
     _apply_mode('stack', 15.5, 2.8, flat)
     fig, subs, meta = a18.build_01_sample_structure({})
     meta = {**meta, '用途': '第4章 图 4-1 重制（1×2 横排 → 2×1 纵排）'}
-    save('图S34_正式分析样本与技能提取口径结构', fig, subs, meta)
+    save('fig_s34_formal_sample_skill_extraction_structure', fig, subs, meta)
 
     # ---------------- 图 4-3 ----------------
     _apply_mode('stack', 10.5, 2.8, flat)
     fig, subs, meta = a18.build_02_salary_distribution({})
     meta = {**meta, '用途': '第4章 图 4-3 重制（1×2 横排 → 2×1 纵排）'}
-    save('图S35_薪资中点分布与经验累积分布', fig, subs, meta)
+    save('fig_s35_salary_midpoint_distribution', fig, subs, meta)
 
     # ---------------- 图 4-4（复用 26c.figure_duration，只改输出文件名） ---------------- #
-    c26.FIG_STEMS[1] = '图S36_招聘周期持续时长分布与累积分布'
+    c26.FIG_STEMS[1] = 'fig_s36_recruitment_duration_distribution'
     _apply_mode('stack', 10.5, 2.8, flat)
     c26.figure_duration(episodes, [])
-    report('图S36_招聘周期持续时长分布与累积分布', 10.5)
+    report('fig_s36_recruitment_duration_distribution', 10.5)
     # ---------------- 图 4-5（2×1 纵排，图例置于坐标区上方） ---------------- #
     _apply_mode('stack', 15.5, 3.0,
                 {'left': 0.11, 'right': 0.985, 'bottom': 0.17, 'top': 0.83, 'hspace': 0.72})
@@ -211,9 +211,9 @@ def run_reused() -> None:
         plot_style.apply_sci_axis(ax, grid_axis='y')
         plot_style.add_subfigure_caption(ax, letter, title)
     fig.subplots_adjust()
-    save('图S37_样本计划招聘覆盖每日活跃与新增结束', fig,
+    save('fig_s37_planned_coverage_daily_active', fig,
          [('a', panels[0][1], axes[0]), ('b', panels[1][1], axes[1])],
-         {'数据来源': '45_stage26_1_lifecycle_statistics.xlsx / 08_日级指标明细',
+         {'数据来源': '37_stage26_1_lifecycle_statistics.xlsx / 08_日级指标明细',
           '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
           '用途': '第4章 图 4-5 重制（1×2 横排 → 2×1 纵排）'})
 
@@ -221,20 +221,20 @@ def run_reused() -> None:
     _apply_mode('stack', 10.5, 2.15, flat)
     fig, subs, meta = a18.build_04_structured_factor_salary({})
     meta = {**meta, '用途': '第5章 图 5-1 重制（1×3 横排 → 3×1 纵排）'}
-    save('图S40_城市学历与公司规模薪资中点中位数', fig, subs, meta)
+    save('fig_s40_city_education_company_size_salary', fig, subs, meta)
 
     # ---------------- 图 5-2 ----------------
     _apply_mode('stack', 15.5, 2.8, wide_left)
     fig, subs = b18.fig_s04(0)
-    save('图S41_公司认证状态的薪资分布与组间比较', fig, subs,
-         {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
+    save('fig_s41_certification_salary_distribution', fig, subs,
+         {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
           '用途': '第5章 图 5-2 重制（1×2 横排 → 2×1 纵排）'})
 
     # ---------------- 图 5-3 ----------------
     _apply_mode('stack', 15.5, 2.8, wide_left)
     fig, subs = b18.fig_s05s06(0)
-    save('图S42_公司福利标签的薪资关联及共现特征', fig, subs,
-         {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
+    save('fig_s42_benefit_label_salary_association', fig, subs,
+         {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
           '用途': '第5章 图 5-3 重制（1×2 横排 → 2×1 纵排）'})
 
     # ---------------- 图 5-4（复用 25_stage25_factor_revision.figure_s17） ---------------- #
@@ -248,31 +248,31 @@ def run_reused() -> None:
         sub.head(10)[['类别', 'present岗位数', 'q值_BHFDR', 'Cliff_delta']].assign(字段='岗位细分类')],
         ignore_index=True)
     top_binary['abs_delta'] = top_binary['Cliff_delta'].abs()
-    f25.FIG_STEM = '图S43_薪资因素关联证据与多值类别对照'
+    f25.FIG_STEM = 'fig_s43_salary_factor_evidence_multi_category'
     _apply_mode('stack', 15.5, 2.8, wide_left)
     f25.figure_s17(f25.exclusive_factor_table(), top_binary)
-    report('图S43_薪资因素关联证据与多值类别对照', 15.5)
+    report('fig_s43_salary_factor_evidence_multi_category', 15.5)
 
     # ---------------- 图 6-2（热力图明显放大） ---------------- #
     _apply_mode('single', 15.5, 5.2,
                 {'left': 0.36, 'right': 0.98, 'bottom': 0.30, 'top': 0.97})
     fig, subs, meta = a18.build_07_category_skill_heatmap({})
     meta = {**meta, '用途': '第6章 图 6-2 放大（接近版心最大宽度并增加图高）'}
-    save('图S44_岗位细分类技能命中率热力图', fig, subs, meta)
+    save('fig_s44_category_skill_hit_heatmap', fig, subs, meta)
 
     # ---------------- 图 8-1（复用 26c.figure_ablation） ---------------- #
-    ablation = read_table('57_stage26_3_metrics_after_feature_removal.xlsx', '03_消融五配置')
-    c26.FIG_STEMS[0] = '图S45_特征组消融对比'
+    ablation = read_table('49_stage26_3_metrics_after_feature_removal.xlsx', '03_消融五配置')
+    c26.FIG_STEMS[0] = 'fig_s45_feature_group_ablation_comparison'
     _apply_mode('single', 15.5, 4.2,
                 {'left': 0.10, 'right': 0.98, 'bottom': 0.34, 'top': 0.84})
     c26.figure_ablation(ablation, [])
-    report('图S45_特征组消融对比', 15.5)
+    report('fig_s45_feature_group_ablation_comparison', 15.5)
 
     # ---------------- 图 8-4 ----------------
     _apply_mode('stack', 10.5, 2.8, wide_left)
     fig, subs = b18.fig_s10(0)
-    save('图S47_稳健性检查对照', fig, subs,
-         {'数据来源': '31_ablation_robustness_shap.xlsx / 05_极端值敏感性、06_目标稳健性',
+    save('fig_s47_robustness_check_comparison', fig, subs,
+         {'数据来源': '23_ablation_robustness_shap.xlsx / 05_极端值敏感性、06_目标稳健性',
           '用途': '第8章 图 8-4 重制（1×2 横排 → 2×1 纵排）'})
 
 
@@ -281,7 +281,7 @@ def run_reused() -> None:
 # =========================================================================== #
 def run_custom() -> None:
     c26 = _load('_s26e_26c2', 'scripts/26c_stage26_2_final_consolidation.py')
-    daily = read_table('45_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
+    daily = read_table('37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
     category_daily = c26.build_category_daily()
     dates = pd.to_datetime(daily['date'])
     date_min, date_max = dates.min(), dates.max()
@@ -310,7 +310,7 @@ def run_custom() -> None:
     caption = '主要岗位大类样本活跃计划周期数（7 日滚动中位数）'
     plot_style.add_subfigure_caption(ax, 'a', caption)
     fig.subplots_adjust()
-    save('图S38_主要岗位大类计划覆盖数量', fig, [('a', caption, ax)],
+    save('fig_s38_main_category_planned_coverage', fig, [('a', caption, ax)],
          {'数据来源': 'job_strict_daily_panel_26_1.parquet × 岗位大类集合',
           '用途': '第4章 图 4-6（删除与原始日序列重复的面板，只保留滚动中位数）'})
 
@@ -335,7 +335,7 @@ def run_custom() -> None:
     caption = '活跃计划周期薪资中位数与 IQR（Strict 口径）'
     plot_style.add_subfigure_caption(ax, 'a', caption)
     fig.subplots_adjust()
-    save('图S39_活跃计划周期薪资中位数与IQR', fig, [('a', caption, ax)],
+    save('fig_s39_active_cycle_salary_median_iqr', fig, [('a', caption, ax)],
          {'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级薪资聚合',
           '用途': '第4章 图 4-7（删除与图 4-5 重复的活跃数量面板并放大）'})
 
@@ -378,15 +378,15 @@ def run_custom() -> None:
                                     linewidth=1.0, color='black')
             ax.add_patch(arrow)
     fig.subplots_adjust()
-    save('图S48_薪资预测模型构建与评估流程', fig,
+    save('fig_s48_salary_model_build_eval_flow', fig,
          [],
          {'数据来源': '本文第 7 章与第 8 章的正式建模流程',
           '口径': '流程图只描述正式流程，不含任何统计结果',
           '用途': '第7章 图 7-1（替代原模型验证集 MAE / RMSE 比较图）'})
 
     # ---------------- 图 7-2：建模前特征诊断与子集分布对照 ---------------- #
-    dist = read_table('56_stage26_3_pre_model_diagnostics.xlsx', '07_三子集分布对照')
-    redundant = read_table('56_stage26_3_pre_model_diagnostics.xlsx', '05_连续数值特征冗余对')
+    dist = read_table('48_stage26_3_pre_model_diagnostics.xlsx', '07_三子集分布对照')
+    redundant = read_table('48_stage26_3_pre_model_diagnostics.xlsx', '05_连续数值特征冗余对')
     _apply_mode('stack', 15.5, 2.9,
                 {'left': 0.40, 'right': 0.975, 'bottom': 0.16, 'top': 0.90, 'hspace': 0.70})
     fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
@@ -446,15 +446,15 @@ def run_custom() -> None:
     caption_b = f'连续数值特征冗余诊断（|ρ| > 0.85 的 {len(frame)} 对，不做全特征相关矩阵）'
     plot_style.add_subfigure_caption(ax, 'b', caption_b)
     fig.subplots_adjust()
-    save('图S49_建模前特征诊断与子集分布对照', fig,
+    save('fig_s49_pre_model_diagnostics_subset_distribution', fig,
          [('a', caption_a, axes[0]), ('b', caption_b, axes[1])],
-         {'数据来源': '56_stage26_3_pre_model_diagnostics.xlsx / 05、07 子表',
+         {'数据来源': '48_stage26_3_pre_model_diagnostics.xlsx / 05、07 子表',
           '口径': '移除发布时点不可得的后验特征后的正式特征集；'
                   '冗余诊断只覆盖有连续意义的数值特征，不做 320×320 全特征矩阵',
           '用途': '第7章 7.1 节 图 7-2 建模前特征诊断（配合表 7-1、表 7-3）'})
 
     # ---------------- 图 8-3：三类泛化场景对照 ---------------- #
-    unified = read_table('57_stage26_3_metrics_after_feature_removal.xlsx', '02_三种划分统一协议')
+    unified = read_table('49_stage26_3_metrics_after_feature_removal.xlsx', '02_三种划分统一协议')
     labels = ['Random\nSplit', 'Company\nGroup Split', 'Retrospective\nTemporal Split']
     _apply_mode('stack', 10.5, 2.8,
                 {'left': 0.22, 'right': 0.975, 'bottom': 0.20, 'top': 0.86, 'hspace': 0.62})
@@ -498,9 +498,9 @@ def run_custom() -> None:
     caption_b = 'R² 对照'
     plot_style.add_subfigure_caption(ax, 'b', caption_b)
     fig.subplots_adjust()
-    save('图S46_不同泛化场景性能比较', fig,
+    save('fig_s46_generalization_scenario_comparison', fig,
          [('a', caption_a, axes[0]), ('b', caption_b, axes[1])],
-         {'数据来源': '57_stage26_3_metrics_after_feature_removal.xlsx / 02 子表（统一协议三种划分）',
+         {'数据来源': '49_stage26_3_metrics_after_feature_removal.xlsx / 02 子表（统一协议三种划分）',
           '用途': '第8章 图 8-3 重制（1×2 横排 → 2×1 纵排）'})
 
 

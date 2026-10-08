@@ -7,8 +7,8 @@
 - 绘图风格唯一来源 ``src/plot_style.py``（本脚本只读该模块，不修改）；
 - 纯流程框图：关闭坐标轴，图名由底部总图题机制负责
   （禁止 ``ax.set_title`` / ``fig.suptitle``）；
-- **双输出路径（Stage23）**：论文版 ``图S16_数据采集总体流程.png`` 不含图内总图题
-  （总图题交给 Word Caption）；展示版 ``图S16_数据采集总体流程_display.png`` 底部带
+- **双输出路径（Stage23）**：论文版 ``fig_s16_acquisition_flow.png`` 不含图内总图题
+  （总图题交给 Word Caption）；展示版 ``fig_s16_acquisition_flow_display.png`` 底部带
   Stage23 正式图题「图 3-1 数据采集总体流程」；两者均为 600 dpi PNG + 矢量 PDF；
 - 原始观测规模从只读原始数据文件的元信息读取并校验，不硬编码；
 - 只写 ``outputs/figures/supplementary/``。
@@ -34,7 +34,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch  # noqa: E402
 
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
-STEM = '图S16_数据采集总体流程'
+STEM = 'fig_s16_acquisition_flow'
 CAPTION = '图 3-1 数据采集总体流程'
 EXPECTED_RAW_ROWS = 172063
 

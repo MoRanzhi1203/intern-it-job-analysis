@@ -15,15 +15,15 @@
 3. **任务 3**：基于既有一次性 test 预测（`model_predictions.parquet`，
    `model_name = 'FINAL（LightGBM）'` 且 `split = 'test'`）做分组误差诊断（薪资三分位/四分位、
    岗位大类、工作城市、学历要求）。
-4. **任务 4**：输出 `图S17_薪资因素关联证据与多值类别对照`（PNG 600 dpi + 矢量 PDF），
+4. **任务 4**：输出 `fig_s17_salary_factor_evidence_multi_category`（PNG 600 dpi + 矢量 PDF），
    (a) 单值/互斥分组因素 ε² 排序（复用 `stage_13_eda.json` 冻结值，不重算）；
    (b) 多值类别 |Cliff's δ| 排序（本次二元检验结果）。图内不写总图题。
 
 新增输出（不覆盖任何既有文件）::
 
-    outputs/tables/34_stage25_factor_revision.xlsx
+    outputs/tables/26_stage25_factor_revision.xlsx
     outputs/logs/metrics/stage_25_revision.json
-    outputs/figures/supplementary/图S17_薪资因素关联证据与多值类别对照.png / .pdf
+    outputs/figures/supplementary/fig_s17_salary_factor_evidence_multi_category.png / .pdf
 
 运行::
 
@@ -60,7 +60,7 @@ EDU_FIELD = '学历要求'
 EXCEL_PATH = project_paths.TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION
 METRICS_PATH = project_paths.METRICS_DIR / 'stage_25_revision.json'
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
-FIG_STEM = '图S17_薪资因素关联证据与多值类别对照'
+FIG_STEM = 'fig_s17_salary_factor_evidence_multi_category'
 
 MW_MIN_GROUP_NOTE = (
     f'样本量门槛：present 与 absent 两组岗位数均 ≥ {MIN_BINARY_GROUP}'
@@ -623,7 +623,7 @@ def anchor_checks(salary_sample: int, jobs: int) -> dict:
                     '期望值': '14899（14889 全项目未出现）',
                     '实际读取值': next(item['实际读取值'] for item in records
                                    if item['锚点'] == '明确薪资可解析'),
-                    '来源': '21_structured_field_salary_audit.xlsx / 02_薪资解析状态'
+                    '来源': '15_structured_field_salary_audit.xlsx / 02_薪资解析状态'
                             '（该表现仅「已解析 14899 / 面议 2245」两行，无 14889 取值）',
                     '通过': True})
     records.append({'锚点': '本次重算样本锚点（正式薪资样本 / 唯一岗位实体）',
@@ -776,10 +776,10 @@ def main() -> int:
         project_paths.MODEL_SPLITS_PARQUET, project_paths.MODEL_PREDICTIONS_PARQUET,
         project_paths.TABLES_DIR / project_paths.TABLE_MODEL_COMPARISON,
         project_paths.TABLES_DIR / project_paths.TABLE_EDA_STATISTICAL,
-        project_paths.TABLES_DIR / '21_structured_field_salary_audit.xlsx',
-        project_paths.TABLES_DIR / '31_ablation_robustness_shap.xlsx',
-        project_paths.TABLES_DIR / '32_company_field_semantic_audit.xlsx',
-        project_paths.TABLES_DIR / '13_observation_snapshot_audit.xlsx',
+        project_paths.TABLES_DIR / '15_structured_field_salary_audit.xlsx',
+        project_paths.TABLES_DIR / '23_ablation_robustness_shap.xlsx',
+        project_paths.TABLES_DIR / '24_company_field_semantic_audit.xlsx',
+        project_paths.TABLES_DIR / '07_observation_snapshot_audit.xlsx',
         project_paths.METRICS_DIR / 'stage_13_eda.json',
         project_paths.SALARY_MODEL_DIR / 'model_params.json',
         project_paths.PROJECT_ROOT / 'src' / 'plot_style.py',

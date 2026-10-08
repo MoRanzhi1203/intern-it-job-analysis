@@ -3,7 +3,7 @@
 
 双输出路径（Stage23 硬要求）
 ---------------------------
-- **论文版**：覆盖同名主文件（``图S01_样本筛选与口径流转.png`` 等），图片内部**不含**
+- **论文版**：覆盖同名主文件（``fig_s01_sample_screening_caliber_flow.png`` 等），图片内部**不含**
   「图 X-X / 附图 A-x」正式总图题（总图题交给 Word Caption），保留绘图区 / 坐标轴 / 图例与
   位于各子图下方的 ``(a)(b)(c)(d)`` 子图名；600 dpi PNG + 矢量 PDF；
 - **独立展示版**：``<stem>_display.png|pdf``，底部带 Stage23 正式图题（PPT / 单独查看用）。
@@ -251,39 +251,39 @@ def tag_jaccard_heatmap(ax, fix: int = 0):
 # ------------------------------------------------------------------ 数据装载
 def load_data() -> dict:
     data: dict = {}
-    data['sample'] = read_sheet('29_eda_statistical_analysis.xlsx', '01_样本概况')
-    data['salary_desc'] = read_sheet('29_eda_statistical_analysis.xlsx', '02_薪资描述统计')
-    data['company_factor'] = read_sheet('29_eda_statistical_analysis.xlsx', '06_公司因素薪资')
-    data['skill_salary'] = read_sheet('29_eda_statistical_analysis.xlsx', '08_技能薪资')
-    data['skill_in_cat'] = read_sheet('29_eda_statistical_analysis.xlsx', '09_岗位内技能薪资')
-    data['stats'] = read_sheet('29_eda_statistical_analysis.xlsx', '11_统计检验')
-    data['skill_count'] = read_sheet('29_eda_statistical_analysis.xlsx', '13_技能数量薪资')
-    data['model_sample'] = read_sheet('28_modeling_dataset_audit.xlsx', '08_模型样本筛选')
-    data['model_overview'] = read_sheet('28_modeling_dataset_audit.xlsx', '01_总体结构')
-    data['leak_blacklist'] = read_sheet('28_modeling_dataset_audit.xlsx', '04_目标泄漏黑名单')
-    data['manifest'] = read_sheet('28_modeling_dataset_audit.xlsx', '03_Feature_Manifest')
-    data['split'] = read_sheet('30_model_comparison.xlsx', '01_数据划分')
-    data['feature_dim'] = read_sheet('30_model_comparison.xlsx', '02_特征维度')
-    data['test_result'] = read_sheet('30_model_comparison.xlsx', '09_Test最终结果')
-    data['skill_threshold'] = read_sheet('30_model_comparison.xlsx', '12_技能阈值选择')
-    data['text_dim'] = read_sheet('30_model_comparison.xlsx', '13_文本维度选择')
-    data['skill_inc'] = read_sheet('31_ablation_robustness_shap.xlsx', '02_技能增量')
-    data['text_inc'] = read_sheet('31_ablation_robustness_shap.xlsx', '03_文本增量')
-    data['split_compare'] = read_sheet('31_ablation_robustness_shap.xlsx', '04_Random_vs_GroupSplit')
-    data['robust_extreme'] = read_sheet('31_ablation_robustness_shap.xlsx', '05_极端值敏感性')
-    data['robust_target'] = read_sheet('31_ablation_robustness_shap.xlsx', '06_目标稳健性')
-    data['shap_rank'] = read_sheet('31_ablation_robustness_shap.xlsx', '07_SHAP总排名')
-    data['shap_stability'] = read_sheet('31_ablation_robustness_shap.xlsx', '11_SHAP稳定性')
-    data['ablation'] = read_sheet('31_ablation_robustness_shap.xlsx', '01_消融结果')
-    data['wide_stats'] = read_sheet('32_company_field_semantic_audit.xlsx', '02_宽表字段统计')
-    data['issue_class'] = read_sheet('32_company_field_semantic_audit.xlsx', '07_问题分类')
-    data['tag_per_job'] = read_sheet('32_company_field_semantic_audit.xlsx', '04c_每岗标签数分布')
-    data['anomaly_fix'] = read_sheet('22_company_attribute_semantic_anomaly_audit.xlsx', '07_修复前后对照')
-    data['anomaly_residual'] = read_sheet('22_company_attribute_semantic_anomaly_audit.xlsx', '08_残留异常')
-    data['obs_audit'] = read_sheet('13_observation_snapshot_audit.xlsx', '01_总体统计')
-    data['salary_parse'] = read_sheet('21_structured_field_salary_audit.xlsx', '02_薪资解析状态')
-    data['skill_scope'] = read_sheet('27_skill_eda_scope_audit.xlsx', '01_样本口径')
-    data['merge_audit'] = read_sheet('09_unique_job_merge_audit.xlsx', '合并审计汇总')
+    data['sample'] = read_sheet('21_eda_statistical_analysis.xlsx', '01_样本概况')
+    data['salary_desc'] = read_sheet('21_eda_statistical_analysis.xlsx', '02_薪资描述统计')
+    data['company_factor'] = read_sheet('21_eda_statistical_analysis.xlsx', '06_公司因素薪资')
+    data['skill_salary'] = read_sheet('21_eda_statistical_analysis.xlsx', '08_技能薪资')
+    data['skill_in_cat'] = read_sheet('21_eda_statistical_analysis.xlsx', '09_岗位内技能薪资')
+    data['stats'] = read_sheet('21_eda_statistical_analysis.xlsx', '11_统计检验')
+    data['skill_count'] = read_sheet('21_eda_statistical_analysis.xlsx', '13_技能数量薪资')
+    data['model_sample'] = read_sheet('20_modeling_dataset_audit.xlsx', '08_模型样本筛选')
+    data['model_overview'] = read_sheet('20_modeling_dataset_audit.xlsx', '01_总体结构')
+    data['leak_blacklist'] = read_sheet('20_modeling_dataset_audit.xlsx', '04_目标泄漏黑名单')
+    data['manifest'] = read_sheet('20_modeling_dataset_audit.xlsx', '03_Feature_Manifest')
+    data['split'] = read_sheet('22_model_comparison.xlsx', '01_数据划分')
+    data['feature_dim'] = read_sheet('22_model_comparison.xlsx', '02_特征维度')
+    data['test_result'] = read_sheet('22_model_comparison.xlsx', '09_Test最终结果')
+    data['skill_threshold'] = read_sheet('22_model_comparison.xlsx', '12_技能阈值选择')
+    data['text_dim'] = read_sheet('22_model_comparison.xlsx', '13_文本维度选择')
+    data['skill_inc'] = read_sheet('23_ablation_robustness_shap.xlsx', '02_技能增量')
+    data['text_inc'] = read_sheet('23_ablation_robustness_shap.xlsx', '03_文本增量')
+    data['split_compare'] = read_sheet('23_ablation_robustness_shap.xlsx', '04_Random_vs_GroupSplit')
+    data['robust_extreme'] = read_sheet('23_ablation_robustness_shap.xlsx', '05_极端值敏感性')
+    data['robust_target'] = read_sheet('23_ablation_robustness_shap.xlsx', '06_目标稳健性')
+    data['shap_rank'] = read_sheet('23_ablation_robustness_shap.xlsx', '07_SHAP总排名')
+    data['shap_stability'] = read_sheet('23_ablation_robustness_shap.xlsx', '11_SHAP稳定性')
+    data['ablation'] = read_sheet('23_ablation_robustness_shap.xlsx', '01_消融结果')
+    data['wide_stats'] = read_sheet('24_company_field_semantic_audit.xlsx', '02_宽表字段统计')
+    data['issue_class'] = read_sheet('24_company_field_semantic_audit.xlsx', '07_问题分类')
+    data['tag_per_job'] = read_sheet('24_company_field_semantic_audit.xlsx', '04c_每岗标签数分布')
+    data['anomaly_fix'] = read_sheet('16_company_attribute_semantic_anomaly_audit.xlsx', '07_修复前后对照')
+    data['anomaly_residual'] = read_sheet('16_company_attribute_semantic_anomaly_audit.xlsx', '08_残留异常')
+    data['obs_audit'] = read_sheet('07_observation_snapshot_audit.xlsx', '01_总体统计')
+    data['salary_parse'] = read_sheet('15_structured_field_salary_audit.xlsx', '02_薪资解析状态')
+    data['skill_scope'] = read_sheet('19_skill_eda_scope_audit.xlsx', '01_样本口径')
+    data['merge_audit'] = read_sheet('05_unique_job_merge_audit.xlsx', '合并审计汇总')
     data['eda_metrics'] = read_metrics('stage_13_eda.json')
     return data
 
@@ -1095,36 +1095,36 @@ def main() -> int:
 
     # Stage23 正式图题（展示版底部图题）与去向；论文版覆盖同名主文件且不含图内总图题
     specs = [
-        ('图S01_样本筛选与口径流转', '附图 A-7 正式薪资样本的筛选与口径流转',
+        ('fig_s01_sample_screening_caliber_flow', '附图 A-7 正式薪资样本的筛选与口径流转',
          fig_s01, '附录'),
-        ('图S02_公司属性语义槽位异常修复构成',
+        ('fig_s02_company_attribute_slot_repair_composition',
          '附图 A-8 公司属性语义槽位异常的修复构成与残留校验', fig_s02, '附录'),
-        ('图S03_数据划分与三子集薪资分布', '附图 A-9 数据划分与三个子集的薪资分布对照',
+        ('fig_s03_data_split_subsets_salary_distribution', '附图 A-9 数据划分与三个子集的薪资分布对照',
          fig_s03, '附录'),
-        ('图S04_公司认证四类薪资分布与组间比较', '图 5-2 公司认证状态的薪资分布与组间比较',
+        ('fig_s04_company_certification_four_class_salary', '图 5-2 公司认证状态的薪资分布与组间比较',
          fig_s04, '正文 图 5-2（5.5.1 节）'),
-        ('图S05_公司福利标签效应量与显著性总览',
+        ('fig_s05_company_benefit_label_effect_overview',
          '图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）', fig_s05, '审计/展示'),
-        ('图S06_高效应福利标签共现簇',
+        ('fig_s06_high_effect_benefit_label_cluster',
          '图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）', fig_s06, '审计/展示'),
         ('图S05S06_公司福利标签薪资关联与共现', '图 5-3 公司福利标签的薪资关联及共现特征',
          fig_s05s06, '正文 图 5-3（5.5.2 节）'),
-        ('图S07_结构化因素效应量排序', '图 5-4 结构化因素的效应量排序', fig_s07,
+        ('fig_s07_structured_factor_effect_ranking', '图 5-4 结构化因素的效应量排序', fig_s07,
          '正文 图 5-4（5.6 节）'),
-        ('图S08_技能数量档与薪资', '附图 A-10 技能数量档与薪资的关系', fig_s08, '附录'),
-        ('图S09_控制细分类前后技能薪资差异', '图 6-4 控制岗位细分类前后的技能薪资差异变化',
+        ('fig_s08_skill_count_tier_salary', '附图 A-10 技能数量档与薪资的关系', fig_s08, '附录'),
+        ('fig_s09_skill_salary_control_dumbbell', '图 6-4 控制岗位细分类前后的技能薪资差异变化',
          fig_s09, '正文 图 6-4（6.5 节）'),
-        ('图S10_稳健性检查对照', '图 8-5 稳健性检查对照', fig_s10, '正文 图 8-5（8.3 节）'),
-        ('图S11_特征组增量bootstrap置信区间', '附图 A-11 特征组增量的配对 bootstrap 置信区间',
+        ('fig_s10_robustness_check_comparison', '图 8-5 稳健性检查对照', fig_s10, '正文 图 8-5（8.3 节）'),
+        ('fig_s11_feature_group_incremental_bootstrap_ci', '附图 A-11 特征组增量的配对 bootstrap 置信区间',
          fig_s11, '附录'),
-        ('图S12_SHAP解释稳定性', '附图 A-12 SHAP 解释稳定性（跨随机种子）', fig_s12, '附录'),
-        ('图S13_技能阈值与文本维度选择', '附图 A-13 技能特征阈值与文本维度的验证集表现',
+        ('fig_s12_shap_interpretation_stability', '附图 A-12 SHAP 解释稳定性（跨随机种子）', fig_s12, '附录'),
+        ('fig_s13_skill_threshold_text_dimension_selection', '附图 A-13 技能特征阈值与文本维度的验证集表现',
          fig_s13, '附录'),
-        ('图S14_每岗福利标签数量分布', '附图 A-14 每个岗位的公司福利标签数量分布', fig_s14,
+        ('fig_s14_benefit_label_count_distribution', '附图 A-14 每个岗位的公司福利标签数量分布', fig_s14,
          '附录'),
-        ('图S15_目标泄漏检查与特征组构成', '附图 A-15 目标泄漏检查与特征组构成', fig_s15,
+        ('fig_s15_target_leakage_feature_group_composition', '附图 A-15 目标泄漏检查与特征组构成', fig_s15,
          '附录'),
-        ('图S16_数据采集总体流程', '图 3-1 数据采集总体流程', None, '正文 图 3-1（3.2 节）'),
+        ('fig_s16_acquisition_flow', '图 3-1 数据采集总体流程', None, '正文 图 3-1（3.2 节）'),
     ]
 
     results = []

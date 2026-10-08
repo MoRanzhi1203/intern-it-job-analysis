@@ -278,12 +278,12 @@ def run_reused() -> list:
                 {'left': 0.17, 'right': 0.975, 'bottom': 0.135, 'top': 0.955,
                  'hspace': 0.42})
     fig, subs, meta = a18.build_02_salary_distribution({})
-    results.append(save('图S55_薪资中点分布与经验累积分布', fig, subs,
+    results.append(save('fig_s55_salary_midpoint_distribution', fig, subs,
                         {**meta, '图内文字': '已删除 Median/IQR 统计注释框，只保留 P50/P90 参考线',
                          '用途': '第4章 图 4-3 重制（1×2 横排 → 2×1 纵排）'}))
 
     # ---------------- 图 4-5（2×1，删除时间区域色块与说明） ---------------- #
-    daily = read_table('45_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
+    daily = read_table('37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
     dates = pd.to_datetime(daily['date'])
     _apply_mode('stack', 15.5, 3.0,
                 {'left': 0.115, 'right': 0.985, 'bottom': 0.145, 'top': 0.90,
@@ -307,9 +307,9 @@ def run_reused() -> list:
         plot_style.apply_sci_axis(ax, grid_axis='y')
         plot_style.add_subfigure_caption(ax, letter, title)
     fig.subplots_adjust()
-    results.append(save('图S56_样本计划招聘覆盖每日活跃与新增结束', fig,
+    results.append(save('fig_s56_planned_coverage_daily_active', fig,
                         [('a', panels[0][1], axes[0]), ('b', panels[1][1], axes[1])],
-                        {'数据来源': '45_stage26_1_lifecycle_statistics.xlsx / 08_日级指标明细',
+                        {'数据来源': '37_stage26_1_lifecycle_statistics.xlsx / 08_日级指标明细',
                          '图内文字': '已删除历史回溯区 / 实际采集窗口 / 计划未来覆盖区色块与说明',
                          '用途': '第4章 图 4-5 重制（图例移至坐标区上方，上下间距加大）'}))
 
@@ -318,7 +318,7 @@ def run_reused() -> list:
                 {'left': 0.20, 'right': 0.975, 'bottom': 0.115, 'top': 0.955,
                  'hspace': 0.72})
     fig, subs, meta = a18.build_04_structured_factor_salary({})
-    results.append(save('图S59_城市学历与公司规模薪资中点中位数', fig, subs,
+    results.append(save('fig_s59_city_education_company_size_salary', fig, subs,
                         {**meta, '用途': '第5章 图 5-1 重制（1×3 横排 → 3×1 纵排）'}))
 
     # ---------------- 图 5-2（1×2 → 2×1，删除统计注释框） ---------------- #
@@ -327,8 +327,8 @@ def run_reused() -> list:
                  'hspace': 0.72})
     fig, subs = b18.fig_s04(0)
     round_labels(fig, 3)
-    results.append(save('图S60_公司认证状态的薪资分布与组间比较', fig, subs,
-                        {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
+    results.append(save('fig_s60_certification_salary_distribution', fig, subs,
+                        {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
                          '图内文字': '已删除 ε² 统计注释框（口径与数值移入正文表 5-1）',
                          '用途': '第5章 图 5-2 重制（1×2 横排 → 2×1 纵排）'}))
 
@@ -336,8 +336,8 @@ def run_reused() -> list:
     _apply_mode('single', 15.5, 4.6,
                 {'left': 0.115, 'right': 0.975, 'bottom': 0.155, 'top': 0.86})
     fig, subs = b18.fig_s05(0)
-    results.append(save('图S61_公司福利标签薪资关联效应', fig, subs,
-                        {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
+    results.append(save('fig_s61_benefit_label_salary_effect', fig, subs,
+                        {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
                          '图内文字': '已删除进入比较数 / 显著数 / 上限与阈值说明框',
                          '用途': '第5章 图 5-3（由原 5-3 组合图拆分而来）'}))
 
@@ -353,10 +353,10 @@ def run_reused() -> list:
     for (letter, caption), ax in zip(captions, axes):
         plot_style.add_subfigure_caption(ax, letter, caption)
     fig.subplots_adjust()
-    results.append(save('图S62_高效应福利标签共现结构', fig,
+    results.append(save('fig_s62_high_effect_benefit_label_cluster', fig,
                         [(letter, caption, ax)
                          for (letter, caption), ax in zip(captions, axes)],
-                        {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
+                        {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
                          '图内文字': '已删除最大两两 Jaccard 说明框',
                          '用途': '第5章 图 5-4（由原 5-3 组合图拆分而来）'}))
 
@@ -364,7 +364,7 @@ def run_reused() -> list:
     _apply_mode('single', 15.5, 6.6,
                 {'left': 0.29, 'right': 0.975, 'bottom': 0.30, 'top': 0.975})
     fig, subs, meta = a18.build_07_category_skill_heatmap({})
-    results.append(save('图S63_岗位细分类技能命中率热力图', fig, subs,
+    results.append(save('fig_s63_category_skill_hit_heatmap', fig, subs,
                         {**meta, '用途': '第6章 图 6-2 继续放大（版心最大宽度 + 增加图高）'}))
 
     # ---------------- 图 4-6 与图 4-7（自定义：删除重复面板与色块） ---------------- #
@@ -398,7 +398,7 @@ def run_lifecycle_figures(c26, daily, dates) -> list:
     caption = '主要岗位大类的活跃计划周期数'
     plot_style.add_subfigure_caption(ax, 'a', caption)
     fig.subplots_adjust()
-    results.append(save('图S57_主要岗位大类计划覆盖数量', fig, [('a', caption, ax)],
+    results.append(save('fig_s57_main_category_planned_coverage', fig, [('a', caption, ax)],
                         {'数据来源': 'job_strict_daily_panel_26_1.parquet × 岗位大类集合',
                          '图内文字': '已删除样本口径说明框与历史回溯区 / 采集窗口色块',
                          '用途': '第4章 图 4-6（只保留 7 日滚动中位数并放大）'}))
@@ -420,7 +420,7 @@ def run_lifecycle_figures(c26, daily, dates) -> list:
     caption = '活跃计划周期薪资中位数与四分位距'
     plot_style.add_subfigure_caption(ax, 'a', caption)
     fig.subplots_adjust()
-    results.append(save('图S58_活跃计划周期薪资中位数与IQR', fig, [('a', caption, ax)],
+    results.append(save('fig_s58_active_cycle_salary_median_iqr', fig, [('a', caption, ax)],
                         {'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级薪资聚合',
                          '图内文字': '已删除与滚动中位数高度重复的原始逐日序列与时间区域色块',
                          '用途': '第4章 图 4-7（只保留 IQR 带与 7 日滚动中位数并放大）'}))
@@ -494,7 +494,7 @@ def build_final_shap() -> dict:
 
 def run_skill_shap() -> dict:
     """图 8-6：技能特征 SHAP Top20（条长 = 平均绝对 SHAP 值，标记 = 方向）。"""
-    table = read_table('61_stage26_4_metrics_final.xlsx', '14_技能SHAP')
+    table = read_table('52_stage26_4_metrics_final.xlsx', '14_技能SHAP')
     frame = table.head(20).iloc[::-1].reset_index(drop=True)
     positions = np.arange(len(frame))
 
@@ -527,8 +527,8 @@ def run_skill_shap() -> dict:
     for name, value in expected.items():
         actual = float(values[frame['技能'].eq(name)].iloc[0])
         assert abs(actual - value) < 5e-4, f'{name} 平均绝对 SHAP 与表 8-5 不一致：{actual}'
-    return save('图S65_技能特征SHAP贡献', fig, [],
-                {'数据来源': '61_stage26_4_metrics_final.xlsx / 14_技能SHAP',
+    return save('fig_s65_skill_shap_contribution', fig, [],
+                {'数据来源': '52_stage26_4_metrics_final.xlsx / 14_技能SHAP',
                  '口径': '技能出现口径；条长 = 平均绝对 SHAP 值，标记 = 技能存在时平均贡献方向',
                  '用途': '第8章 图 8-6（按 Stage26.4 正式模型 288 维重绘）'})
 
@@ -571,7 +571,7 @@ def run_beeswarm(block: dict) -> dict:
     for name, value in expected.items():
         actual = float(magnitude[names.index(name)])
         assert abs(actual - value) < 0.02, f'{name} 平均绝对 SHAP 与表 8-5 不一致：{actual}'
-    return save('图S64_主模型SHAP蜂群图', fig, [],
+    return save('fig_s64_shap_beeswarm', fig, [],
                 {'数据来源': 'Stage26.4 正式主模型（正式特征体系 A+B+C+D+E；'
                              '划分协议下编码后 288 维，'
                              '训练集 + 验证集重拟合后编码 %d 维）在测试集上的 TreeSHAP'

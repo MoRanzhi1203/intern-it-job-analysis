@@ -22,7 +22,7 @@
   后者使论文版门禁的 ``axis_labels_present`` 判不过，在脚本中登记为「主动豁免项」，
   不计入阻断项（横轴含义由 6 个刻度标签承担，置换口径由载体表与正文承担）。
 
-数值只读 ``outputs/results/benefit_cluster_permutation.csv``，6 行 × 3 列统计与
+数值只读 ``outputs/results/E1_E3_E4_E5/benefit_cluster_permutation.csv``，6 行 × 3 列统计与
 基准 MAE／置换次数逐项对齐冻结值，任一不符即中止，不产出图件。
 
 用法：:
@@ -49,7 +49,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_8_11_benefit_cluster_permutation'
-PERM_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'benefit_cluster_permutation.csv'
+PERM_CSV = project_paths.RESULTS_E1_E3_E4_E5 / 'benefit_cluster_permutation.csv'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 7.6
 CM = 1.0 / 2.54
@@ -185,7 +185,7 @@ def main() -> int:
     geometry = label_geometry_audit(fig, ax)
     diagnostics = figure_finalize.save_paper_figure(
         fig, project_paths.FIGURES_DIR, STEM, subfigures=[],
-        meta={'数据来源': 'outputs/results/benefit_cluster_permutation.csv（45 号实验 E5 段冻结结果）',
+        meta={'数据来源': 'outputs/results/E1_E3_E4_E5/benefit_cluster_permutation.csv（45 号实验 E5 段冻结结果）',
               '口径': '对测试集特征矩阵中对应的 one-hot 列做行置换；簇置换 = 5 列用同一次行置换，'
                       '单列置换 = 每次只置换 1 列；每组 %d 次，误差线为标准差'
                       % int(frame['置换次数'].iloc[0]),

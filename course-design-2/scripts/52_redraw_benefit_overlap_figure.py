@@ -30,7 +30,7 @@ from src import figure_finalize, project_paths  # noqa: E402
 from src.script_support import load_script as _load  # noqa: E402
 from src.script_support import apply_style as _apply_style  # noqa: E402
 
-STEM = '图S62_高效应福利标签共现结构'
+STEM = 'fig_s62_high_effect_benefit_label_cluster'
 CAPTIONS = [('a', '高效应福利标签、交集与并集的岗位规模'),
             ('b', '高效应福利标签两两 Jaccard 相似度')]
 # 版式与 26g 一致，仅把子图间距 hspace 由 0.70 收紧到 0.45
@@ -67,7 +67,7 @@ def main() -> int:
     cells = heatmap_cells(axes[1])
     diagnostics = g.save(STEM, fig, [(letter, caption, ax)
                                      for (letter, caption), ax in zip(CAPTIONS, axes)],
-                         {'数据来源': '29_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
+                         {'数据来源': '21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
                           '图内文字': '已删除最大两两 Jaccard 说明框',
                           '热力图': '完整 5×5 对称矩阵，共 %d 个 Jaccard 值' % cells,
                           '版式': '子图间距 hspace 0.70 → 0.45',

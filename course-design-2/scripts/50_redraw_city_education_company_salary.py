@@ -32,7 +32,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 from src.script_support import load_script as _load  # noqa: E402
 
-STEM = '图S59_城市学历与公司规模薪资中点中位数'
+STEM = 'fig_s59_city_education_company_size_salary'
 PANELS = ['城市', '学历要求', '公司规模']
 # 与 26g 中「图 5-1（1×3 → 3×1）」完全相同的版式参数
 MODE_ARGS = ('stack', 10.5, 2.15,

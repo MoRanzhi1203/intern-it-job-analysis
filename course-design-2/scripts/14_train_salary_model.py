@@ -14,7 +14,7 @@
 输出：
     data/processed/model_splits.parquet
     data/processed/model_predictions.parquet
-    outputs/tables/30_model_comparison.xlsx
+    outputs/tables/22_model_comparison.xlsx
     outputs/models/salary_model/（pipeline + manifest + skill columns + encoder schema + reducer + params）
     outputs/figures/modeling/01_..05_...
     docs/records/21_salary_model_comparison_record.md

@@ -20,7 +20,7 @@
   后 9 pt 只剩约 7.8 pt）；
 - 配色统一到全文色板，补 600 dpi PNG ＋ 矢量 PDF、四边框、内向刻度、浅虚线网格。
 
-抽样分布缓存在 ``outputs/results/model_comparison_paired_bootstrap_draws.csv``，
+抽样分布缓存在 ``outputs/results/E3_E4_E5_bootstrap/model_comparison_paired_bootstrap_draws.csv``，
 存在时直接复用，便于后续再调整版式而不必重新训练模型。
 
 用法：:
@@ -47,8 +47,8 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 
 STEM = 'fig_8_9_lgbm_catboost_paired_difference'
-SUMMARY_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'model_comparison_paired_bootstrap.csv'
-DRAWS_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'model_comparison_paired_bootstrap_draws.csv'
+SUMMARY_CSV = project_paths.RESULTS_E1_E3_E4_E5 / 'model_comparison_paired_bootstrap.csv'
+DRAWS_CSV = project_paths.RESULTS_E3_E4_E5_BOOTSTRAP / 'model_comparison_paired_bootstrap_draws.csv'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 8.6
 CM = 1.0 / 2.54
@@ -222,7 +222,7 @@ def main() -> int:
     fig, ax = build_figure(draws, summary)
     diagnostics = figure_finalize.save_paper_figure(
         fig, project_paths.FIGURES_DIR, STEM, subfigures=[],
-        meta={'数据来源': 'outputs/results/model_comparison_paired_bootstrap.csv ＋ %s'
+        meta={'数据来源': 'outputs/results/E1_E3_E4_E5/model_comparison_paired_bootstrap.csv ＋ %s'
                           % data_diag['来源'],
               '口径': '测试集配对绝对误差差（LightGBM − CatBoost）的 %d 次 bootstrap 抽样，'
                       '随机种子固定；95%% 区间取抽样的 2.5%% 与 97.5%% 分位点'

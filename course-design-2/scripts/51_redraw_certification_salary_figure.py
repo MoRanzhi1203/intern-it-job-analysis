@@ -33,7 +33,7 @@ from src import figure_finalize, project_paths  # noqa: E402
 from src.script_support import load_script as _load  # noqa: E402
 from src.script_support import apply_style as _apply_style  # noqa: E402
 
-STEM = '图S60_公司认证状态的薪资分布与组间比较'
+STEM = 'fig_s60_certification_salary_distribution'
 # 与 26g 中「图 5-2（1×2 → 2×1，删除统计注释框）」完全相同的版式参数
 MODE_ARGS = ('stack', 15.5, 2.85,
              {'left': 0.30, 'right': 0.975, 'bottom': 0.145, 'top': 0.90, 'hspace': 0.72})
@@ -92,7 +92,7 @@ def main() -> int:
     g.round_labels(fig, 3)
     changed = clean_labels(fig)
     diagnostics = g.save(STEM, fig, subfigures, {
-        '数据来源': '29_eda_statistical_analysis.xlsx / 06_公司因素薪资、11_统计检验',
+        '数据来源': '21_eda_statistical_analysis.xlsx / 06_公司因素薪资、11_统计检验',
         '图内文字': '已删除 ε² 统计注释框（口径与数值移入正文表 5-1）',
         '文字清理': changed,
         '用途': '第5章「公司认证状态的薪资分布与组间比较」重绘（图题由 Word 构建脚本生成）'})

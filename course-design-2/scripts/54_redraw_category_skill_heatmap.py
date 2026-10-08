@@ -33,7 +33,7 @@ from src import figure_finalize, project_paths  # noqa: E402
 from src.script_support import load_script as _load  # noqa: E402
 from src.script_support import apply_style as _apply_style  # noqa: E402
 
-STEM = '图S63_岗位细分类技能命中率热力图'
+STEM = 'fig_s63_category_skill_hit_heatmap'
 # 与 26g 中「图 6-2（热力图放大）」完全相同的版式参数
 MODE_ARGS = ('single', 15.5, 6.6,
              {'left': 0.29, 'right': 0.975, 'bottom': 0.30, 'top': 0.975})

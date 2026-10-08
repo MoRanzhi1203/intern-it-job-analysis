@@ -3,7 +3,7 @@
 
 沿用 45 号实验（E3）的冻结结果，只改版式与呈现规范，不改动任何数值：
 
-- 只读 ``outputs/results/test_error_by_salary_quartile.csv``（总体行不进入柱图）；
+- 只读 ``outputs/results/E1_E3_E4_E5/test_error_by_salary_quartile.csv``（总体行不进入柱图）；
 - 面板构成保持 1×2：左＝绝对误差 MAE，右＝相对误差 nMAE；
 - 去掉原图的 ``fig.suptitle`` 与两个 ``ax.set_title``（项目禁用图内标题），
   改为 (a)(b) 子图名置于对应子图下方，总图题交给载体文档；
@@ -37,7 +37,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_7_8_error_by_salary_quartile'
-CSV = project_paths.OUTPUTS_RESULTS_DIR / 'test_error_by_salary_quartile.csv'
+CSV = project_paths.RESULTS_E1_E3_E4_E5 / 'test_error_by_salary_quartile.csv'
 FIGDIR = project_paths.FIGURES_DIR
 CAPTIONS = [('a', '绝对误差 MAE'), ('b', '相对误差 nMAE')]
 PRINT_WIDTH_CM = 15.5
@@ -123,7 +123,7 @@ def main() -> int:
     diagnostics = figure_finalize.save_paper_figure(
         fig, FIGDIR, STEM,
         subfigures=[(letter, text, ax) for (letter, text), ax in zip(CAPTIONS, axes)],
-        meta={'数据来源': 'outputs/results/test_error_by_salary_quartile.csv（45 号实验 E3 冻结结果）',
+        meta={'数据来源': 'outputs/results/E1_E3_E4_E5/test_error_by_salary_quartile.csv（45 号实验 E3 冻结结果）',
               '口径': '测试集按真实薪资四分位分组；nMAE = 该组 MAE / 组内薪资中位数；'
                       '总体（n = 2,233）不进入柱图，只在组内比较',
               '版式': '去掉图内总标题与子图标题，改为 (a)(b) 子图名下置；'

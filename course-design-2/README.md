@@ -26,14 +26,14 @@ course-design-2/
 └─ outputs/
    ├─ tables/              审计表（现行编号唯一；_legacy/ 为历史遗留表）
    ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
-   │  ├─ (根)              fig_4_7 / 5_7 / 7_8 / 8_9 / 8_10 / 8_11
-   │  ├─ eda/              05_tech_skill_top20
-   │  ├─ supplementary/    图S09/S16/S44/S50/S55/S59/S60/S62/S63/S64/S66/S68/S69/S70/S71
-   │  └─ time/             01 / 02 / 03
+   │  ├─ (根)              fig_4_7 / fig_5_7 / fig_7_8 / fig_8_9 / fig_8_10 / fig_8_11
+   │  ├─ eda/              fig_05_tech_skill_top20
+   │  ├─ supplementary/    fig_s09 / s16 / s44 / s50 / s55 / s59 / s60 / s62 / s63 / s64 / s66 / s68 / s69 / s70 / s71
+   │  └─ time/             fig_01 / fig_02 / fig_03
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
    ├─ logs/                门禁 / 指标 JSON 与流水线日志（运行时生成）
    ├─ registries/          图件登记元数据（*_registry.json，与图件本体分离）
-   ├─ results/             实验脚本数值产物（E1–E8 CSV / JSON）
+   ├─ results/             实验数值产物（按实验分组：E1_E3_E4_E5 / E2_E7 / E3_E4_E5_bootstrap / E8）
    └─ deliverables/        「补全任务」交付物（报告 / 派生表 / 派生图）
 ```
 
@@ -74,21 +74,21 @@ python -m compileall src scripts
 | 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/10_build_company_text_semantics.py` |
 | 11 | 结构化字段清洗与薪资目标解析 | `scripts/11_clean_structured_fields.py` |
 
-正式问题的专项审计表：`20_text_semantic_refinement_audit.xlsx`（文本语义封版）、
-`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
-`25_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）。
+正式问题的专项审计表：`14_text_semantic_refinement_audit.xlsx`（文本语义封版）、
+`16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
+`17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）。
 
 ## 3.1 独立脚本层（Stage 12~17，不进入 Stage 00~11 流水线）
 
 | 脚本 | 职责 | 审计表 |
 | --- | --- | --- |
-| `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `28_modeling_dataset_audit.xlsx` |
-| `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `29_eda_statistical_analysis.xlsx` |
-| `scripts/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `27_skill_eda_scope_audit.xlsx` |
-| `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `30_model_comparison.xlsx` |
-| `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `31_ablation_robustness_shap.xlsx` |
-| `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `32_company_field_semantic_audit.xlsx` |
-| `scripts/17_final_interpretation_audit.py` | 最终解释审计与封版 | `33_final_interpretation_audit.xlsx` |
+| `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `20_modeling_dataset_audit.xlsx` |
+| `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `21_eda_statistical_analysis.xlsx` |
+| `scripts/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `19_skill_eda_scope_audit.xlsx` |
+| `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `22_model_comparison.xlsx` |
+| `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `23_ablation_robustness_shap.xlsx` |
+| `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `24_company_field_semantic_audit.xlsx` |
+| `scripts/17_final_interpretation_audit.py` | 最终解释审计与封版 | `25_final_interpretation_audit.xlsx` |
 
 术语纪律：**公司认证**（公司认证标签，最佳雇主 / 行业认证）与**公司标签（福利标签）**
 （公司标签列表，免费健身设施等）必须严格区分；技能 SHAP 方向以 `presence_direction`
@@ -121,23 +121,23 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 5. 正式审计
 
-- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号唯一）；
+- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（**编号 00–59 连续**）；
   历史遗留表（旧流水线 05~12、Stage26.3~26.6 归档脚本产出）已归入 `outputs/tables/_legacy/`（见第 8.1 节）；
 - 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
   （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成（目录已建立）；
-- 专项审计：`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
-  含 MySQL↔raw 跨源证据）、`25_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
-  `26_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
-  `27_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 双口径与分层榜单，含双口径稳健性）、
-   `28_modeling_dataset_audit.xlsx`（Stage 12 建模数据集、Feature Manifest 与目标泄漏审计）、
-   `29_eda_statistical_analysis.xlsx`（Stage 13 正式 EDA 与统计检验，15 张子表）、
-   `30_model_comparison.xlsx`（Stage 14 薪资预测模型对比、验证集选模与一次性 test 结果）、
-  `31_ablation_robustness_shap.xlsx`（Stage 15 特征组消融、公司 Group Split、极端值/目标稳健性、
+- 专项审计：`16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
+  含 MySQL↔raw 跨源证据）、`17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
+  `18_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
+  `19_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 双口径与分层榜单，含双口径稳健性）、
+   `20_modeling_dataset_audit.xlsx`（Stage 12 建模数据集、Feature Manifest 与目标泄漏审计）、
+   `21_eda_statistical_analysis.xlsx`（Stage 13 正式 EDA 与统计检验，15 张子表）、
+   `22_model_comparison.xlsx`（Stage 14 薪资预测模型对比、验证集选模与一次性 test 结果）、
+  `23_ablation_robustness_shap.xlsx`（Stage 15 特征组消融、公司 Group Split、极端值/目标稳健性、
    TreeSHAP 整体与技能排名，11 张子表）、
-  `32_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
-  `33_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
+  `24_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
+  `25_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
   presence 口径 + 核心结果回归保护 + 门禁与测试）。
-- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `05_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
+- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `fig_05_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
 - 建模图件与模型产出：`figures/modeling/` 目录已按第 5.1 节留存口径**整体移除**；
   模型产出仍保留于 `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 +
   类别编码 schema + 文本降维 + 参数）。
@@ -149,9 +149,9 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 | 位置 | 图件 |
 | --- | --- |
 | `figures/` 根 | `fig_4_7` / `fig_5_7` / `fig_7_8` / `fig_8_9` / `fig_8_10` / `fig_8_11` |
-| `figures/eda/` | `05_tech_skill_top20` |
-| `figures/supplementary/` | `图S09`/`S16`/`S44`/`S50`/`S55`/`S59`/`S60`/`S62`/`S63`/`S64`/`S66`/`S68`/`S69`/`S70`/`S71` |
-| `figures/time/` | `01` / `02` / `03`（发布时间队列与技能时间结构） |
+| `figures/eda/` | `fig_05_tech_skill_top20` |
+| `figures/supplementary/` | `fig_s09`/`s16`/`s44`/`s50`/`s55`/`s59`/`s60`/`s62`/`s63`/`s64`/`s66`/`s68`/`s69`/`s70`/`s71` |
+| `figures/time/` | `fig_01` / `fig_02` / `fig_03`（发布时间队列与技能时间结构） |
 | `outputs/deliverables/figures/` | `fig_7_actual_vs_predicted_salary` |
 
 **留存口径**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
@@ -177,11 +177,11 @@ Stage 00~11 不再保留 Notebook 双实现。
 以下登记项本轮已处理，改动均同步修改了脚本引用与 README：
 
 1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
-   原 `33_business_time_dimension_analysis.xlsx` 与 `33_final_interpretation_audit.xlsx` 编号冲突，
-   前者已改为 `75_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
+   原 `33_business_time_dimension_analysis.xlsx` 与 `25_final_interpretation_audit.xlsx` 编号冲突，
+   前者已改为 `59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
    `49_redraw_time_cohort_figures` 同步更新，并收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
    原 `34_visual_evidence_registry.xlsx` 为已删除证据阶段（见第 2 条）的陈旧产物、零现行引用，已删除，
-   `34_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
+   `26_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
    （原 `35_*` 冲突已随 `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。）
 2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）与
    `outputs/figures/evidence/`（Stage27.0 组合图）两个目录、其生成脚本（`36`/`40`/`43`/`44`）
@@ -199,7 +199,11 @@ Stage 00~11 不再保留 Notebook 双实现。
 6. **返工脚本已删除**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
    （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）
    已随本轮清理删除，仅存于 Git 历史（提交历史可追溯）。
-7. **26 系列递进链经评估不合并**：`26b→26j` 共 7 个脚本、约 8,270 行，含 23 处有意的跨脚本
+7. **产物命名与编号统一**：`outputs/figures/` 25 张图统一为 `fig_<标签>_<ASCII slug>`（沿用
+   角色子目录 `(根)/eda/supplementary/time`）；`outputs/tables/` 60 张审计表重编为**连续 00–59**
+   （`_legacy/` 保持历史编号）；`outputs/results/` 16 个数值产物按实验分为
+   `E1_E3_E4_E5 / E2_E7 / E3_E4_E5_bootstrap / E8` 四组（`project_paths.RESULTS_*`）。
+8. **26 系列递进链经评估不合并**：`26b→26j` 共 7 个脚本、约 8,270 行，含 23 处有意的跨脚本
    动态装载（`26g` 需接收 `18a/18b` 的模块对象、`26e` 需 `26c` 的两个独立模块实例），
    合并为单文件会显著降低可维护性且无法离线验证，故保留现结构。
 

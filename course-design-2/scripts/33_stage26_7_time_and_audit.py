@@ -6,7 +6,7 @@
 - 主时间轴 = 岗位发布时间（业务时间）；
 - 不使用爬取/观测时间、数据创建时间、数据更新时间；
 - 不重训模型、不改动任何已冻结正式结果；
-- 输出：outputs/tables/75_business_time_dimension_analysis.xlsx、
+- 输出：outputs/tables/59_business_time_dimension_analysis.xlsx、
         outputs/figures/time/01~03_*.png|pdf、
         outputs/logs/metrics/stage_26_7_time_and_audit.json。
 
@@ -256,9 +256,9 @@ def main() -> int:
         # 图例放在坐标区左上角、单列竖排
         ax.legend(loc='upper left', ncol=1, frameon=False)
         fig.subplots_adjust(left=0.105, right=0.985, bottom=0.24, top=0.965)
-        png1 = FIGDIR / '01_publish_cohort_count.png'
+        png1 = FIGDIR / 'fig_01_publish_cohort_count.png'
         diagnostics = figure_finalize.save_paper_figure(
-            fig, FIGDIR, '01_publish_cohort_count', subfigures=[],
+            fig, FIGDIR, 'fig_01_publish_cohort_count', subfigures=[],
             meta={'数据来源': '唯一岗位表按岗位发布时间聚合到自然月',
                   '口径': '柱＝样本岗位数（含薪资面议），线＝有效薪资岗位数；'
                           '逐月对照只描述本样本，不代表市场岗位存量',
@@ -276,7 +276,7 @@ def main() -> int:
     figure_module = importlib.util.module_from_spec(figure_spec)
     sys.modules['_fig49_time_cohort'] = figure_module
     figure_spec.loader.exec_module(figure_module)
-    full_median = float(pd.read_excel(TABLES / '29_eda_statistical_analysis.xlsx',
+    full_median = float(pd.read_excel(TABLES / '21_eda_statistical_analysis.xlsx',
                                       sheet_name='02_薪资描述统计')
                         .set_index('指标')['数值']['中位数'])
     diagnostics2 = figure_module.save_salary_figure(monthly, full_median, FIGDIR)

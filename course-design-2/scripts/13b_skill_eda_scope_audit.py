@@ -8,7 +8,7 @@
     data/processed/job_salary_targets.parquet     薪资目标（主目标 = 薪资中点）
 
 输出：
-    outputs/tables/27_skill_eda_scope_audit.xlsx  11 张子表（口径/榜单/结构/共现/薪资/稳健性）
+    outputs/tables/19_skill_eda_scope_audit.xlsx  11 张子表（口径/榜单/结构/共现/薪资/稳健性）
     outputs/logs/metrics/stage_13_skill_eda.json
 
 口径（封版，禁止混用）：

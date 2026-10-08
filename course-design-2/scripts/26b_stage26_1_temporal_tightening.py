@@ -26,11 +26,11 @@
     data/processed/job_candidate_segment_26_1.parquet
     data/processed/job_strict_episode_26_1.parquet
     data/processed/job_strict_daily_panel_26_1.parquet
-    outputs/tables/44_stage26_1_episode_rebuild_audit.xlsx
-    outputs/tables/45_stage26_1_lifecycle_statistics.xlsx
-    outputs/tables/46_stage26_1_F_group_leakage_ablation.xlsx
-    outputs/tables/47_stage26_1_temporal_split.xlsx
-    outputs/tables/48_stage26_1_sensitivity_comparison.xlsx
+    outputs/tables/36_stage26_1_episode_rebuild_audit.xlsx
+    outputs/tables/37_stage26_1_lifecycle_statistics.xlsx
+    outputs/tables/38_stage26_1_F_group_leakage_ablation.xlsx
+    outputs/tables/39_stage26_1_temporal_split.xlsx
+    outputs/tables/40_stage26_1_sensitivity_comparison.xlsx
     outputs/figures/supplementary/图S23..图S27（各 PNG 600dpi + PDF）
     outputs/figures/supplementary/_stage26_1_registry.json
     outputs/logs/metrics/stage_26_1_temporal_tightening.json
@@ -84,34 +84,34 @@ METRICS_PATH = project_paths.METRICS_DIR / 'stage_26_1_temporal_tightening.json'
 REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_stage26_1_registry.json'
 
 TABLE_FILES = [
-    '44_stage26_1_episode_rebuild_audit.xlsx',
-    '45_stage26_1_lifecycle_statistics.xlsx',
-    '46_stage26_1_F_group_leakage_ablation.xlsx',
-    '47_stage26_1_temporal_split.xlsx',
-    '48_stage26_1_sensitivity_comparison.xlsx',
+    '36_stage26_1_episode_rebuild_audit.xlsx',
+    '37_stage26_1_lifecycle_statistics.xlsx',
+    '38_stage26_1_F_group_leakage_ablation.xlsx',
+    '39_stage26_1_temporal_split.xlsx',
+    '40_stage26_1_sensitivity_comparison.xlsx',
 ]
 FIG_STEMS = [
-    '图S23_招聘生命周期分布',
-    '图S24_样本计划招聘覆盖的每日活跃新增与结束数量',
-    '图S25_主要岗位大类计划覆盖数量',
-    '图S26_活跃计划周期薪资中位数与IQR',
-    '图S27_Strict与Relaxed口径对照',
+    'fig_s23_recruitment_lifecycle_distribution',
+    'fig_s24_planned_coverage_daily_active_count',
+    'fig_s25_main_category_planned_coverage',
+    'fig_s26_active_cycle_salary_median_iqr',
+    'fig_s27_strict_relaxed_caliber_comparison',
 ]
 # ---- Stage26 只读产物（前后 SHA-256 比对用） ----
 STAGE26_FILES = (
     [TABLES / name for name in [
-        '35_recruitment_time_field_audit.xlsx', '36_recruitment_episode_identification.xlsx',
-        '37_reopen_statistics.xlsx', '38_recruitment_lifecycle_statistics.xlsx',
-        '39_recruitment_temporal_indicators.xlsx', '40_lifecycle_salary_association.xlsx',
-        '41_F_group_ablation.xlsx', '42_temporal_split_results.xlsx',
-        '43_reopen_manual_review.xlsx']]
+        '27_recruitment_time_field_audit.xlsx', '28_recruitment_episode_identification.xlsx',
+        '29_reopen_statistics.xlsx', '30_recruitment_lifecycle_statistics.xlsx',
+        '31_recruitment_temporal_indicators.xlsx', '32_lifecycle_salary_association.xlsx',
+        '33_F_group_ablation.xlsx', '34_temporal_split_results.xlsx',
+        '35_reopen_manual_review.xlsx']]
     + [project_paths.METRICS_DIR / 'stage_26_temporal.json']
     + [SUPP_DIR / f'{stem}{suffix}'
-       for stem in ['图S18_招聘生命周期分布',
-                    '图S19_样本招聘周期每日新增结束与活跃数量',
-                    '图S20_主要岗位大类样本活跃招聘数量时间演化',
-                    '图S21_样本活跃岗位薪资中位数与IQR时间演化',
-                    '图S22_不同泛化场景性能比较']
+       for stem in ['fig_s18_recruitment_lifecycle_distribution',
+                    'fig_s19_sample_recruitment_daily_active_count',
+                    'fig_s20_main_category_active_count_time_evolution',
+                    'fig_s21_active_salary_median_iqr_time_evolution',
+                    'fig_s22_generalization_scenario_comparison']
        for suffix in ('.png', '.pdf')]
     + [PROCESSED / 'job_recruitment_episode.parquet',
        PROCESSED / 'job_daily_panel.parquet',

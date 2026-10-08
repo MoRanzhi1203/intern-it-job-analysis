@@ -40,10 +40,10 @@ EDA_DIR = project_paths.EDA_FIGURES_DIR
 MODELING_DIR = project_paths.MODELING_FIGURES_DIR
 REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_redraw_registry.json'
 
-TABLE_27 = '27_skill_eda_scope_audit.xlsx'
-TABLE_29 = '29_eda_statistical_analysis.xlsx'
-TABLE_30 = '30_model_comparison.xlsx'
-TABLE_31 = '31_ablation_robustness_shap.xlsx'
+TABLE_27 = '19_skill_eda_scope_audit.xlsx'
+TABLE_29 = '21_eda_statistical_analysis.xlsx'
+TABLE_30 = '22_model_comparison.xlsx'
+TABLE_31 = '23_ablation_robustness_shap.xlsx'
 
 SALARY_LABEL = '薪资中点（元/天）'
 FINAL_MODEL = 'FINAL（LightGBM）'
@@ -301,7 +301,7 @@ def build_04_structured_factor_salary(layout: dict):
                             '数据来源': f'{TABLE_29} / 04_城市薪资、05_学历薪资、06_公司因素薪资'}
 
 
-def build_05_tech_skill_top20(layout: dict):
+def build_fig_05_tech_skill_top20(layout: dict):
     """图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）。"""
     demand = table(TABLE_29, '07_技能需求')
     frame = demand[demand['榜单'].str.startswith('核心技术技能')].head(20)
@@ -823,8 +823,8 @@ figure_specs = [
      build_03_category_salary, '主要岗位细分类的薪资中点中位数', '正文 图 4-2（4.2 节）'),
     ('eda', '04_structured_factor_salary', '图 5-1 城市、学历与公司规模的薪资中点中位数',
      build_04_structured_factor_salary, '结构化因素的薪资中点中位数差异', '正文 图 5-1（5.3 节）'),
-    ('eda', '05_tech_skill_top20', '图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）',
-     build_05_tech_skill_top20, '企业明确要求的核心技术技能', '正文 图 6-1（6.2 节）'),
+    ('eda', 'fig_05_tech_skill_top20', '图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）',
+     build_fig_05_tech_skill_top20, '企业明确要求的核心技术技能', '正文 图 6-1（6.2 节）'),
     ('eda', '06_skill_layer_structure', '附图 A-1 技能需求的分层结构',
      build_06_skill_layer_structure, '技术领域 / 业务能力 / 办公工具的分层需求', '附录'),
     ('eda', '07_category_skill_heatmap', '图 6-2 岗位细分类 × 技能命中率热力图',

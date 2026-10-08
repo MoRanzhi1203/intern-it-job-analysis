@@ -11,7 +11,7 @@ data/interim/shixiseng_job_details_cn.parquet
         ↓
 data/interim/job_observation_snapshots.parquet     岗位观测快照层
 data/processed/job_category_membership.parquet     岗位分类关系层（权威来源）
-outputs/tables/13_observation_snapshot_audit.xlsx
+outputs/tables/07_observation_snapshot_audit.xlsx
 
 同岗位同观测时点的搜索分类重复不是时间观测，必须先折叠；
 禁止直接把 172063 条原始记录全部当作独立时间观测。

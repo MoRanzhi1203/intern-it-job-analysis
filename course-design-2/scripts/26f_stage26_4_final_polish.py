@@ -4,7 +4,7 @@
 对应提示词 `docs/prompts/Trae_Stage26_4_终稿精简与学术化统一修订提示词.md`：
 
 1. §13 / §15.2：用正式 **Strict Recruitment Episode**（周期层去重）重新生成图 4-4，
-   输出到 `outputs/figures/supplementary/图S50_*.png/pdf`，图内文字极简、2×1 纵排；
+   输出到 `outputs/figures/supplementary/fig_s50_*.png/pdf`，图内文字极简、2×1 纵排；
 2. §18.1 / §18.2：逐字段核查正式模型输入，把数据治理元数据（映射置信度、是否需人工复核、
    是否跨地域、是否存在同名跨地域歧义、技能提取范围、文本与方向一致性质量标志等）
    从未移出的字段中一并移出，并保持三个后验版本特征继续移出；
@@ -24,13 +24,13 @@
 
 新增输出::
 
-    outputs/tables/60_stage26_4_formal_feature_audit.xlsx
-    outputs/tables/61_stage26_4_metrics_final.xlsx
-    outputs/tables/62_stage26_4_median_regression.xlsx
-    outputs/tables/63_stage26_4_text_revision_audit.xlsx
-    outputs/figures/supplementary/图S50_招聘周期持续时长分布与累积分布.png/pdf
-    outputs/figures/supplementary/图S51_特征组消融对比.png/pdf
-    outputs/figures/supplementary/图S52_不同泛化场景性能比较.png/pdf
+    outputs/tables/51_stage26_4_formal_feature_audit.xlsx
+    outputs/tables/52_stage26_4_metrics_final.xlsx
+    outputs/tables/53_stage26_4_median_regression.xlsx
+    outputs/tables/54_stage26_4_text_revision_audit.xlsx
+    outputs/figures/supplementary/fig_s50_recruitment_duration_distribution.png/pdf
+    outputs/figures/supplementary/fig_s51_feature_group_ablation_comparison.png/pdf
+    outputs/figures/supplementary/fig_s52_generalization_scenario_comparison.png/pdf
     outputs/logs/metrics/stage_26_4_model_sync.json
     outputs/logs/metrics/stage_26_4_text_baseline.json
     outputs/logs/metrics/stage_26_4_text_revision.json
@@ -164,16 +164,16 @@ TABLES = project_paths.TABLES_DIR
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
 METRICS_DIR = project_paths.METRICS_DIR
 SOURCE_DIR = PROJECT_ROOT / 'docs' / 'paper' / 'stage23'
-TABLE_FEATURE_AUDIT = TABLES / '60_stage26_4_formal_feature_audit.xlsx'
-TABLE_METRICS = TABLES / '61_stage26_4_metrics_final.xlsx'
-TABLE_MEDIAN = TABLES / '62_stage26_4_median_regression.xlsx'
-TABLE_TEXT_AUDIT = TABLES / '63_stage26_4_text_revision_audit.xlsx'
+TABLE_FEATURE_AUDIT = TABLES / '51_stage26_4_formal_feature_audit.xlsx'
+TABLE_METRICS = TABLES / '52_stage26_4_metrics_final.xlsx'
+TABLE_MEDIAN = TABLES / '53_stage26_4_median_regression.xlsx'
+TABLE_TEXT_AUDIT = TABLES / '54_stage26_4_text_revision_audit.xlsx'
 METRICS_PATH = METRICS_DIR / 'stage_26_4_model_sync.json'
 TEXT_BASELINE_PATH = METRICS_DIR / 'stage_26_4_text_baseline.json'
 TEXT_METRICS_PATH = METRICS_DIR / 'stage_26_4_text_revision.json'
-FIG_DURATION = '图S50_招聘周期持续时长分布与累积分布'
-FIG_ABLATION = '图S51_特征组消融对比'
-FIG_GENERALIZE = '图S52_不同泛化场景性能比较'
+FIG_DURATION = 'fig_s50_recruitment_duration_distribution'
+FIG_ABLATION = 'fig_s51_feature_group_ablation_comparison'
+FIG_GENERALIZE = 'fig_s52_generalization_scenario_comparison'
 EPISODE_PATH = project_paths.PROCESSED_DIR / 'job_strict_episode_26_1.parquet'
 CHAPTERS = ['00_摘要与Abstract.md', '01_绪论.md', '02_相关理论与分析方法.md',
             '03_数据获取与预处理.md', '04_互联网IT实习岗位特征分析.md',
@@ -357,7 +357,7 @@ def figure_ablation_new(ablation: pd.DataFrame) -> dict:
     fig.subplots_adjust(left=0.135, right=0.975, bottom=0.275, top=0.975)
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_ABLATION, subfigures=[],
-        meta={'数据来源': '61_stage26_4_metrics_final.xlsx / 02_消融五配置',
+        meta={'数据来源': '52_stage26_4_metrics_final.xlsx / 02_消融五配置',
               'seed': SEED, '用途': '第8章 图 8-1（随正式特征集更新重绘）'})
     plt.close(fig)
     return diagnostics
@@ -407,7 +407,7 @@ def figure_generalization_new(unified: pd.DataFrame) -> dict:
     fig.subplots_adjust(left=0.175, right=0.975, bottom=0.135, top=0.985, hspace=0.46)
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_GENERALIZE, subfigures=[],
-        meta={'数据来源': '61_stage26_4_metrics_final.xlsx / 02_三种划分统一协议',
+        meta={'数据来源': '52_stage26_4_metrics_final.xlsx / 02_三种划分统一协议',
               '用途': '第8章 图 8-3（随正式特征集更新重绘）'})
     plt.close(fig)
     return diagnostics
@@ -1443,8 +1443,8 @@ def figure_split_compare(unified: pd.DataFrame) -> dict:
     plot_style.apply_sci_axis(ax, grid_axis='y')
     fig.subplots_adjust(left=0.165, right=0.975, bottom=0.165, top=0.985, hspace=0.42)
     diagnostics = figure_finalize.save_paper_figure(
-        fig, SUPP_DIR, '图S53_随机划分与按公司分组划分对比', subfigures=[],
-        meta={'数据来源': '61_stage26_4_metrics_final.xlsx / 01_三种划分统一协议',
+        fig, SUPP_DIR, 'fig_s53_random_vs_group_split_comparison', subfigures=[],
+        meta={'数据来源': '52_stage26_4_metrics_final.xlsx / 01_三种划分统一协议',
               '用途': '第8章 图 8-2（随正式特征集更新重绘）'})
     plt.close(fig)
     return diagnostics
@@ -1493,8 +1493,8 @@ def figure_robustness(robust: pd.DataFrame) -> dict:
     plot_style.apply_sci_axis(ax, grid_axis='y')
     fig.subplots_adjust(left=0.165, right=0.975, bottom=0.205, top=0.985, hspace=0.52)
     diagnostics = figure_finalize.save_paper_figure(
-        fig, SUPP_DIR, '图S54_稳健性检查对照', subfigures=[],
-        meta={'数据来源': '61_stage26_4_metrics_final.xlsx / 12_稳健性对照',
+        fig, SUPP_DIR, 'fig_s54_robustness_check_comparison', subfigures=[],
+        meta={'数据来源': '52_stage26_4_metrics_final.xlsx / 12_稳健性对照',
               '口径': '下限与上限口径的预测目标与主任务不同，只比较趋势',
               '用途': '第8章 图 8-4（随正式特征集更新重绘）'})
     plt.close(fig)

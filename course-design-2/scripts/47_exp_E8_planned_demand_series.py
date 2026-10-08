@@ -117,11 +117,11 @@ def main() -> int:
     audit_rows.append({'项目': 'N_t 最大值', '取值': int(series['planned_demand_coverage_N'].max())})
     audit_rows.append({'项目': 'N_t 中位数', '取值': float(series['planned_demand_coverage_N'].median())})
     audit = pd.DataFrame(audit_rows)
-    audit.to_csv(RESULTS / 'planned_recruitment_demand_audit.csv', index=False,
+    audit.to_csv(project_paths.RESULTS_E8 / 'planned_recruitment_demand_audit.csv', index=False,
                  encoding='utf-8-sig')
     print(audit.to_string(index=False))
 
-    series.to_csv(RESULTS / 'planned_recruitment_demand_daily.csv', index=False,
+    series.to_csv(project_paths.RESULTS_E8 / 'planned_recruitment_demand_daily.csv', index=False,
                   encoding='utf-8-sig')
 
     # ---- 敏感性：剔除窗口长度最高 1% 的周期 ----
@@ -150,7 +150,7 @@ def main() -> int:
         {'指标': '窗口长度 99% 分位阈值（日历天）', '主口径': round(cutoff, 1),
          '剔除窗口长度最高 1%': '—'},
     ])
-    sensitivity.to_csv(RESULTS / 'planned_recruitment_demand_sensitivity.csv', index=False,
+    sensitivity.to_csv(project_paths.RESULTS_E8 / 'planned_recruitment_demand_sensitivity.csv', index=False,
                        encoding='utf-8-sig')
     print(sensitivity.to_string(index=False))
 
@@ -176,7 +176,7 @@ def main() -> int:
         diagnostics = figure_finalize.save_paper_figure(
             fig, FIGURES, 'fig_4_6_planned_recruitment_demand_time_series',
             subfigures=[],
-            meta={'数据来源': 'outputs/results/planned_recruitment_demand_daily.csv；'
+            meta={'数据来源': 'outputs/results/E8/planned_recruitment_demand_daily.csv；'
                              '敏感性对照取自 planned_recruitment_demand_sensitivity.csv',
                   '口径': 'W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；'
                           '剔除窗口长度最高 1%% 后两序列 Spearman = %.4f' % spearman,
@@ -244,7 +244,7 @@ def main() -> int:
         '解释边界': 'N_t 只表示样本中可重构的计划招聘需求窗口覆盖量，'
                     '不是历史市场真实岗位存量、招聘人数或实际新增岗位数，也不用于需求预测',
     }
-    with (RESULTS / 'planned_recruitment_demand_meta.json').open('w', encoding='utf-8') as handle:
+    with (project_paths.RESULTS_E8 / 'planned_recruitment_demand_meta.json').open('w', encoding='utf-8') as handle:
         json.dump(meta, handle, ensure_ascii=False, indent=1)
     print('E8 完成：', json.dumps(meta, ensure_ascii=False))
     return 0

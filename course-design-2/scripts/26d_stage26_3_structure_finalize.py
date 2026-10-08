@@ -25,11 +25,11 @@
 
 新增输出::
 
-    outputs/tables/55_stage26_3_inline_math_inventory.xlsx
-    outputs/tables/56_stage26_3_pre_model_diagnostics.xlsx
-    outputs/tables/57_stage26_3_metrics_after_feature_removal.xlsx
-    outputs/tables/58_stage26_3_text_revision_audit.xlsx
-    outputs/figures/supplementary/图S32_建模前特征诊断与子集分布对照.png/pdf
+    outputs/tables/47_stage26_3_inline_math_inventory.xlsx
+    outputs/tables/48_stage26_3_pre_model_diagnostics.xlsx
+    outputs/tables/49_stage26_3_metrics_after_feature_removal.xlsx
+    outputs/tables/50_stage26_3_text_revision_audit.xlsx
+    outputs/figures/supplementary/fig_s32_pre_model_diagnostics_subset_distribution.png/pdf
     outputs/logs/metrics/stage_26_3_structure_finalize.json
     outputs/logs/metrics/stage_26_3_text_revision.json
 """
@@ -131,15 +131,15 @@ TABLES = project_paths.TABLES_DIR
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
 METRICS_DIR = project_paths.METRICS_DIR
 SOURCE_DIR = PROJECT_ROOT / 'docs' / 'paper' / 'stage23'
-TABLE_INLINE_MATH = TABLES / '55_stage26_3_inline_math_inventory.xlsx'
-TABLE_DIAGNOSTICS = TABLES / '56_stage26_3_pre_model_diagnostics.xlsx'
-TABLE_METRICS = TABLES / '57_stage26_3_metrics_after_feature_removal.xlsx'
-TABLE_TEXT_AUDIT = TABLES / '58_stage26_3_text_revision_audit.xlsx'
+TABLE_INLINE_MATH = TABLES / '47_stage26_3_inline_math_inventory.xlsx'
+TABLE_DIAGNOSTICS = TABLES / '48_stage26_3_pre_model_diagnostics.xlsx'
+TABLE_METRICS = TABLES / '49_stage26_3_metrics_after_feature_removal.xlsx'
+TABLE_TEXT_AUDIT = TABLES / '50_stage26_3_text_revision_audit.xlsx'
 METRICS_PATH = METRICS_DIR / 'stage_26_3_structure_finalize.json'
 TEXT_METRICS_PATH = METRICS_DIR / 'stage_26_3_text_revision.json'
 TEXT_BASELINE_PATH = METRICS_DIR / 'stage_26_3_text_baseline.json'
-FIG_STEM = '图S32_建模前特征诊断与子集分布对照'
-FIG_FLOW = '图S33_薪资预测模型构建与评估流程'
+FIG_STEM = 'fig_s32_pre_model_diagnostics_subset_distribution'
+FIG_FLOW = 'fig_s33_salary_model_build_eval_flow'
 FLOW_STEPS = [
     ('14,883 个正式薪资样本', '由 17,144 个唯一岗位实体中标注明确薪资的岗位构成'),
     ('A / B / C / D / E 特征组与 Safe-F 发布时间位置特征', '岗位基础、地域、公司、技能、文本语义与发布时间位置'),

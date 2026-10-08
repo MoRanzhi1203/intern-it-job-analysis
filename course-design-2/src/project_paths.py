@@ -125,44 +125,44 @@ TABLE_RAW_SCHEMA_AUDIT = '01_raw_schema_audit.xlsx'
 TABLE_COLUMN_DICTIONARY = '02_column_dictionary.xlsx'
 TABLE_IDENTITY_AUDIT = '03_identity_audit.xlsx'
 TABLE_IDENTITY_CONFLICTS = '04_identity_conflicts.xlsx'
-TABLE_REGRESSION_CHECK = '11_refactor_regression_check.xlsx'
+TABLE_REGRESSION_CHECK = '06_refactor_regression_check.xlsx'
 # ---- 岗位重复观测时序重构（Stage 03~05 正式产物） ----
-TABLE_OBSERVATION_AUDIT = '13_observation_snapshot_audit.xlsx'
-TABLE_VERSION_AUDIT = '14_job_version_audit.xlsx'
-TABLE_ENTITY_AUDIT = '15_final_version_entity_audit.xlsx'
+TABLE_OBSERVATION_AUDIT = '07_observation_snapshot_audit.xlsx'
+TABLE_VERSION_AUDIT = '08_job_version_audit.xlsx'
+TABLE_ENTITY_AUDIT = '09_final_version_entity_audit.xlsx'
 # ---- 文本语义层审计表（Stage 06~10） ----
-TABLE_JOB_TEXT_PREPROCESSING = '16_job_text_preprocessing_audit.xlsx'
-TABLE_JOB_TEXT_SEMANTIC = '17_job_text_semantic_audit.xlsx'
-TABLE_COMPANY_IDENTITY = '18_company_identity_audit.xlsx'
-TABLE_COMPANY_TEXT_SEMANTIC = '19_company_text_semantic_audit.xlsx'
+TABLE_JOB_TEXT_PREPROCESSING = '10_job_text_preprocessing_audit.xlsx'
+TABLE_JOB_TEXT_SEMANTIC = '11_job_text_semantic_audit.xlsx'
+TABLE_COMPANY_IDENTITY = '12_company_identity_audit.xlsx'
+TABLE_COMPANY_TEXT_SEMANTIC = '13_company_text_semantic_audit.xlsx'
 # ---- 文本语义层 Refinement R1 总修复审计表 ----
-TABLE_TEXT_SEMANTIC_REFINEMENT = '20_text_semantic_refinement_audit.xlsx'
-TABLE_STRUCTURED_FIELD_SALARY = '21_structured_field_salary_audit.xlsx'
+TABLE_TEXT_SEMANTIC_REFINEMENT = '14_text_semantic_refinement_audit.xlsx'
+TABLE_STRUCTURED_FIELD_SALARY = '15_structured_field_salary_audit.xlsx'
 # ---- Stage 01：源记录公司属性语义槽位异常（22~24 三轮取证已合并为同一张表） ----
-TABLE_COMPANY_ATTRIBUTE_ANOMALY = '22_company_attribute_semantic_anomaly_audit.xlsx'
+TABLE_COMPANY_ATTRIBUTE_ANOMALY = '16_company_attribute_semantic_anomaly_audit.xlsx'
 COMPANY_ATTRIBUTE_ANOMALY_TABLE_PATH = TABLES_DIR / TABLE_COMPANY_ATTRIBUTE_ANOMALY
 # ---- 本轮预处理重构与冗余清理总审计表 ----
-TABLE_PREPROCESSING_CLEANUP = '25_preprocessing_refactor_cleanup_audit.xlsx'
+TABLE_PREPROCESSING_CLEANUP = '17_preprocessing_refactor_cleanup_audit.xlsx'
 # ---- Stage 07 技能提取审计表（技能需求分析专用，与 16 号文本预处理审计分开） ----
-TABLE_JOB_SKILL_AUDIT = '26_job_skill_extraction_audit.xlsx'
+TABLE_JOB_SKILL_AUDIT = '18_job_skill_extraction_audit.xlsx'
 # ---- Stage 13 技能 EDA 口径审计表（双口径 + 分层榜单 + 稳健性） ----
-TABLE_SKILL_EDA_SCOPE = '27_skill_eda_scope_audit.xlsx'
+TABLE_SKILL_EDA_SCOPE = '19_skill_eda_scope_audit.xlsx'
 # ---- Stage 12 建模数据集与泄漏审计表 ----
-TABLE_MODELING_DATASET_AUDIT = '28_modeling_dataset_audit.xlsx'
+TABLE_MODELING_DATASET_AUDIT = '20_modeling_dataset_audit.xlsx'
 # ---- Stage 13 正式 EDA 与统计检验 ----
-TABLE_EDA_STATISTICAL = '29_eda_statistical_analysis.xlsx'
+TABLE_EDA_STATISTICAL = '21_eda_statistical_analysis.xlsx'
 # ---- Stage 14 薪资预测模型对比与验证集选模 ----
-TABLE_MODEL_COMPARISON = '30_model_comparison.xlsx'
+TABLE_MODEL_COMPARISON = '22_model_comparison.xlsx'
 # ---- Stage 15 消融、稳健性与 SHAP ----
-TABLE_ABLATION_SHAP = '31_ablation_robustness_shap.xlsx'
+TABLE_ABLATION_SHAP = '23_ablation_robustness_shap.xlsx'
 # ---- Stage 16 公司字段语义核查（只读取证：公司认证 vs 公司标签） ----
-TABLE_COMPANY_FIELD_SEMANTIC = '32_company_field_semantic_audit.xlsx'
+TABLE_COMPANY_FIELD_SEMANTIC = '24_company_field_semantic_audit.xlsx'
 # ---- Stage 17 最终解释审计（字段语义修正 + 技能 SHAP presence 口径） ----
-TABLE_FINAL_INTERPRETATION = '33_final_interpretation_audit.xlsx'
+TABLE_FINAL_INTERPRETATION = '25_final_interpretation_audit.xlsx'
 # ---- Stage26.7 业务时间维度分析（原 33_* 与 33_final_interpretation_audit 编号冲突，统一改为 75） ----
-TABLE_BUSINESS_TIME_DIMENSION = '75_business_time_dimension_analysis.xlsx'
+TABLE_BUSINESS_TIME_DIMENSION = '59_business_time_dimension_analysis.xlsx'
 # ---- Stage25 因素修订（原与 34_visual_evidence_registry 编号冲突，后者已删除，本表编号唯一化保留） ----
-TABLE_STAGE25_FACTOR_REVISION = '34_stage25_factor_revision.xlsx'
+TABLE_STAGE25_FACTOR_REVISION = '26_stage25_factor_revision.xlsx'
 MODEL_SPLITS_PARQUET = PROCESSED_DIR / 'model_splits.parquet'
 MODEL_PREDICTIONS_PARQUET = PROCESSED_DIR / 'model_predictions.parquet'
 SALARY_MODEL_DIR = MODELS_DIR / 'salary_model'
@@ -209,13 +209,21 @@ RECORD_FINAL_INTERPRETATION = '24_final_interpretation_freeze_record.md'
 REFINEMENT_BASELINE_JSON = METRICS_DIR / 'refinement_baseline.json'
 
 
+# ---- 实验数值产物分组（outputs/results/，按产出实验分目录） ----
+RESULTS_E1_E3_E4_E5 = OUTPUTS_RESULTS_DIR / 'E1_E3_E4_E5'
+RESULTS_E2_E7 = OUTPUTS_RESULTS_DIR / 'E2_E7'
+RESULTS_E3_E4_E5_BOOTSTRAP = OUTPUTS_RESULTS_DIR / 'E3_E4_E5_bootstrap'
+RESULTS_E8 = OUTPUTS_RESULTS_DIR / 'E8'
+
+
 def ensure_directories() -> list[Path]:
     """创建流水线所需的全部目录，返回已创建的目录列表。"""
     directories = [
         RAW_DIR, INTERIM_DIR, PROCESSED_DIR, FEATURES_DIR,
         TABLES_DIR, FIGURES_DIR, EDA_FIGURES_DIR, MODELING_FIGURES_DIR,
         MODELS_DIR, SALARY_MODEL_DIR, LOGS_DIR, GATES_DIR, METRICS_DIR,
-        OUTPUTS_RESULTS_DIR, REGISTRIES_DIR, DELIVERABLES_DIR,
+        OUTPUTS_RESULTS_DIR, RESULTS_E1_E3_E4_E5, RESULTS_E2_E7,
+        RESULTS_E3_E4_E5_BOOTSTRAP, RESULTS_E8, REGISTRIES_DIR, DELIVERABLES_DIR,
         RECORDS_DIR, METHODOLOGY_DIR,
     ]
     for directory in directories:

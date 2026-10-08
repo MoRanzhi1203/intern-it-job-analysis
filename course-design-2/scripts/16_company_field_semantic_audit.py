@@ -5,14 +5,14 @@
     src/schema.py 常量
     → data/processed/job_analysis_dataset.parquet / job_salary_model_dataset.parquet（Stage 12 宽表）
     → src/eda_analysis.py 因素规格 + scripts/13_run_eda.py 调用
-    → outputs/tables/29_eda_statistical_analysis.xlsx
+    → outputs/tables/21_eda_statistical_analysis.xlsx
 
 核心问题：Stage 13 中「公司认证标签 369 组」实际统计的到底是哪一个字段？
 分类只能是 A1（仅显示名称错误）/ A2（Stage 13 字段引用错误）/ A3（Stage 12 宽表映射错误）/
 A4（list 组合值/拆分统计错误）。
 
 输出：
-    outputs/tables/32_company_field_semantic_audit.xlsx
+    outputs/tables/24_company_field_semantic_audit.xlsx
     docs/records/23_company_field_semantic_audit_record.md
     outputs/logs/metrics/stage_16_company_field.json
 

@@ -134,7 +134,7 @@ def task2_actual_vs_predicted(polish):
 # =========================================================================== #
 def task4_negotiable_vs_public():
     print('\n' + '=' * 70 + '\n任务 4：面议 vs 公开薪资结构对照表\n' + '=' * 70)
-    src = project_paths.TABLES_DIR / '52_stage26_2_negotiable_selection_bias.xlsx'
+    src = project_paths.TABLES_DIR / '44_stage26_2_negotiable_selection_bias.xlsx'
     single = pd.read_excel(src, sheet_name='01_结构对照_单值')
     chi_single = pd.read_excel(src, sheet_name='02_卡方检验_单值')
     multi = pd.read_excel(src, sheet_name='03_结构对照_多值')
@@ -204,16 +204,16 @@ def task3_main_findings(pred_metrics):
     median = float(np.median(salary))
     iqr = float(np.percentile(salary, 75) - np.percentile(salary, 25))
 
-    eda = pd.read_excel(project_paths.TABLES_DIR / '29_eda_statistical_analysis.xlsx',
+    eda = pd.read_excel(project_paths.TABLES_DIR / '21_eda_statistical_analysis.xlsx',
                         sheet_name='11_统计检验')
     kw = eda[eda['检验块'].astype(str).str.contains('Kruskal', na=False)]
     eps = dict(zip(kw['检验对象'].astype(str), kw['效应量'].astype(float)))
 
-    ranks = pd.read_excel(project_paths.TABLES_DIR / '27_skill_eda_scope_audit.xlsx',
+    ranks = pd.read_excel(project_paths.TABLES_DIR / '19_skill_eda_scope_audit.xlsx',
                           sheet_name='02_主口径技能排名')
     rank_map = dict(zip(ranks['技能标准名'], ranks['岗位数']))
 
-    summary = pd.read_csv(project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_summary.csv')
+    summary = pd.read_csv(project_paths.RESULTS_E2_E7 / 'company_group_split_summary.csv')
     summary_map = dict(zip(summary['指标'], summary['取值']))
     random_test_mae = 35.996481
 
@@ -298,7 +298,7 @@ def task5_skill_wordcloud():
     import matplotlib.pyplot as plt  # noqa: PLC0415
     from matplotlib import colors as mcolors  # noqa: PLC0415
 
-    ranks = pd.read_excel(project_paths.TABLES_DIR / '27_skill_eda_scope_audit.xlsx',
+    ranks = pd.read_excel(project_paths.TABLES_DIR / '19_skill_eda_scope_audit.xlsx',
                           sheet_name='02_主口径技能排名')
     counts = {str(name): int(count) for name, count in
               zip(ranks['技能标准名'], ranks['岗位数']) if int(count) >= 20}

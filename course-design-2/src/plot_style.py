@@ -25,7 +25,7 @@
     ...
     plot_style.apply_sci_axis(ax)
     plot_style.add_bottom_caption(fig, "图02 xxx")
-    plot_style.save_sci_figure(fig, "图02_xxx", "图02 xxx")
+    plot_style.save_sci_figure(fig, "fig_02_xxx", "图02 xxx")
     plt.close(fig)
 """
 

@@ -117,7 +117,7 @@ def main() -> int:
         print('[E2] seed %d: test MAE %.6f（随机划分基准 %.6f）'
               % (seed, result['test']['MAE'], RANDOM_SPLIT_BASELINE))
     repeat = pd.DataFrame(rows)
-    repeat.to_csv(RESULTS / 'company_group_split_repeats.csv', index=False,
+    repeat.to_csv(project_paths.RESULTS_E2_E7 / 'company_group_split_repeats.csv', index=False,
                   encoding='utf-8-sig')
     mae = repeat['test MAE']
     summary = pd.DataFrame([
@@ -136,7 +136,7 @@ def main() -> int:
         {'指标': '随机划分协议', '取值': 'A+B+C+D+E，288 维，预处理只在训练集拟合，'
                                     'LightGBM 400/0.05/63，技能阈值 100，SVD 16'},
     ])
-    summary.to_csv(RESULTS / 'company_group_split_summary.csv', index=False,
+    summary.to_csv(project_paths.RESULTS_E2_E7 / 'company_group_split_summary.csv', index=False,
                    encoding='utf-8-sig')
     print(summary.to_string(index=False))
 
@@ -216,7 +216,7 @@ def main() -> int:
         median_table.rename(columns={'系数': '系数'}))
     full_out = median_table.copy()
     full_out['是否代表性变量'] = full_out['变量'].isin(set(representative['变量']))
-    full_out.to_csv(RESULTS / 'quantile_regression_cluster_bootstrap.csv',
+    full_out.to_csv(project_paths.RESULTS_E2_E7 / 'quantile_regression_cluster_bootstrap.csv',
                     index=False, encoding='utf-8-sig')
     print('[E7] 代表性变量 %d 个' % len(representative))
     print(representative[['变量', '系数', '岗位级 CI95 下界', '岗位级 CI95 上界',
@@ -234,7 +234,7 @@ def main() -> int:
         '说明': '公司级 bootstrap 以公司为重抽样单位，带入该公司全部岗位；'
                 '不修改任何已定义解释变量，不做显著性筛选',
     }
-    with (RESULTS / 'quantile_regression_cluster_bootstrap_meta.json').open(
+    with (project_paths.RESULTS_E2_E7 / 'quantile_regression_cluster_bootstrap_meta.json').open(
             'w', encoding='utf-8') as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=1)
     print('[E7] 摘要:', json.dumps(payload, ensure_ascii=False))

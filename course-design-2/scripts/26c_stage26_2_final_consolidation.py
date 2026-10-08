@@ -19,16 +19,16 @@
 
 新增输出（不覆盖任何既有文件）::
 
-    outputs/tables/49_stage26_2_fact_verification.xlsx
-    outputs/tables/50_stage26_2_unified_generalization.xlsx
-    outputs/tables/51_stage26_2_median_regression.xlsx
-    outputs/tables/52_stage26_2_negotiable_selection_bias.xlsx
-    outputs/tables/53_stage26_2_extreme_salary_audit.xlsx
-    outputs/tables/54_stage26_2_wording_consistency_audit.xlsx
-    outputs/figures/supplementary/图S28_特征组消融对比.png/pdf
-    outputs/figures/supplementary/图S29_招聘周期持续时长分布与累积分布.png/pdf
-    outputs/figures/supplementary/图S30_样本计划招聘覆盖每日活跃与新增结束.png/pdf
-    outputs/figures/supplementary/图S31_主要岗位大类计划覆盖.png/pdf
+    outputs/tables/41_stage26_2_fact_verification.xlsx
+    outputs/tables/42_stage26_2_unified_generalization.xlsx
+    outputs/tables/43_stage26_2_median_regression.xlsx
+    outputs/tables/44_stage26_2_negotiable_selection_bias.xlsx
+    outputs/tables/45_stage26_2_extreme_salary_audit.xlsx
+    outputs/tables/46_stage26_2_wording_consistency_audit.xlsx
+    outputs/figures/supplementary/fig_s28_feature_group_ablation_comparison.png/pdf
+    outputs/figures/supplementary/fig_s29_recruitment_duration_distribution.png/pdf
+    outputs/figures/supplementary/fig_s30_planned_coverage_daily_active.png/pdf
+    outputs/figures/supplementary/fig_s31_main_category_planned_coverage.png/pdf
     outputs/figures/supplementary/_stage26_2_registry.json
     outputs/logs/metrics/stage_26_2_consolidation.json
 
@@ -103,21 +103,21 @@ REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_stage26_2_registry.json'
 SEGMENT_PATH = PROCESSED / 'job_candidate_segment_26_1.parquet'
 EPISODE_PATH = PROCESSED / 'job_strict_episode_26_1.parquet'
 PANEL_PATH = PROCESSED / 'job_strict_daily_panel_26_1.parquet'
-LIFECYCLE_TABLE = TABLES / '45_stage26_1_lifecycle_statistics.xlsx'
+LIFECYCLE_TABLE = TABLES / '37_stage26_1_lifecycle_statistics.xlsx'
 
 TABLE_FILES = [
-    '49_stage26_2_fact_verification.xlsx',
-    '50_stage26_2_unified_generalization.xlsx',
-    '51_stage26_2_median_regression.xlsx',
-    '52_stage26_2_negotiable_selection_bias.xlsx',
-    '53_stage26_2_extreme_salary_audit.xlsx',
-    '54_stage26_2_wording_consistency_audit.xlsx',
+    '41_stage26_2_fact_verification.xlsx',
+    '42_stage26_2_unified_generalization.xlsx',
+    '43_stage26_2_median_regression.xlsx',
+    '44_stage26_2_negotiable_selection_bias.xlsx',
+    '45_stage26_2_extreme_salary_audit.xlsx',
+    '46_stage26_2_wording_consistency_audit.xlsx',
 ]
 FIG_STEMS = [
-    '图S28_特征组消融对比',
-    '图S29_招聘周期持续时长分布与累积分布',
-    '图S30_样本计划招聘覆盖每日活跃与新增结束',
-    '图S31_主要岗位大类计划覆盖',
+    'fig_s28_feature_group_ablation_comparison',
+    'fig_s29_recruitment_duration_distribution',
+    'fig_s30_planned_coverage_daily_active',
+    'fig_s31_main_category_planned_coverage',
 ]
 NEW_FILES = ([TABLES / name for name in TABLE_FILES]
              + [SUPP_DIR / f'{stem}{suffix}' for stem in FIG_STEMS
