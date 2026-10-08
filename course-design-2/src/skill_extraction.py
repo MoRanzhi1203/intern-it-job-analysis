@@ -477,25 +477,6 @@ class SkillMatcher:
         return sorted({canonical for canonical, _alias, _group in self.match_details(text)})
 
 
-def extract_skills(text, matcher: SkillMatcher) -> list:
-    """便捷函数：抽取技能标准名。"""
-    return matcher.extract(text)
-
-
-def build_skill_boolean_features(skills, matcher: SkillMatcher, feature_skills=None) -> dict:
-    """由技能集合生成「是否X」布尔特征（0/1）。"""
-    if skills is None:
-        skill_set = set()
-    elif isinstance(skills, (list, tuple, set)):
-        skill_set = set(skills)
-    elif hasattr(skills, 'tolist'):
-        skill_set = set(skills.tolist())
-    else:
-        skill_set = {skills}
-    targets = feature_skills or matcher.config.skill_to_group.keys()
-    return {f'是否{skill}': int(skill in skill_set) for skill in targets}
-
-
 def llm_skill_set(config: SkillConfig) -> set:
     """大模型相关技能集合（配置驱动）。"""
     return set(config.llm_skills)

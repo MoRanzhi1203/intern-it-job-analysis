@@ -119,8 +119,6 @@ SECTION_STATUS_VALUES = ['完整', '部分', '未识别']
 # ---- 岗位要求段落（技能提取优先使用） ----
 # 参与技能提取的高可信段落：要求 / 技能 / 加分（复用上方 SECTION_HEADINGS，单一来源）
 REQUIREMENT_SECTION_KEYS = ['要求', '技能', '加分']
-REQUIREMENT_SECTION_STATUS_FIELD = '要求段落识别状态'
-REQUIREMENT_SECTION_VALUES = ['REQUIREMENT_SECTION', 'FULL_TEXT_FALLBACK', 'EMPTY_TEXT']
 
 # 语义分析版需要剔除的招聘平台模板 / 联系方式行
 TEMPLATE_LINE_PATTERNS = [
@@ -181,16 +179,6 @@ def split_job_description(cleaned_text: str) -> dict:
     elif recognized > 0:
         result[SECTION_SPLIT_STATUS_FIELD] = '部分'
     return result
-
-
-def describe_sections(section_result: dict) -> str:
-    """返回分段状态的中文描述，写入审计表。"""
-    status = section_result.get(SECTION_SPLIT_STATUS_FIELD, '未识别')
-    if status == '完整':
-        return '职责段与要求段均已识别'
-    if status == '部分':
-        return '仅识别到部分语义段'
-    return '未识别到小标题，保留完整文本未强拆'
 
 
 def extract_requirement_section(text) -> dict:

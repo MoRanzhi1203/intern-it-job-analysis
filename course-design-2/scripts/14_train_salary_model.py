@@ -39,7 +39,7 @@ import joblib  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from src import (io_utils, model_training, modeling_dataset, plot_style,  # noqa: E402
+from src import (io_utils, model_training, plot_style,  # noqa: E402
                  project_paths, quality, schema, skill_eda)
 
 STAGE = 'stage_14_model'

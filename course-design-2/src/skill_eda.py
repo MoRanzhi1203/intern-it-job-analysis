@@ -42,7 +42,6 @@ LAYER_TECHNICAL = '具体技术技能'
 LAYER_DOMAIN = '技术领域'
 LAYER_BUSINESS = '业务能力'
 LAYER_OFFICE = '办公工具'
-LAYER_ORDER = [LAYER_TECHNICAL, LAYER_DOMAIN, LAYER_BUSINESS, LAYER_OFFICE]
 
 # 技能共现：最小共同岗位数（低于该值不进入正式排序，避免高频技能天然高共现）
 COOCCURRENCE_MIN_JOINT = 30
@@ -343,17 +342,3 @@ def rank_robustness(main_rank: pd.DataFrame, extended_rank: pd.DataFrame) -> tup
          '扩展口径排名': ext_rank_map.get(skill), '排名差': ext_rank_map.get(skill, np.nan) - main_rank_map[skill]}
         for skill in main_order[:50]])
     return summary, detail
-
-
-def skill_count_distribution(membership: pd.DataFrame, universe_ids: set, scopes=None) -> pd.DataFrame:
-    """技能数量分布（0/1/2/3/4/5+），分母为指定口径的岗位数。"""
-    frame = membership if scopes is None else filter_membership(membership, scopes)
-    frame = frame[frame[schema.SKILL_MEMBERSHIP_ID_FIELD].isin(universe_ids)]
-    counts = (frame.groupby(schema.SKILL_MEMBERSHIP_ID_FIELD)['canonical_skill']
-              .nunique().reindex(list(universe_ids), fill_value=0))
-    bins = pd.cut(counts, bins=[-1, 0, 1, 2, 3, 4, 10_000], labels=['0', '1', '2', '3', '4', '5+'])
-    table = (bins.value_counts().rename_axis('技能数').reset_index(name='岗位数')
-             .sort_values('技能数'))
-    table['岗位占比'] = (table['岗位数'] / len(universe_ids)).round(6)
-    table['口径岗位数'] = len(universe_ids)
-    return table

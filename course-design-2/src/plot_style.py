@@ -580,11 +580,3 @@ def check_figure_gates(registry=None, style_snapshot: dict | None = None) -> dic
                    if key != '_detail' and not value],
     }
     return checks
-
-
-def write_registry_json(path: Path | None = None) -> Path:
-    """把图片登记表写成 JSON，便于记录文件与门禁复用。"""
-    target = path or (project_paths.REGISTRIES_DIR / '_figure_registry.json')
-    target.write_text(json.dumps(FIGURE_REGISTRY, ensure_ascii=False, indent=2),
-                      encoding='utf-8')
-    return target

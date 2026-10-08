@@ -27,7 +27,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from src import modeling_dataset, schema, skill_eda, text_utils
+from src import modeling_dataset, schema
 
 ABLATION_CONFIGS = {
     'Base': ('A', 'B', 'C'),
@@ -72,9 +72,6 @@ def split_columns_by_group(numeric_columns, categorical_columns, multi_columns) 
     for column in multi_columns:
         grouped[column_group(column)]['multi'].append(column)
     return grouped
-
-
-TEXT_AVAILABLE_FIELD = modeling_dataset.TEXT_VECTOR_AVAILABLE_FIELD
 
 
 def build_assembler_for_groups(groups, grouped_columns, skill_threshold: int, text_dim: int):

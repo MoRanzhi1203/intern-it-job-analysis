@@ -54,14 +54,6 @@ def extract_intern_id_from_url(value: object) -> str:
     return path.rsplit('/', 1)[-1] if path else ''
 
 
-def url_identity_key(value: object) -> str:
-    """仅保留 协议 + 域名 + path 的身份键，用于判断是否同一岗位。"""
-    if not isinstance(value, str) or not value.strip():
-        return ''
-    parts = urlsplit(value.strip())
-    return f'{(parts.scheme or DEFAULT_SCHEME).lower()}://{parts.netloc.lower()}{parts.path}'
-
-
 def audit_url_queries(series: pd.Series) -> pd.DataFrame:
     """统计 URL query 参数分布，返回 DataFrame（原始query / 记录数）。"""
     queries = series.map(lambda u: urlsplit(u).query if isinstance(u, str) else '')

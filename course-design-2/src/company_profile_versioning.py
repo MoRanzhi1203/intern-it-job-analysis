@@ -29,9 +29,6 @@ import pandas as pd
 
 from . import company_identity, schema, text_utils
 
-# 快照候选列表中的分隔符（写 Excel 时人类可读，Parquet 中保持 list）
-CANDIDATE_SEPARATOR = '␟'
-
 
 def _unique_sorted(values) -> list:
     """把一列列表值合并为去重排序后的列表（确定性输出）。"""

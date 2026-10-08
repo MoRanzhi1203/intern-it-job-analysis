@@ -349,12 +349,6 @@ def stage_banner(stage: str, title: str) -> None:
     print('=' * 78)
 
 
-def stage_scale_log(title: str, before, after, rows: bool = True) -> None:
-    """统一打印阶段输入 / 输出规模。"""
-    unit = '行' if rows else '列'
-    print(f'[{title}] 输入 {before} {unit} → 输出 {after} {unit}')
-
-
 def _is_blank(value) -> bool:
     """单值缺失判定：NaN / 空字符串 / 空 list（公司认证标签 []）均视为缺失。"""
     if isinstance(value, (list, tuple, set, frozenset)):

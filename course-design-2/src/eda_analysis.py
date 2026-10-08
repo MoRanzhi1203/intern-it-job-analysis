@@ -28,7 +28,6 @@ from src import plot_style, project_paths, schema, skill_eda, skill_extraction, 
 # 统计与展示约定
 MIN_GROUP_SIZE = 30          # 单因素分组展示的最小样本
 MIN_TEST_GROUP = 50          # 两组比较做检验的最小样本（不足只做描述）
-MIN_CATEGORY_TEST = 30       # 细分类内对比的最小样本
 TOP_CATEGORY = 12
 TOP_CATEGORY_SKILL = 15
 NO_CAUSAL_NOTE = '描述性关联：禁止表述为因果（例如不得写「某技能导致薪资提高」）'
@@ -49,7 +48,6 @@ COMPANY_CERT_LABEL = '公司认证'
 COMPANY_TAG_LABEL = '公司标签（福利标签）'
 TAG_FACTOR_KEY = 'company_tags'
 CERT_FACTOR_KEY = 'company_certification'
-COMPANY_FACTOR_KEYS = [CERT_FACTOR_KEY, TAG_FACTOR_KEY]
 
 # ---- 公司标签（福利标签）正式口径：描述性统计 + 单标签 present/absent 二元比较 ----
 # 公司标签是高基数多值字段（同一岗位可同时命中多个标签），标签组之间**不独立**，
@@ -57,13 +55,6 @@ COMPANY_FACTOR_KEYS = [CERT_FACTOR_KEY, TAG_FACTOR_KEY]
 TAG_ANALYSIS_TYPE = '描述性多值标签'
 DEPRECATED_INFERENCE_FLAG = 'DEPRECATED_INFERENCE（已废止推断）'
 DEPRECATED_TAG_KW_VALUE = 0.471492
-DEPRECATED_TAG_KW_NOTE = (
-    f'{DEPRECATED_INFERENCE_FLAG}：原「369 个福利标签整体 Kruskal–Wallis'
-    f'（epsilon² ≈ {DEPRECATED_TAG_KW_VALUE}）」基于相互重叠的多值标签组，'
-    '不满足普通多组独立性比较的解释前提，故不再作为正式因素比较与效应量排名的依据；'
-    '正式口径改为描述性统计 + 单标签 present vs absent 二元比较'
-    '（Mann–Whitney U + Cliff\'s delta + Benjamini–Hochberg FDR），'
-    '结论仅为描述性关联（不代表因果）。')
 # 二元比较样本量门槛：复用既有两组检验常量（50/50），不新造阈值
 MIN_BINARY_GROUP_SIZE = MIN_TEST_GROUP
 # Cliff's delta 通用分级（Romano et al. 2006，学界通行阈值），本项目首次用于标签效应量分级
@@ -257,31 +248,6 @@ def build_sample_overview(analysis: pd.DataFrame, model: pd.DataFrame,
         {'指标': '技能关系行数（long-format）', '数值': len(membership),
          '说明': '(intern_id, canonical_skill) 唯一'},
     ]
-    return pd.DataFrame(rows)
-
-
-def build_supply_structure(analysis: pd.DataFrame) -> pd.DataFrame:
-    """13.2 岗位供给结构（多值字段 explode 后按岗位占比，分母 = 唯一岗位数）。"""
-    rows = []
-    total = len(analysis)
-    multi_fields = [('岗位大类集合', '岗位大类'), ('岗位细分类集合', '岗位细分类')]
-    single_fields = [('工作城市_规范', '工作城市'), ('学历要求', '学历要求'),
-                     ('每周到岗要求', '每周到岗'), ('实习时长要求', '实习时长'),
-                     ('公司规模', '公司规模'), ('公司性质', '公司性质'), ('所属行业', '所属行业')]
-    for column, label in multi_fields:
-        exploded = analysis[column].explode().dropna()
-        counts = exploded.value_counts()
-        for value, count in counts.items():
-            rows.append({'维度': label, '取值': value, '岗位数': int(count),
-                         '岗位占比': round(int(count) / total, 6),
-                         '口径': '多值关系（一个岗位可命中多个取值）'})
-    for column, label in single_fields:
-        series = analysis[column].fillna('缺失')
-        counts = series.value_counts()
-        for value, count in counts.items():
-            rows.append({'维度': label, '取值': value, '岗位数': int(count),
-                         '岗位占比': round(int(count) / total, 6),
-                         '口径': '单值字段（1 岗位 1 取值）'})
     return pd.DataFrame(rows)
 
 

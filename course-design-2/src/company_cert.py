@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import json
 import re
-from collections import Counter
 from urllib.parse import urlsplit
 
 import pandas as pd
@@ -161,29 +160,6 @@ def audit_company_cert_values(series: pd.Series) -> dict:
     }
 
 
-def build_value_table(series: pd.Series) -> pd.DataFrame:
-    """原始取值统计：原始值 / 记录数 / 占比。"""
-    text = series.astype('object').map(lambda v: '' if v is None else str(v))
-    table = text.value_counts(dropna=False).rename('记录数').reset_index()
-    table.columns = ['原始取值', '记录数']
-    table['占比'] = (table['记录数'] / len(series)).round(6) if len(series) else 0.0
-    return table
-
-
-def build_icon_table(series: pd.Series) -> pd.DataFrame:
-    """URL 文件名统计：图标文件名 / token 数量 / 认证标签 / 是否已确认。"""
-    tokens = _token_frame(series)
-    if tokens.empty:
-        return pd.DataFrame(columns=['图标文件名', 'token数量', '认证标签', '是否已确认'])
-    table = (tokens.groupby('图标文件名').size().rename('token数量')
-             .reset_index().sort_values('token数量', ascending=False))
-    table['认证标签'] = table['图标文件名'].map(
-        lambda name: COMPANY_CERT_ICON_MAP.get(name, ''))
-    table['是否已确认'] = table['图标文件名'].map(
-        lambda name: '是' if name in COMPANY_CERT_ICON_MAP else '否')
-    return table.reset_index(drop=True)
-
-
 def find_unknown_icons(series: pd.Series) -> pd.DataFrame:
     """未知图标检查：未知文件名 / 示例 URL / 出现次数。"""
     tokens = _token_frame(series)
@@ -197,13 +173,6 @@ def find_unknown_icons(series: pd.Series) -> pd.DataFrame:
              .agg(示例URL=('URL', 'first'), 出现次数=('URL', 'size'))
              .reset_index().sort_values('出现次数', ascending=False))
     return table.reset_index(drop=True)
-
-
-def build_mapping_table() -> pd.DataFrame:
-    """映射字典表：图标文件名 / 认证标签。"""
-    rows = [{'图标文件名': name, '认证标签': tag}
-            for name, tag in COMPANY_CERT_ICON_MAP.items()]
-    return pd.DataFrame(rows).sort_values('图标文件名').reset_index(drop=True)
 
 
 def tag_combination_series(series: pd.Series) -> pd.Series:
@@ -226,12 +195,3 @@ def mapped_token_count(series: pd.Series) -> tuple:
     total = int(len(tokens))
     mapped = int(tokens['图标文件名'].isin(set(COMPANY_CERT_ICON_MAP)).sum())
     return total, mapped
-
-
-def cert_tag_counter(series: pd.Series) -> Counter:
-    """统计各认证标签被命中的记录数。"""
-    counter: Counter = Counter()
-    for tags in series:
-        for tag in tags:
-            counter[tag] += 1
-    return counter

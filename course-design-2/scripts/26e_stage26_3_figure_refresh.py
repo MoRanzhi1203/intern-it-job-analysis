@@ -52,8 +52,6 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from matplotlib import pyplot as plt  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
-from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Patch  # noqa: E402
 
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 

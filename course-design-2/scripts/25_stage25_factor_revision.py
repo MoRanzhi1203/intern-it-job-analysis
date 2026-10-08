@@ -47,7 +47,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import (eda_analysis, figure_finalize, io_utils, model_training,  # noqa: E402
-                 plot_style, project_paths, schema, skill_eda, text_utils)
+                 plot_style, project_paths, schema, skill_eda)
 
 # ---------------------------------------------------------------- 常量与口径
 SEED = 42                       # 与项目既有划分一致（本脚本的检验本身无随机性）

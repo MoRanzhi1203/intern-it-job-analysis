@@ -345,7 +345,6 @@ def run_figaudit() -> int:
 # --------------------------------------------------------------------------- #
 def feature_frame() -> pd.DataFrame:
     from src import ablation_shap, modeling_dataset
-    from src.skill_extraction import load_skill_config
 
     manifest = json.loads((project_paths.SALARY_MODEL_DIR / 'feature_manifest.json')
                           .read_text(encoding='utf-8'))

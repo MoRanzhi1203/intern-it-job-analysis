@@ -144,19 +144,3 @@ def write_markdown_section(path: Path, marker: str, lines) -> Path:
     path.write_text(text, encoding='utf-8')
     LOGGER.info('写出记录 %s（%.1f KB）', path.name, path.stat().st_size / 1024)
     return path
-
-
-def markdown_table(rows: list, headers: list) -> list:
-    """把二维数据渲染为 Markdown 表格行。"""
-    lines = ['| ' + ' | '.join(str(h) for h in headers) + ' |',
-             '| ' + ' | '.join(['---'] * len(headers)) + ' |']
-    for row in rows:
-        lines.append('| ' + ' | '.join('' if v is None else str(v) for v in row) + ' |')
-    return lines
-
-
-def format_list(values) -> str:
-    """把 list 值转为顿号分隔文本，便于写入 Excel。"""
-    if isinstance(values, list):
-        return '、'.join(str(v) for v in values)
-    return '' if values is None else str(values)

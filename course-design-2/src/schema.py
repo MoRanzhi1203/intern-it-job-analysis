@@ -122,9 +122,6 @@ KEY_CONFLICT_FIELDS = ['岗位标题', '薪资信息', '公司名称', '工作�
 CONFLICT_COUNT_FIELD = '业务字段冲突数'
 KEY_CONFLICT_FLAG_FIELD = '关键业务字段冲突标志'
 
-# ---- 人工复核队列关注字段（同ID下多值，需人工判定是否为页面版本漂移） ----
-REVIEW_FIELDS = ['薪资信息', '公司名称', '工作城市', '工作地址']
-
 # ---- Stage 03 派生字段说明（不属于 MySQL 原始 30 列） ----
 DERIVED_FIELD_DESCRIPTION = {
     CERT_TAG_FIELD: '该岗位对应公司在实习僧页面展示的认证/荣誉图标语义集合（list[str]）',
@@ -139,9 +136,6 @@ DERIVED_FIELD_DESCRIPTION = {
     KEY_CONFLICT_FLAG_FIELD: '关键业务字段是否存在组内多值（1 是 / 0 否）',
     '代表记录选择依据': '代表记录按四级规则选中的依据',
 }
-
-# ---- 一致性审计字段 = 业务字段 + 规范化链接 ----
-AUDIT_FIELDS = BUSINESS_FIELDS + [URL_NORM_FIELD]
 
 # ---- 唯一岗位表：来源/分类聚合字段 ----
 SOURCE_AGG_FIELDS = CATEGORY_AGG_FIELDS + [ORIGINAL_RECORD_FIELD]
@@ -163,10 +157,6 @@ UNIQUE_JOB_COLUMNS = [
 # ---- 关键字段（Stage 00 校验用） ----
 REQUIRED_RAW_FIELDS = ['id', 'group_name', 'item_text', 'intern_id', 'item_url',
                        'detail_url', 'salary_detail', 'job_description']
-
-# ---- 代表记录选择依据取值 ----
-SELECTION_BASIS_VALUES = ['唯一记录', '完整度最高', '完整度相同_更新时间最新',
-                          '完整度相同_创建时间最新', '完全一致_原始首条']
 
 # ============================================================================
 # 岗位重复观测时序重构：观测快照层 / 版本时序层 / 变化事件层 / 最终实体层
@@ -346,9 +336,7 @@ JOB_SKILL_MEMBERSHIP_COLUMNS = [
 ]
 
 # ---- 技能三级结构（feature_family → group → canonical，Refinement R1） ----
-SKILL_FAMILY_FIELD = '技能一级类型'
 SKILL_FAMILY_LIST_FIELD = '技能一级类型列表'
-SKILL_GROUP_LIST_FIELD = '技能组列表'
 SKILL_FAMILY_NAMES = ['技术技能', '工程工具', '数据工具', '业务能力', '技术领域']
 SKILL_FAMILY_SET_FIELDS = {family: f'{family}集合' for family in SKILL_FAMILY_NAMES}
 SKILL_FAMILY_COUNT_FIELDS = {family: f'{family}数' for family in SKILL_FAMILY_NAMES}
@@ -569,9 +557,6 @@ SALARY_FIRST_MIN_FIELD = '首版本薪资下限'
 SALARY_FIRST_MID_FIELD = '首版本薪资中点'
 SALARY_MID_DRIFT_FIELD = '薪资中点变化'
 SALARY_UNIT_VALUE = '元/天'
-SALARY_PARSE_STATUS_VALUES = ['已解析', '面议', '解析失败']
-# 只标记「逻辑无效」值，极端值交由分布审计与缩尾敏感性处理（禁止拍脑袋阈值）
-SALARY_ANOMALY_FLAGS = ['上下限倒置', '下限非正数', '上限非正数']
 SALARY_TARGET_COLUMNS = [
     ID_FIELD, SALARY_RAW_FIELD, SALARY_MIN_FIELD, SALARY_MAX_FIELD, SALARY_MID_FIELD,
     SALARY_SPAN_FIELD, SALARY_UNIT_FIELD, SALARY_NEGOTIABLE_FIELD,

@@ -12,7 +12,6 @@
 
 from __future__ import annotations
 
-import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -36,8 +35,6 @@ TEXT_TYPE_DUTY = 'duty_text'
 TEXT_TYPE_REQUIRE = 'require_text'
 TEXT_TYPE_SKILL = 'skill_text'
 TEXT_TYPE_COMPANY = 'company_profile'
-TEXT_TYPES = [TEXT_TYPE_JOB_FULL, TEXT_TYPE_JOB_SAFE, TEXT_TYPE_DUTY,
-              TEXT_TYPE_REQUIRE, TEXT_TYPE_SKILL, TEXT_TYPE_COMPANY]
 TEXT_TYPE_LABELS = {
     TEXT_TYPE_JOB_FULL: '岗位描述_语义分析版（完整口径）',
     TEXT_TYPE_JOB_SAFE: '岗位描述_模型安全版（去薪资口径）',
@@ -56,15 +53,6 @@ LEGACY_ARRAY_KEYS = {
     TEXT_TYPE_COMPANY: 'company_profile',
 }
 
-# ---- 语义变化候选类型（未经人工确认一律保留「候选」字样） ----
-JOB_CHANGE_TYPES = [
-    '文本润色候选', '技能要求增加候选', '技能要求删除候选', '岗位职责扩展候选',
-    '岗位职责收缩候选', '岗位方向迁移候选', '任职门槛变化候选', '非核心信息变化候选',
-]
-COMPANY_CHANGE_TYPES = [
-    '文字润色候选', '企业定位变化候选', '业务范围扩展候选', '技术方向变化候选',
-    'AI/大模型方向强化候选', '全球化叙事变化候选', '品牌宣传变化候选',
-]
 GLOBALIZATION_KEYWORDS = ['出海', '全球化', '国际化', '海外', '全球']
 TECH_DIRECTION_KEYWORDS = ['技术', '研发', '算法', '架构', '平台', '云', '开源', '智能']
 
@@ -276,26 +264,6 @@ def load_array_cache(npz_path: Path, expected_config: dict, expected_fingerprint
     return result
 
 
-def load_cached_embeddings(npz_path: Path, index_path: Path,
-                           expected_meta: dict) -> dict | None:
-    """兼容旧接口：模型 + 语料指纹 + 行数完全一致时复用整包向量，否则返回 None。
-
-    新代码应优先使用 :func:`load_array_cache`（按文本类型分别校验）。
-    """
-    npz_path = Path(npz_path)
-    index_path = Path(index_path)
-    if not npz_path.exists() or not index_path.exists():
-        return None
-    meta = load_embedding_meta(npz_path)
-    if not meta:
-        return None
-    for key, value in expected_meta.items():
-        if meta.get(key) != value:
-            return None
-    with np.load(npz_path) as payload:
-        return {name: payload[name] for name in payload.files}
-
-
 # ---------------------------------------------------------------- Token 审计
 
 def model_max_tokens(result: EmbeddingResult) -> int:
@@ -370,19 +338,6 @@ def token_distribution_frame(text_type: str, lengths: np.ndarray,
 
 
 # ---------------------------------------------------------------- 相似度与距离
-
-def row_cosine_similarity(matrix_a: np.ndarray, matrix_b: np.ndarray) -> np.ndarray:
-    """逐行余弦相似度（向量已归一化时等价于点积）。"""
-    if matrix_a.size == 0 or matrix_b.size == 0:
-        return np.array([], dtype='float64')
-    numerator = np.sum(matrix_a * matrix_b, axis=1)
-    norm_a = np.linalg.norm(matrix_a, axis=1)
-    norm_b = np.linalg.norm(matrix_b, axis=1)
-    denominator = norm_a * norm_b
-    with np.errstate(divide='ignore', invalid='ignore'):
-        similarity = np.where(denominator > 0, numerator / denominator, np.nan)
-    return np.clip(similarity, -1.0, 1.0)
-
 
 def semantic_distance(similarity) -> np.ndarray:
     """semantic_distance = 1 - semantic_similarity（提示词第 18 节定义）。"""
@@ -590,18 +545,3 @@ def build_threshold_source(thresholds: dict, extra: dict | None = None) -> pd.Da
             rows.append({'指标': key, '阈值': value, '样本数': np.nan,
                          '来源': '人工复核与业务口径', '用途': '候选类型规则'})
     return pd.DataFrame(rows)
-
-
-def write_embedding_json(path: Path, payload: dict) -> Path:
-    """写出向量相关 JSON（供审计表与阶段记录复用）。"""
-    return io_utils.write_json(path, payload)
-
-
-def read_embedding_json(path: Path) -> dict:
-    """读取向量相关 JSON。"""
-    return io_utils.read_json(path) or {}
-
-
-def json_dumps_stable(value) -> str:
-    """稳定 JSON 序列化（与版本签名口径一致，便于人工核对）。"""
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
