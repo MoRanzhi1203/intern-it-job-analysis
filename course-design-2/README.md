@@ -25,11 +25,11 @@ course-design-2/
 │  └─ paper/               论文终稿（.docx / .pdf，只读保护区）
 └─ outputs/
    ├─ tables/              审计表（全项目统一编号，含编号冲突，见第 8 节）
-   ├─ figures/
-   │  ├─ (根)             论文正文散图（fig_4_6/4_7/5_7/7_8/8_9/8_10/8_11）+ 3 个登记表
-   │  ├─ eda/              论文正文用图（仅留存 docx 中出现的 05_tech_skill_top20）
-   │  ├─ supplementary/    补充图件（含 *_display 展示版）——论文正文图表的主要来源
-   │  └─ time/             时间维度分析图件（脚本 33 / 49）
+   ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
+   │  ├─ (根)              fig_4_7 / 5_7 / 7_8 / 8_9 / 8_10 / 8_11
+   │  ├─ eda/              05_tech_skill_top20
+   │  ├─ supplementary/    图S09/S16/S44/S50/S55/S59/S60/S62/S63/S64/S66/S68/S69/S70/S71
+   │  └─ time/             01 / 02 / 03
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
    └─ results/             「补全任务」交付物（补充 CSV / 图件）
 ```
@@ -131,30 +131,27 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
   `32_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
   `33_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
   presence 口径 + 核心结果回归保护 + 门禁与测试）。
-- 正式 EDA 图件：`outputs/figures/eda/`（10 张主图，PNG 600 dpi + PDF，图名规范 `01_...`~`10_...`）。
-- 建模图件与模型产出：`outputs/figures/modeling/`（`01_..04_` 模型对比 / 预测 / 残差 / 分组误差，
-  `05_..08_` 特征组消融 / Random vs Group Split / SHAP 蜂群图 / 技能 SHAP Top20）、
-  `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 + 类别编码 schema + 文本降维 + 参数）。
+- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `05_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
+- 建模图件与模型产出：`figures/modeling/` 目录已按第 5.1 节留存口径**整体移除**；
+  模型产出仍保留于 `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 +
+  类别编码 schema + 文本降维 + 参数）。
 
 ### 5.1 图件目录说明（`outputs/figures/`）
 
-每张图通常有 4 个变体：`<名>.png` / `<名>.pdf`（canonical）+ `<名>_display.png` / `<名>_display.pdf`
-（含图内题注，供 Word 嵌图），因此文件数为图数的 2~4 倍。
+`outputs/figures/` 现**只保留论文 docx 中实际出现的 26 张图**（严格逐文件口径）：
 
-| 目录 | 命名规范 | 用途（论文归属） | 生成脚本 | 状态 |
-| --- | --- | --- | --- | --- |
-| `figures/`（根） | `fig_<章>_<序>_…` | 论文正文散图（已确认在 docx 中）+ 3 个登记表 | `45`/`46`/`47`/`49` 等 | 现行 |
-| `figures/eda/` | `NN_英文名` | 论文正文用图（仅 1 张 `05_tech_skill_top20` 出现在 docx 中） | `13_run_eda.py` | 部分留存 |
-| `figures/supplementary/` | `图Sxx_中文名` | **论文正文图表的主要来源** + 附录 | `18b`/`26e`/`26g` 等 | 现行 |
-| `figures/time/` | `NN_英文名` | 第 4 章：业务时间维度（3 张，独立主题） | `33` → `49` | 现行 |
-| `results/figures/` | `fig_6` / `fig_7` | 「补全任务」交付物 | `62_completion_supplement.py` | 现行 |
+| 位置 | 图件 |
+| --- | --- |
+| `figures/` 根 | `fig_4_7` / `fig_5_7` / `fig_7_8` / `fig_8_9` / `fig_8_10` / `fig_8_11` |
+| `figures/eda/` | `05_tech_skill_top20` |
+| `figures/supplementary/` | `图S09`/`S16`/`S44`/`S50`/`S55`/`S59`/`S60`/`S62`/`S63`/`S64`/`S66`/`S68`/`S69`/`S70`/`S71` |
+| `figures/time/` | `01` / `02` / `03`（发布时间队列与技能时间结构） |
+| `results/figures/` | `fig_7_actual_vs_predicted_salary` |
 
-说明：每张图通常有 PNG/PDF 与 `*_display` 变体（含图内题注，供 Word 嵌图）。
-
-**图件留存口径（本轮确立）**：以论文 `docs/paper/*.docx` 内嵌图片为准，逐文件 SHA256 比对，
-只保留论文中实际出现的图。经比对，`figures/sci/`（73）、`figures/modeling/`（32）及 `figures/eda/`
-的其余 39 个文件均未出现在论文中，已全部删除（保留 `eda/05_tech_skill_top20.png`）；
-论文图表实际来自 `figures/supplementary/` 与 `figures/` 根目录。图件可由相应脚本重新生成。
+**留存口径**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
+逐文件校验「SHA256 完全一致 或 32×32 灰度归一化互相关 NCC ≥ 0.95」；不满足者一律删除。
+据此共删除 181 个 png/pdf（含全部 PDF 与 `*_display` 变体，及 `sci/`、`modeling/` 两个目录）；
+论文图表实际来自 `figures/supplementary/`、`figures/` 根目录与 `figures/time/`。图件可由相应脚本重新生成。
 
 ## 6. Notebook
 
