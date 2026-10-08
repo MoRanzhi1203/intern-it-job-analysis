@@ -1,0 +1,74 @@
+{
+  "validation": {
+    "MAE": 36.088217,
+    "RMSE": 69.294882,
+    "R2": 0.596413,
+    "n": 2232
+  },
+  "test": {
+    "MAE": 35.335506,
+    "RMSE": 64.623479,
+    "R2": 0.584606,
+    "n": 2233
+  },
+  "baseline": {
+    "Dummy": {
+      "MAE": 65.414734,
+      "RMSE": 109.093247,
+      "R2": -0.000301,
+      "n": 2232
+    }
+  },
+  "comparison": [
+    {
+      "模型": "LightGBM",
+      "最佳超参数": "{'n_estimators': 400, 'learning_rate': 0.05, 'num_leaves': 63}",
+      "validation_MAE": 36.088217,
+      "validation_RMSE": 69.294882,
+      "validation_R2": 0.596413,
+      "特征维度": 320,
+      "是否基线": "否",
+      "说明": "validation MAE 最小者为主模型"
+    },
+    {
+      "模型": "CatBoost",
+      "最佳超参数": "{'depth': 8, 'learning_rate': 0.05, 'iterations': 500}",
+      "validation_MAE": 36.678336,
+      "validation_RMSE": 68.642066,
+      "validation_R2": 0.603981,
+      "特征维度": 320,
+      "是否基线": "否",
+      "说明": "validation MAE 最小者为主模型"
+    },
+    {
+      "模型": "RandomForest",
+      "最佳超参数": "{'n_estimators': 300, 'max_depth': None, 'min_samples_leaf': 1, 'max_features': 'sqrt'}",
+      "validation_MAE": 37.895056,
+      "validation_RMSE": 73.830613,
+      "validation_R2": 0.54185,
+      "特征维度": 320,
+      "是否基线": "否",
+      "说明": "validation MAE 最小者为主模型"
+    },
+    {
+      "模型": "Ridge",
+      "最佳超参数": "{'alpha': 10.0}",
+      "validation_MAE": 45.385857,
+      "validation_RMSE": 85.495599,
+      "validation_R2": 0.385641,
+      "特征维度": 320,
+      "是否基线": "否",
+      "说明": "validation MAE 最小者为主模型"
+    },
+    {
+      "模型": "Dummy",
+      "最佳超参数": "{'strategy': 'mean'}",
+      "validation_MAE": 65.414734,
+      "validation_RMSE": 109.093247,
+      "validation_R2": -0.000301,
+      "特征维度": 320,
+      "是否基线": "是",
+      "说明": "validation MAE 最小者为主模型"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "model_key": "LightGBM",
+  "params": {
+    "n_estimators": 400,
+    "learning_rate": 0.05,
+    "num_leaves": 63
+  },
+  "main_metric": "MAE",
+  "selected_on": "validation",
+  "test_evaluated_once": true,
+  "preprocessor_fit_rows": 10418,
+  "preprocessor_fit_scope": "train",
+  "estimator_fit_rows": 12650,
+  "test_rows_excluded_from_fit": 2233,
+  "test_metrics": {
+    "MAE": 35.335506,
+    "RMSE": 64.623479,
+    "R2": 0.584606,
+    "n": 2233
+  },
+  "random_state": 42,
+  "skill_threshold": 100,
+  "text_dim": 16
+}

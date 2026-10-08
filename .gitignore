@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Office / Word 临时锁文件
+~$*
+
+# 数据文件（体积大，可由 MySQL shixiseng_db 重新导出，不入版本库）
+# 原始表导出：SELECT * FROM shixiseng_job_details
+course-design-2/data/**/*.parquet
+course-design-2/data/legacy/
+# 句向量矩阵（体积大，可由缓存模型 + 语料一键重建；保留 *_meta.json 复现记录）
+course-design-2/data/features/*.npz

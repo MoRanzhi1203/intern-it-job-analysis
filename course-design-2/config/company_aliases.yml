@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+# 公司别名人工确认配置（唯一权威来源）
+#
+# 规则：
+# 1. 只有 status: approved 的条目才允许进入正式公司简介时序；
+# 2. 任何「疑似同一公司」的候选都必须先在这里人工确认，禁止在业务脚本里硬编码；
+# 3. 未经确认（pending）的条目只出现在 18 号审计表的复核候选中，不参与合并。
+#
+# 字段：
+#   canonical : 公司规范名称（合并后的实体名）
+#   aliases   : 需要合并到该实体的历史名称
+#   status    : approved（已人工确认） / pending（待人工确认）
+#   evidence  : 确认依据（人工复核来源）
+#   note      : 备注
+
+version: 1
+
+companies:
+  # 来自 12_manual_review_queue.xlsx 人工复核：同一岗位ID在不同观测时点出现两个公司名，
+  # 判定为同一企业的品牌改名（岗位标题、城市、职责均保持一致）。
+  - canonical: 智驾新程
+    aliases:
+      - 智驾大陆
+      - 智驾新程
+    status: approved
+    evidence: 12_manual_review_queue.xlsx，公司名称冲突岗位经人工复核判定为同源改名
+    note: 同源企业品牌更名，允许合并为同一公司实体
+
+  # 待人工确认：谷川集团 / 谷川联行疑似同一集团的不同主体名称，
+  # 目前证据不足（简介与行业一致但无法排除母子公司差异），保持 pending。
+  - canonical: 谷川集团
+    aliases:
+      - 谷川联行
+    status: pending
+    evidence: 公司名称冲突岗位，简介一致但主体关系未确认
+    note: 需人工确认后再决定是否合并
+
+  # 待人工确认：同一岗位ID先后出现完全不同的公司名（如招聘主体变更），
+  # 这类情况属于岗位层面的版本漂移，不应通过别名合并为公司实体。
+  - canonical: 岩山科技
+    aliases:
+      - 美团
+    status: pending
+    evidence: 公司名称冲突岗位，疑似招聘主体更换
+    note: 明确不作为别名合并，仅留档说明

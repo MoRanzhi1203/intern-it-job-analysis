@@ -1,0 +1,33 @@
+{
+  "模型名称": "BAAI/bge-small-zh-v1.5",
+  "模型版本_revision": "BAAI/bge-small-zh-v1.5",
+  "向量维度": 512,
+  "normalize_embeddings": true,
+  "batch_size": 32,
+  "device": "cpu",
+  "max_seq_length": 512,
+  "输入文本字段": "公司简介_清洗",
+  "模型加载用时_秒": 34.18,
+  "生成时间": "2026-09-16 10:21:16",
+  "状态": "PASS",
+  "失败原因": "",
+  "模型配置": {
+    "模型名称": "BAAI/bge-small-zh-v1.5",
+    "向量维度": 512,
+    "normalize_embeddings": true,
+    "max_seq_length": 512,
+    "device": "cpu"
+  },
+  "语料指纹": {
+    "company_profile": "b5ab01bf6c340fc87ddcb58dc60899524c8d3a620676d9e20683caeface21783"
+  },
+  "向量数组形状": {
+    "company_profile": [
+      3899,
+      512
+    ]
+  },
+  "索引行数": 3899,
+  "公司实体数": 3664,
+  "向量来源": "本次新建"
+}

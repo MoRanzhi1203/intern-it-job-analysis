@@ -1,0 +1,1010 @@
+{
+  "stage": "Stage23",
+  "style_snapshot": {
+    "context": "paper",
+    "style": "ticks",
+    "facecolor": "white",
+    "font_family": [
+      "Times New Roman",
+      "Microsoft YaHei"
+    ],
+    "xtick_direction": "in",
+    "ytick_direction": "in",
+    "grid_alpha": 0.18,
+    "savefig_dpi": 600.0,
+    "xaxis_below": true,
+    "backend": "Agg",
+    "interactive": false,
+    "headless": true,
+    "show_guard_installed": true
+  },
+  "anchor_log": [
+    {
+      "锚点": "原始岗位观测",
+      "期望值": 172063,
+      "实际读取值": 172063,
+      "来源": "13_observation_snapshot_audit.xlsx / 01_总体统计",
+      "通过": true
+    },
+    {
+      "锚点": "唯一岗位实体",
+      "期望值": 17144,
+      "实际读取值": 17144,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "明确薪资可解析",
+      "期望值": 14899,
+      "实际读取值": 14899,
+      "来源": "21_structured_field_salary_audit.xlsx / 02_薪资解析状态",
+      "通过": true
+    },
+    {
+      "锚点": "薪资逻辑异常",
+      "期望值": 16,
+      "实际读取值": 16,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "正式薪资样本",
+      "期望值": 14883,
+      "实际读取值": 14883,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "薪资面议岗位",
+      "期望值": 2245,
+      "实际读取值": 2245,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点中位数",
+      "期望值": 175.0,
+      "实际读取值": 175.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点均值",
+      "期望值": 192.87,
+      "实际读取值": 192.8664,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 IQR",
+      "期望值": 90.0,
+      "实际读取值": 90.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 P10",
+      "期望值": 110.0,
+      "实际读取值": 110.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 P90",
+      "期望值": 300.0,
+      "实际读取值": 300.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "公司认证 ε²",
+      "期望值": 0.197545,
+      "实际读取值": 0.197545,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（公司认证 KW）",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签原子标签数",
+      "期望值": 4328,
+      "实际读取值": 4328,
+      "来源": "32_company_field_semantic_audit.xlsx / 02_宽表字段统计",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签进入二元比较",
+      "期望值": 183,
+      "实际读取值": 183,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签 BH-FDR 显著",
+      "期望值": 114,
+      "实际读取值": 114,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签交集岗位",
+      "期望值": 731,
+      "实际读取值": 731,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签并集岗位",
+      "期望值": 784,
+      "实际读取值": 784,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签最大两两 Jaccard",
+      "期望值": 1.0,
+      "实际读取值": 1.0,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "主模型 test MAE",
+      "期望值": 35.335506,
+      "实际读取值": 35.335506,
+      "来源": "30_model_comparison.xlsx / 09_Test最终结果",
+      "通过": true
+    },
+    {
+      "锚点": "消融 Full test MAE",
+      "期望值": 36.074723,
+      "实际读取值": 36.074723,
+      "来源": "31_ablation_robustness_shap.xlsx / 01_消融结果",
+      "通过": true
+    },
+    {
+      "锚点": "按公司分组划分 test MAE",
+      "期望值": 52.049937,
+      "实际读取值": 52.049937,
+      "来源": "31_ablation_robustness_shap.xlsx / 04_Random_vs_GroupSplit",
+      "通过": true
+    }
+  ],
+  "gate_checks": {
+    "SCI_STYLE": true,
+    "SNS_PLT_ONLY": true,
+    "INWARD_TICKS": true,
+    "FOUR_SPINES_VISIBLE": true,
+    "LIGHT_GRID": true,
+    "CHINESE_FONT": true,
+    "BOTTOM_CAPTION_VISIBLE": true,
+    "SUBFIGURE_CAPTION_VISIBLE": true,
+    "SUBFIGURE_LABEL_SEQUENCE": true,
+    "PNG_600DPI": true,
+    "PDF_EXPORT": true,
+    "LEGEND_NO_OVERLAP": true,
+    "AXIS_LABEL_VISIBLE": true,
+    "NO_TITLE_ON_TOP": true,
+    "NO_FIGURE_POPUP": true,
+    "NO_PLT_SHOW": true,
+    "HEADLESS_SAVE_MODE": true,
+    "AUTO_CLOSE_FIGURE": true
+  },
+  "gate_detail": {
+    "figure_total": 17,
+    "subfigure_figures": 11,
+    "worst_legend_overlap": 0.0,
+    "backend": "Agg",
+    "interactive": false,
+    "show_calls": 0,
+    "figure_show_calls": 0,
+    "forbidden_in_notebook": [],
+    "open_figures": [],
+    "failed": []
+  },
+  "figures": [
+    {
+      "组别": "eda",
+      "文件名": "01_sample_structure",
+      "Stage23正式图题": "图 4-1 正式分析样本与技能提取口径结构",
+      "论文去向": "正文 图 4-1（4.1 节）",
+      "论文版路径": "outputs\\figures\\eda\\01_sample_structure.png",
+      "展示版路径": "outputs\\figures\\eda\\01_sample_structure_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "02_salary_distribution",
+      "Stage23正式图题": "图 4-3 薪资中点分布与经验累积分布（n = 14,883）",
+      "论文去向": "正文 图 4-3（4.4 节）",
+      "论文版路径": "outputs\\figures\\eda\\02_salary_distribution.png",
+      "展示版路径": "outputs\\figures\\eda\\02_salary_distribution_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "03_category_salary",
+      "Stage23正式图题": "图 4-2 主要岗位细分类薪资中点中位数（误差线为 IQR/2）",
+      "论文去向": "正文 图 4-2（4.2 节）",
+      "论文版路径": "outputs\\figures\\eda\\03_category_salary.png",
+      "展示版路径": "outputs\\figures\\eda\\03_category_salary_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "04_structured_factor_salary",
+      "Stage23正式图题": "图 5-1 城市、学历与公司规模的薪资中点中位数",
+      "论文去向": "正文 图 5-1（5.3 节）",
+      "论文版路径": "outputs\\figures\\eda\\04_structured_factor_salary.png",
+      "展示版路径": "outputs\\figures\\eda\\04_structured_factor_salary_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "05_tech_skill_top20",
+      "Stage23正式图题": "图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）",
+      "论文去向": "正文 图 6-1（6.2 节）",
+      "论文版路径": "outputs\\figures\\eda\\05_tech_skill_top20.png",
+      "展示版路径": "outputs\\figures\\eda\\05_tech_skill_top20_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "06_skill_layer_structure",
+      "Stage23正式图题": "附图 A-1 技能需求的分层结构",
+      "论文去向": "附录",
+      "论文版路径": "outputs\\figures\\eda\\06_skill_layer_structure.png",
+      "展示版路径": "outputs\\figures\\eda\\06_skill_layer_structure_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "07_category_skill_heatmap",
+      "Stage23正式图题": "图 6-2 岗位细分类 × 技能命中率热力图",
+      "论文去向": "正文 图 6-2（6.3 节）",
+      "论文版路径": "outputs\\figures\\eda\\07_category_skill_heatmap.png",
+      "展示版路径": "outputs\\figures\\eda\\07_category_skill_heatmap_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "08_skill_cooccurrence",
+      "Stage23正式图题": "图 6-3 技能共现（共现岗位数 ≥ 30 的技能对）",
+      "论文去向": "正文 图 6-3（6.4 节）",
+      "论文版路径": "outputs\\figures\\eda\\08_skill_cooccurrence.png",
+      "展示版路径": "outputs\\figures\\eda\\08_skill_cooccurrence_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "09_skill_salary",
+      "Stage23正式图题": "附图 A-6 技能与薪资的描述性关联（未控制岗位类别）",
+      "论文去向": "附录（已从正文移入附录）",
+      "论文版路径": "outputs\\figures\\eda\\09_skill_salary.png",
+      "展示版路径": "outputs\\figures\\eda\\09_skill_salary_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "eda",
+      "文件名": "10_scope_robustness",
+      "Stage23正式图题": "附图 A-2 技能提取双口径稳健性",
+      "论文去向": "附录",
+      "论文版路径": "outputs\\figures\\eda\\10_scope_robustness.png",
+      "展示版路径": "outputs\\figures\\eda\\10_scope_robustness_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "01_model_comparison",
+      "Stage23正式图题": "图 7-1 模型验证集 MAE / RMSE 比较",
+      "论文去向": "正文 图 7-1（7.4 节）",
+      "论文版路径": "outputs\\figures\\modeling\\01_model_comparison.png",
+      "展示版路径": "outputs\\figures\\modeling\\01_model_comparison_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "02_prediction_scatter",
+      "Stage23正式图题": "附图 A-3 正式主模型 test 预测值 vs 真实值",
+      "论文去向": "附录",
+      "论文版路径": "outputs\\figures\\modeling\\02_prediction_scatter.png",
+      "展示版路径": "outputs\\figures\\modeling\\02_prediction_scatter_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "03_residual_diagnostics",
+      "Stage23正式图题": "附图 A-4 正式主模型 test 残差诊断",
+      "论文去向": "附录",
+      "论文版路径": "outputs\\figures\\modeling\\03_residual_diagnostics.png",
+      "展示版路径": "outputs\\figures\\modeling\\03_residual_diagnostics_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "04_error_groups",
+      "Stage23正式图题": "附图 A-5 正式主模型 test 分组误差诊断",
+      "论文去向": "附录",
+      "论文版路径": "outputs\\figures\\modeling\\04_error_groups.png",
+      "展示版路径": "outputs\\figures\\modeling\\04_error_groups_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "05_ablation_results",
+      "Stage23正式图题": "图 8-1 特征组消融：四配置 MAE 与技能增量 bootstrap 95% 置信区间",
+      "论文去向": "正文 图 8-1（8.1 节）",
+      "论文版路径": "outputs\\figures\\modeling\\05_ablation_results.png",
+      "展示版路径": "outputs\\figures\\modeling\\05_ablation_results_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "06_random_vs_group_split",
+      "Stage23正式图题": "图 8-2 随机划分与按公司分组划分的预测误差比较（test）",
+      "论文去向": "正文 图 8-2（8.2 节）",
+      "论文版路径": "outputs\\figures\\modeling\\06_random_vs_group_split.png",
+      "展示版路径": "outputs\\figures\\modeling\\06_random_vs_group_split_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    },
+    {
+      "组别": "modeling",
+      "文件名": "08_skill_shap_top20",
+      "Stage23正式图题": "图 8-4 技能特征 SHAP Top20（条长 = mean|SHAP|，标记 = presence_direction）",
+      "论文去向": "正文 图 8-4（8.4.2 节）",
+      "论文版路径": "outputs\\figures\\modeling\\08_skill_shap_top20.png",
+      "展示版路径": "outputs\\figures\\modeling\\08_skill_shap_top20_display.png",
+      "论文版门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "展示版门禁": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "论文版未通过": [],
+      "展示版未通过": [],
+      "已移除图内总图题": true,
+      "重绘次数": 0,
+      "最终是否通过": true,
+      "尝试记录": [
+        {
+          "轮次": 1,
+          "版式": "默认版式",
+          "论文版未通过": [],
+          "展示版未通过": []
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 17,
+    "paper_pass": 17,
+    "display_pass": 17,
+    "final_pass": 17,
+    "in_figure_caption_removed": 17
+  }
+}

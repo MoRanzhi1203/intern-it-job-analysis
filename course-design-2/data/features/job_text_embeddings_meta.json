@@ -1,0 +1,73 @@
+{
+  "模型名称": "BAAI/bge-small-zh-v1.5",
+  "模型版本_revision": "BAAI/bge-small-zh-v1.5",
+  "向量维度": 512,
+  "normalize_embeddings": true,
+  "batch_size": 32,
+  "device": "cpu",
+  "max_seq_length": 512,
+  "输入文本字段": "岗位描述_语义分析版 / 岗位描述_模型安全版 及其分段",
+  "模型加载用时_秒": 36.59,
+  "生成时间": "2026-09-16 10:19:03",
+  "状态": "PASS",
+  "失败原因": "",
+  "模型配置": {
+    "模型名称": "BAAI/bge-small-zh-v1.5",
+    "向量维度": 512,
+    "normalize_embeddings": true,
+    "max_seq_length": 512,
+    "device": "cpu"
+  },
+  "语料指纹": {
+    "job_text_full": "adece665deb390e5b5c7db439423cefffffca6f7c8fdf4781fdebd5b58165f34",
+    "duty_text": "68fb870da0b27033ab477ca051387adaa10976ea06ed581ed510b730dd5889ee",
+    "require_text": "06535e88d699b34fdb6c3e40fedde133997f110e8a07083346bb5ad687f929fa",
+    "skill_text": "85c9704768b77a11880a87ddc02e0c33ae50a280ee3ba943d763d4ca63f1dd17",
+    "job_text_safe": "ed2f54d4f72170831365a07b9fd9a8d923e096874c9236aa97919f3815b44e70"
+  },
+  "语料行数": 17584,
+  "向量数组形状": {
+    "job_text_full": [
+      16806,
+      512
+    ],
+    "duty_text": [
+      9374,
+      512
+    ],
+    "require_text": [
+      9013,
+      512
+    ],
+    "skill_text": [
+      279,
+      512
+    ],
+    "job_text_safe": [
+      16806,
+      512
+    ]
+  },
+  "索引行数": 52278,
+  "事件总数": 440,
+  "模型最大token数": 512,
+  "安全文本编码统计": {
+    "安全文本总数": 16806,
+    "缓存整体复用数": 16806,
+    "直接复用完整版向量数": 0,
+    "需要新编码的样本数": 0,
+    "哈希去重后新编码文本数": 0,
+    "实际新增编码数": 0,
+    "去重节省编码数": 0,
+    "缓存复用比例": 1.0,
+    "安全文本编码来源": "复用缓存（job_text_safe）",
+    "完整与安全文本相同的行数": 15329
+  },
+  "缓存状态": {
+    "job_text_full": "复用缓存（job_text_full）",
+    "duty_text": "复用缓存（duty_text）",
+    "require_text": "复用缓存（require_text）",
+    "skill_text": "复用缓存（skill_text）",
+    "job_text_safe": "复用缓存（job_text_safe）"
+  }
+}

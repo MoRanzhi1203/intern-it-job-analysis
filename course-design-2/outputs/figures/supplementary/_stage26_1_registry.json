@@ -1,0 +1,96 @@
+{
+  "stage": "Stage26.1",
+  "seed": 42,
+  "图件": [
+    {
+      "stem": "图S23_招聘生命周期分布",
+      "png_path": "outputs\\figures\\supplementary\\图S23_招聘生命周期分布.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S23_招聘生命周期分布.pdf",
+      "png_pixel_size": [
+        8844,
+        2589
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 593578,
+      "pdf_size_bytes": 68157,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S24_样本计划招聘覆盖的每日活跃新增与结束数量",
+      "png_path": "outputs\\figures\\supplementary\\图S24_样本计划招聘覆盖的每日活跃新增与结束数量.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S24_样本计划招聘覆盖的每日活跃新增与结束数量.pdf",
+      "png_pixel_size": [
+        9197,
+        2537
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 762103,
+      "pdf_size_bytes": 74920,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S25_主要岗位大类计划覆盖数量",
+      "png_path": "outputs\\figures\\supplementary\\图S25_主要岗位大类计划覆盖数量.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S25_主要岗位大类计划覆盖数量.pdf",
+      "png_pixel_size": [
+        8860,
+        2467
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 783789,
+      "pdf_size_bytes": 77815,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S26_活跃计划周期薪资中位数与IQR",
+      "png_path": "outputs\\figures\\supplementary\\图S26_活跃计划周期薪资中位数与IQR.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S26_活跃计划周期薪资中位数与IQR.pdf",
+      "png_pixel_size": [
+        8606,
+        2536
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 687903,
+      "pdf_size_bytes": 83674,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S27_Strict与Relaxed口径对照",
+      "png_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed口径对照.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed口径对照.pdf",
+      "png_pixel_size": [
+        8720,
+        2535
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 600323,
+      "pdf_size_bytes": 56807,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    }
+  ]
+}

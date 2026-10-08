@@ -1,0 +1,5 @@
+﻿口径,模型,test MAE,test RMSE,test R²,n
+预处理器仅 fit 训练集（288 维），估计器 train+validation 重拟合,LightGBM,35.511377,64.495291,0.586252,2233
+预处理器仅 fit 训练集（288 维），估计器 train+validation 重拟合,CatBoost,36.418938,65.14364,0.577892,2233
+预处理器与估计器均在 train+validation 重拟合（300 维，Stage26.4 正式口径）,LightGBM,35.476021,64.809334,0.582213,2233
+预处理器与估计器均在 train+validation 重拟合（300 维，Stage26.4 正式口径）,CatBoost,36.328121,65.085986,0.578638,2233

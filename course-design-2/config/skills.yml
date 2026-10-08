@@ -1,0 +1,554 @@
+# -*- coding: utf-8 -*-
+# IT 技能实体标准化配置（唯一权威来源）
+#
+# 设计原则：
+# 1. 禁止把技能词典散落硬编码在业务脚本中，全部技能与别名必须写在本文件；
+# 2. 三级结构：feature_family（一级类型）→ group（二级类别）→ canonical（标准实体）；
+#    一级类型只在 feature_families 中显式配置，禁止运行时临时猜类别；
+# 3. canonical 为技能标准名，写入数据表的技能集合一律使用标准名；
+# 4. aliases 为可匹配的别名（可省略，canonical 本身始终参与匹配）；
+# 5. 拉丁短词（C / R / Go / AI / ML / DL / CV 等）必须走严格规则：
+#    - strict_case_aliases 中的别名要求大小写完全一致；
+#    - 长度 <= short_term_max_length 的拉丁别名必须左右词边界成立；
+#    - blocklist 命中的片段（如 R&D、C位）直接丢弃，避免误匹配。
+
+version: 2
+
+# 拉丁别名长度不超过该值时，强制要求词边界（前后不能是字母/数字/_）
+short_term_max_length: 4
+
+# ---- 一级类型（feature_family）→ 二级类别（group）显式映射 ----
+# 每个 group 必须且只能归属一个 feature_family，否则加载配置直接报错。
+feature_families:
+  技术技能:
+    - 编程语言
+    - 数据库
+    - 前端技术
+    - 后端技术
+    - 大数据技术
+    - 数据采集
+    - AI算法技能
+    - AI框架
+    - 大模型技能
+    - 网络与安全
+  工程工具:
+    - 工程与运维工具
+    - 测试工具
+  数据工具:
+    - 数据分析工具
+    - 办公工具
+  业务能力:
+    - 产品业务能力
+    - 运营业务能力
+  技术领域:
+    - 技术领域
+
+# AI 技能组（AI技能数口径 = 岗位技能集合中落在这些组的标准实体数量）
+ai_skill_groups:
+  - AI算法技能
+  - AI框架
+  - 大模型技能
+
+# 岗位级技能画像中的分组计数口径（组名必须已在 feature_families 中登记）
+language_skill_groups: [编程语言]
+database_skill_groups: [数据库]
+security_skill_groups: [网络与安全]
+office_skill_groups: [办公工具]
+
+# ---- 歧义词的上下文规则 ----
+# 规则只作用于 match_aliases 中列出的别名：命中后必须在匹配位置附近（窗口）满足
+# require_any 至少一项，且不得命中 exclude_any 任一项，否则该次匹配被丢弃并计入歧义排除统计。
+# 例：Agent 只有在「AI Agent / Agent开发 / 智能体」等可靠上下文中才算 AI Agent，
+#     User-Agent / 网络代理 一律排除；Word 排除 Word2Vec / word embedding。
+ambiguous_context_rules:
+  Agent:
+    match_aliases: [Agent]
+    require_any: [AI Agent, LLM Agent, Agent开发, Agent框架, Agent应用, Agentic, Agent 开发,
+                  智能体, 多智能体, 智能体开发, 大模型 Agent, 多 Agent]
+    exclude_any: [User-Agent, user-agent, user agent, browser agent, 代理服务器, 网络代理,
+                  代理设置, Proxy, 代理]
+  Word:
+    match_aliases: [Word, word]
+    require_any: [Microsoft Word, microsoft word, Word文档, word文档, Word 文档, 熟练使用Word,
+                  熟练使用word, Word排版, word排版, Office, 办公软件, WPS]
+    exclude_any: [Word2Vec, word2vec, Word2vec, word embedding, word vector, word2vec模型,
+                  word embeddings]
+  C:
+    match_aliases: [C]
+    require_any: [C语言, C/C++, C / C++, C、C++, C和C++, C＋＋, C++]
+    exclude_any: []
+  R:
+    match_aliases: [R]
+    require_any: [R语言, RStudio, R studio, R语言开发, R语言编程]
+    exclude_any: []
+  Go:
+    match_aliases: [Go]
+    require_any: [Go语言, Golang, golang, Go 语言, Go开发, GO语言]
+    exclude_any: []
+  Spring:
+    match_aliases: [Spring, spring]
+    require_any: [Spring, spring, Spring Boot, SpringBoot, Spring Cloud, SpringMVC, Spring MVC]
+    exclude_any: [spring festival]
+  React:
+    match_aliases: [React, react]
+    require_any: [React, react, React.js, ReactJS, React Native]
+    exclude_any: [reaction, reactive]
+
+# 歧义规则命中窗口（匹配位置左右各取该字符数参与上下文判定）
+ambiguous_context_window: 30
+
+# 高歧义短词：必须大小写完全一致，且必须满足词边界
+strict_case_aliases:
+  - C
+  - R
+  - Go
+  - AI
+  - ML
+  - DL
+  - CV
+  - SQL
+  - JS
+  - TS
+  - .NET
+
+# 误匹配黑名单：这些片段内部不允许命中技能
+blocklist:
+  - R&D
+  - R & D
+  - C位
+  - C 位
+  - Golang语言标准库以外的Go to
+  - AIpha
+
+# 大模型相关技能（使用技能标准名，用于「是否新增大模型相关技能」判定）
+llm_related_skills:
+  - 大模型
+  - RAG
+  - Agent
+  - LangChain
+  - LlamaIndex
+  - Prompt Engineering
+  - 微调
+  - LoRA
+  - 向量数据库
+  - Embedding
+  - 多模态
+  - AIGC
+  - 模型部署
+  - 知识图谱
+
+# AI 关键词（公司简介语义变化判定使用，可与技能重叠）
+ai_keywords:
+  - 人工智能
+  - 机器学习
+  - 深度学习
+  - 大模型
+  - LLM
+  - RAG
+  - Agent
+  - AIGC
+  - 算法
+  - 智能
+  - 多模态
+  - 算力
+  - 神经网络
+  - 计算机视觉
+  - 自然语言处理
+
+# 公司业务关键词（公司简介「业务范围」变化判定使用）
+company_keywords:
+  - 电商
+  - 跨境电商
+  - 教育
+  - 在线教育
+  - 医疗
+  - 医疗健康
+  - 金融
+  - 金融科技
+  - 支付
+  - 保险
+  - 游戏
+  - 短视频
+  - 直播
+  - 社交
+  - 广告
+  - 营销
+  - 云计算
+  - 大数据
+  - 物联网
+  - 自动驾驶
+  - 智能驾驶
+  - 新能源汽车
+  - 芯片
+  - 半导体
+  - 机器人
+  - 智能制造
+  - 工业互联网
+  - 物流
+  - 供应链
+  - 出行
+  - 本地生活
+  - 企业服务
+  - SaaS
+  - 出海
+  - 全球化
+  - 国际化
+  - 开源
+  - 元宇宙
+  - 数字人
+  - 消费电子
+  - 生物医药
+  - 农业
+  - 房地产
+  - 文旅
+  - 网络安全
+  - 数据安全
+  - 信息服务
+
+# 技能组：组名用于审计表分组统计，组必须在上方 feature_families 中归属一级类型
+groups:
+  # ---- 技术技能 / 编程语言 ----
+  编程语言:
+    - canonical: Python
+      aliases: [python, Python3, python3]
+    - canonical: Java
+      aliases: [java, JavaSE, JavaEE, Java8, JDK]
+    - canonical: C
+      aliases: [C语言, C Programming]
+    - canonical: C++
+      aliases: [C++, cpp, CPP, c++, C Plus Plus, C＋＋]
+    - canonical: C#
+      aliases: [C#, csharp, C Sharp, .NET]
+    - canonical: Go
+      aliases: [Golang, golang, go语言, Go语言]
+    - canonical: JavaScript
+      aliases: [JavaScript, javascript, JS, ECMAScript]
+    - canonical: TypeScript
+      aliases: [TypeScript, typescript, TS]
+    - canonical: PHP
+      aliases: [php]
+    - canonical: Rust
+      aliases: [rust]
+    - canonical: R
+      aliases: [R语言, RStudio]
+    - canonical: Scala
+      aliases: [scala]
+    - canonical: Kotlin
+      aliases: [kotlin]
+    - canonical: Swift
+      aliases: [swift]
+    - canonical: Shell
+      aliases: [shell, shell脚本, Shell脚本]
+    - canonical: Bash
+      aliases: [bash]
+    - canonical: MATLAB
+      aliases: [matlab, MatLab]
+    - canonical: Verilog
+      aliases: [verilog]
+  # ---- 技术技能 / 数据库（SQL 属数据查询技能，归入数据库类别） ----
+  数据库:
+    - canonical: SQL
+      aliases: [sql, SQL语句, 结构化查询语言]
+    - canonical: MySQL
+      aliases: [mysql, MySql]
+    - canonical: PostgreSQL
+      aliases: [postgresql, Postgres, PG数据库]
+    - canonical: Oracle
+      aliases: [oracle, Oracle数据库]
+    - canonical: SQL Server
+      aliases: [sqlserver, SQLServer, MSSQL]
+    - canonical: SQLite
+      aliases: [sqlite]
+    - canonical: MongoDB
+      aliases: [mongodb, Mongo]
+    - canonical: Redis
+      aliases: [redis]
+    - canonical: Elasticsearch
+      aliases: [elasticsearch, ES搜索, ElasticSearch]
+    - canonical: ClickHouse
+      aliases: [clickhouse]
+    - canonical: HBase
+      aliases: [hbase]
+    - canonical: 向量数据库
+      aliases: [vector database, 向量库, Milvus, Pinecone, Faiss, faiss, Chroma]
+  # ---- 技术技能 / 前端技术 ----
+  前端技术:
+    - canonical: Vue
+      aliases: [vue, Vue.js, Vue3, Vue2]
+    - canonical: React
+      aliases: [react, React.js, ReactJS]
+    - canonical: Angular
+      aliases: [angular, AngularJS]
+    - canonical: Webpack
+      aliases: [webpack]
+    - canonical: Vite
+      aliases: [vite]
+    - canonical: HTML
+      aliases: [html, HTML5]
+    - canonical: CSS
+      aliases: [css, CSS3, SASS, SCSS, Less]
+    - canonical: 小程序
+      aliases: [微信小程序, 支付宝小程序, Taro, uni-app, uniapp]
+    - canonical: Flutter
+      aliases: [flutter]
+    - canonical: Android
+      aliases: [android, Android开发]
+    - canonical: iOS
+      aliases: [ios, iOS开发]
+  # ---- 技术技能 / 后端技术 ----
+  后端技术:
+    - canonical: Spring
+      aliases: [spring, SpringMVC, Spring MVC]
+    - canonical: Spring Boot
+      aliases: [springboot, SpringBoot, spring boot]
+    - canonical: Spring Cloud
+      aliases: [springcloud, SpringCloud]
+    - canonical: Django
+      aliases: [django]
+    - canonical: Flask
+      aliases: [flask]
+    - canonical: FastAPI
+      aliases: [fastapi, Fast Api]
+    - canonical: Node.js
+      aliases: [nodejs, NodeJS, Node, node.js]
+    - canonical: Express
+      aliases: [express, ExpressJS]
+    - canonical: gRPC
+      aliases: [grpc, gRPC框架]
+    - canonical: 微服务
+      aliases: [微服务架构, microservice, Microservices]
+    - canonical: RESTful API
+      aliases: [restful, REST API, Restful]
+  # ---- 技术技能 / 大数据技术 ----
+  大数据技术:
+    - canonical: Hadoop
+      aliases: [hadoop]
+    - canonical: Spark
+      aliases: [spark, SparkSQL, PySpark, Spark Streaming]
+    - canonical: Flink
+      aliases: [flink, FlinkSQL]
+    - canonical: Hive
+      aliases: [hive, HiveSQL]
+    - canonical: Kafka
+      aliases: [kafka]
+    - canonical: DataX
+      aliases: [datax]
+    - canonical: Airflow
+      aliases: [airflow]
+    - canonical: MapReduce
+      aliases: [mapreduce, Map Reduce]
+  # ---- 技术技能 / 数据采集（爬虫与网页数据获取） ----
+  数据采集:
+    - canonical: 爬虫
+      aliases: [爬虫, 网络爬虫, 数据采集, 网页抓取, 数据抓取, spider]
+    - canonical: Scrapy
+      aliases: [scrapy, Scrapy框架]
+    - canonical: Selenium
+      aliases: [selenium, Selenium库, WebDriver]
+    - canonical: Requests
+      aliases: [requests, requests库, urllib]
+    - canonical: BeautifulSoup
+      aliases: [beautifulsoup, Beautiful Soup, bs4, lxml]
+  # ---- 技术技能 / AI算法技能 ----
+  AI算法技能:
+    - canonical: 机器学习
+      aliases: [机器学习, machine learning, ML, ML算法, 机器学习算法]
+    - canonical: 深度学习
+      aliases: [深度学习, deep learning, DL, 神经网络]
+    - canonical: NLP
+      aliases: [NLP, 自然语言处理, 文本挖掘, 自然语言]
+    - canonical: 计算机视觉
+      aliases: [计算机视觉, CV, computer vision, 图像识别, 图像处理, 图像算法]
+    - canonical: 推荐系统
+      aliases: [推荐系统, 推荐算法, 召回, 排序算法]
+    - canonical: 数据挖掘
+      aliases: [数据挖掘, data mining]
+    - canonical: 时间序列
+      aliases: [时间序列, 时序预测, 时间序列预测]
+    - canonical: 强化学习
+      aliases: [强化学习, reinforcement learning, RL]
+    - canonical: 语音识别
+      aliases: [语音识别, ASR, 语音合成, TTS]
+    - canonical: 数据分析
+      aliases: [数据分析, 数据洞察, 数据建模, 数据建模分析]
+    - canonical: 数据科学
+      aliases: [数据科学, data science]
+    - canonical: 知识图谱
+      aliases: [知识图谱, knowledge graph, Neo4j]
+  # ---- 技术技能 / AI框架 ----
+  AI框架:
+    - canonical: PyTorch
+      aliases: [pytorch, torch, PyTorch框架]
+    - canonical: TensorFlow
+      aliases: [tensorflow, TF框架, Keras]
+    - canonical: scikit-learn
+      aliases: [sklearn, scikit-learn, scikit learn]
+    - canonical: XGBoost
+      aliases: [xgboost, XGB, LightGBM, CatBoost]
+    - canonical: Transformers
+      aliases: [transformers, HuggingFace, huggingface, 抱抱脸]
+    - canonical: OpenCV
+      aliases: [opencv, OpenCV库]
+  # ---- 技术技能 / 大模型技能 ----
+  大模型技能:
+    - canonical: 大模型
+      aliases: [大模型, 大语言模型, LLM, GPT, 文心一言, 通义千问, 豆包, ChatGPT, 基座模型]
+    - canonical: RAG
+      aliases: [RAG, 检索增强生成, 检索增强, Retrieval-Augmented Generation]
+    - canonical: Agent
+      aliases: [Agent, AI Agent, 智能体, 多智能体, Agentic]
+    - canonical: LangChain
+      aliases: [LangChain, langchain, LangGraph]
+    - canonical: LlamaIndex
+      aliases: [LlamaIndex, llamaindex]
+    - canonical: Prompt Engineering
+      aliases: [Prompt Engineering, 提示词工程, Prompt, prompt, 提示工程]
+    - canonical: 微调
+      aliases: [微调, Fine-tuning, FineTune, finetune, SFT, 指令微调, 有监督微调]
+    - canonical: LoRA
+      aliases: [LoRA, lora, QLoRA, PEFT]
+    - canonical: Embedding
+      aliases: [Embedding, embedding, 词向量, 文本向量, 句向量]
+    - canonical: 多模态
+      aliases: [多模态, multimodal, 图文理解, VLM]
+    - canonical: AIGC
+      aliases: [AIGC, 生成式人工智能, Generative AI, 生成式AI]
+    - canonical: 模型部署
+      aliases: [模型部署, 模型推理, 推理加速, TensorRT, ONNX, vLLM]
+  # ---- 技术技能 / 网络与安全 ----
+  网络与安全:
+    - canonical: 网络安全
+      aliases: [网络安全, 网络信息安全, 网络安全技术]
+    - canonical: 信息安全
+      aliases: [信息安全, 数据安全, 信息安全管理, 安全合规]
+    - canonical: 渗透测试
+      aliases: [渗透测试, 渗透, 红队, 攻防演练]
+    - canonical: 安全测试
+      aliases: [安全测试, 安全评估, 安全检测]
+    - canonical: 漏洞分析
+      aliases: [漏洞分析, 漏洞挖掘, 漏洞扫描, 漏洞复现, 漏洞修复, CVE]
+    - canonical: Web安全
+      aliases: [web安全, Web安全, WEB安全, 应用安全, OWASP]
+    - canonical: CTF
+      aliases: [CTF, CTF竞赛, 夺旗赛]
+    - canonical: 密码学
+      aliases: [密码学, 加密算法, 加解密, 国密算法, cryptography]
+    - canonical: 安全运维
+      aliases: [安全运维, 安全加固, 等保, 等级保护, 应急响应]
+  # ---- 工程工具 / 工程与运维工具 ----
+  工程与运维工具:
+    - canonical: Linux
+      aliases: [linux, Linux系统, unix, CentOS, Ubuntu]
+    - canonical: Git
+      aliases: [git, GitHub, gitee, 版本控制, 代码管理]
+    - canonical: GitLab
+      aliases: [gitlab, GitLab CI, 极狐GitLab]
+    - canonical: Docker
+      aliases: [docker, Dockerfile, 容器化]
+    - canonical: Kubernetes
+      aliases: [kubernetes, K8s, k8s]
+    - canonical: Nginx
+      aliases: [nginx]
+    - canonical: Jenkins
+      aliases: [jenkins]
+    - canonical: CI/CD
+      aliases: [CI/CD, CICD, 持续集成, 持续交付]
+    - canonical: DevOps
+      aliases: [devops]
+    - canonical: Prometheus
+      aliases: [prometheus, Grafana]
+  # ---- 工程工具 / 测试工具 ----
+  测试工具:
+    - canonical: 单元测试
+      aliases: [单元测试, unittest, JUnit, Pytest, pytest, 测试用例]
+    - canonical: 自动化测试
+      aliases: [自动化测试, Appium, 接口自动化]
+    - canonical: 性能测试
+      aliases: [性能测试, JMeter, LoadRunner, 压力测试]
+  # ---- 数据工具 / 数据分析工具 ----
+  数据分析工具:
+    - canonical: Pandas
+      aliases: [pandas, Polars]
+    - canonical: NumPy
+      aliases: [numpy, NumPy, numpy库]
+    - canonical: SciPy
+      aliases: [scipy, statsmodels]
+    - canonical: Matplotlib
+      aliases: [matplotlib]
+    - canonical: 数据可视化
+      aliases: [数据可视化, 可视化, 可视化工具, 图表制作, seaborn, plotly, ECharts]
+    - canonical: SPSS
+      aliases: [spss, SPSS统计]
+    - canonical: SAS
+      aliases: [sas, SAS统计]
+  # ---- 数据工具 / 办公工具 ----
+  办公工具:
+    - canonical: Excel
+      aliases: [excel, Excel函数, 数据透视表, VBA, 透视表]
+    - canonical: PPT
+      aliases: [ppt, PPT, PowerPoint, powerpoint, 演示文稿, 幻灯片]
+    - canonical: Word
+      aliases: [word, Word, Word文档, Microsoft Word, 文字处理]
+    - canonical: Power BI
+      aliases: [power bi, PowerBI, Power BI, FineBI, FineReport]
+    - canonical: Tableau
+      aliases: [tableau]
+    - canonical: 办公软件
+      aliases: [office, Office, 办公软件, WPS, Microsoft Office]
+  # ---- 业务能力 / 产品业务能力 ----
+  产品业务能力:
+    - canonical: 产品设计
+      aliases: [产品设计, 产品规划, 需求分析, PRD, 产品方案]
+    - canonical: 原型设计
+      aliases: [原型设计, Axure, 墨刀, Figma, Sketch, 交互设计]
+    - canonical: 用户研究
+      aliases: [用户研究, 用户调研, 用户画像, 用户增长]
+  # ---- 业务能力 / 运营业务能力 ----
+  运营业务能力:
+    - canonical: 数据运营
+      aliases: [数据运营, 运营分析, 数据看板, 指标体系]
+    - canonical: 内容运营
+      aliases: [内容运营, 文案撰写, 新媒体运营, 社群运营]
+    - canonical: 项目管理
+      aliases: [项目管理, PMP, 敏捷开发, Scrum, 项目协调]
+    - canonical: 市场调研
+      aliases: [市场调研, 竞品分析, 行业研究]
+  # ---- 技术领域（领域级概念，与技能级实体严格区分） ----
+  技术领域:
+    - canonical: 人工智能
+      aliases: [AI, 人工智能, Artificial Intelligence, 智能化, AI技术]
+    - canonical: 物联网
+      aliases: [物联网, IoT]
+    - canonical: 前端
+      aliases: [前端, 前端开发, Web前端, web前端]
+    - canonical: 后端
+      aliases: [后端, 后端开发, 服务端开发]
+    - canonical: 全栈
+      aliases: [全栈, 全栈开发, 全栈工程师]
+    - canonical: 移动开发
+      aliases: [移动开发, 移动端开发, 客户端开发]
+    - canonical: 大数据
+      aliases: [大数据, 大数据开发, 大数据平台, 大数据分析]
+    - canonical: 云计算
+      aliases: [云计算, 云原生, 阿里云, 腾讯云, 华为云, AWS, 云服务]
+
+# ---- Stage 13 技能 EDA 榜单层级（层级视图；技能分类本身仍完全由 feature_family / group 决定） ----
+# 需要该视图的原因：现有 group 无法完全区分「具体技术技能」与「技术方向 / 领域概念」——
+#   AI算法技能、大模型技能、网络与安全、技术领域 四个组内同时含两类概念，
+# 因此按提示词 §17 在 skills.yml 内做最小补充：只声明层级视角 + 少量领域概念技能，
+# 不新建第二套技能分类字典；每个技能按下列顺序归属第一个命中的层级。
+#   A 具体技术技能：语言 / 框架 / 数据库 / 工具 / 算法库（用于「需要掌握哪些具体技术」）
+#   B 技术领域：方向与领域概念（用于「岗位集中在哪些技术方向」）
+#   C 业务能力：产品 / 运营 / 项目管理等
+#   D 办公工具：Excel / PPT / Word / 办公软件 / BI 工具
+rank_layers:
+  办公工具:
+    groups: [办公工具]
+  业务能力:
+    families: [业务能力]
+  技术领域:
+    groups: [技术领域]
+    skills: [大模型, 机器学习, 深度学习, NLP, 计算机视觉, 推荐系统, 数据挖掘, 时间序列,
+             强化学习, 语音识别, 知识图谱, 数据分析, 数据科学, 网络安全, 信息安全]
+  具体技术技能:
+    families: [技术技能, 工程工具, 数据工具]

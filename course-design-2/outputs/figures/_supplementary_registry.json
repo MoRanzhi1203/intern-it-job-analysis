@@ -1,0 +1,2476 @@
+{
+  "stage": "Stage23",
+  "style_snapshot": {
+    "context": "paper",
+    "style": "ticks",
+    "facecolor": "white",
+    "font_family": [
+      "Times New Roman",
+      "Microsoft YaHei"
+    ],
+    "xtick_direction": "in",
+    "ytick_direction": "in",
+    "grid_alpha": 0.18,
+    "savefig_dpi": 600.0,
+    "xaxis_below": true,
+    "backend": "Agg",
+    "interactive": false,
+    "headless": true,
+    "show_guard_installed": true
+  },
+  "stage23_anchor_log": [
+    {
+      "锚点": "原始岗位观测",
+      "期望值": 172063,
+      "实际读取值": 172063,
+      "来源": "13_observation_snapshot_audit.xlsx / 01_总体统计",
+      "通过": true
+    },
+    {
+      "锚点": "唯一岗位实体",
+      "期望值": 17144,
+      "实际读取值": 17144,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "明确薪资可解析",
+      "期望值": 14899,
+      "实际读取值": 14899,
+      "来源": "21_structured_field_salary_audit.xlsx / 02_薪资解析状态",
+      "通过": true
+    },
+    {
+      "锚点": "薪资逻辑异常",
+      "期望值": 16,
+      "实际读取值": 16,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "正式薪资样本",
+      "期望值": 14883,
+      "实际读取值": 14883,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "薪资面议岗位",
+      "期望值": 2245,
+      "实际读取值": 2245,
+      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点中位数",
+      "期望值": 175.0,
+      "实际读取值": 175.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点均值",
+      "期望值": 192.87,
+      "实际读取值": 192.8664,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 IQR",
+      "期望值": 90.0,
+      "实际读取值": 90.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 P10",
+      "期望值": 110.0,
+      "实际读取值": 110.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "薪资中点 P90",
+      "期望值": 300.0,
+      "实际读取值": 300.0,
+      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "通过": true
+    },
+    {
+      "锚点": "公司认证 ε²",
+      "期望值": 0.197545,
+      "实际读取值": 0.197545,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（公司认证 KW）",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签原子标签数",
+      "期望值": 4328,
+      "实际读取值": 4328,
+      "来源": "32_company_field_semantic_audit.xlsx / 02_宽表字段统计",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签进入二元比较",
+      "期望值": 183,
+      "实际读取值": 183,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "通过": true
+    },
+    {
+      "锚点": "福利标签 BH-FDR 显著",
+      "期望值": 114,
+      "实际读取值": 114,
+      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签交集岗位",
+      "期望值": 731,
+      "实际读取值": 731,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签并集岗位",
+      "期望值": 784,
+      "实际读取值": 784,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "前5高效应标签最大两两 Jaccard",
+      "期望值": 1.0,
+      "实际读取值": 1.0,
+      "来源": "outputs/logs/metrics/stage_13_eda.json: top_cliff_overlap",
+      "通过": true
+    },
+    {
+      "锚点": "主模型 test MAE",
+      "期望值": 35.335506,
+      "实际读取值": 35.335506,
+      "来源": "30_model_comparison.xlsx / 09_Test最终结果",
+      "通过": true
+    },
+    {
+      "锚点": "消融 Full test MAE",
+      "期望值": 36.074723,
+      "实际读取值": 36.074723,
+      "来源": "31_ablation_robustness_shap.xlsx / 01_消融结果",
+      "通过": true
+    },
+    {
+      "锚点": "按公司分组划分 test MAE",
+      "期望值": 52.049937,
+      "实际读取值": 52.049937,
+      "来源": "31_ablation_robustness_shap.xlsx / 04_Random_vs_GroupSplit",
+      "通过": true
+    }
+  ],
+  "anchor_log": [
+    {
+      "锚点": "原始岗位观测",
+      "读取值": 172063,
+      "校验值": 172063,
+      "一致": true,
+      "来源": "13_observation_snapshot_audit/01_总体统计"
+    },
+    {
+      "锚点": "唯一岗位实体",
+      "读取值": 17144,
+      "校验值": 17144,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/01_样本概况"
+    },
+    {
+      "锚点": "薪资面议岗位",
+      "读取值": 2245,
+      "校验值": 2245,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/01_样本概况"
+    },
+    {
+      "锚点": "薪资逻辑异常",
+      "读取值": 16,
+      "校验值": 16,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/01_样本概况"
+    },
+    {
+      "锚点": "正式薪资样本",
+      "读取值": 14883,
+      "校验值": 14883,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/01_样本概况"
+    },
+    {
+      "锚点": "明确薪资可解析",
+      "读取值": 14899,
+      "校验值": 14899,
+      "一致": true,
+      "来源": "21_structured_field_salary_audit/02_薪资解析状态"
+    },
+    {
+      "锚点": "薪资中位数",
+      "读取值": 175.0,
+      "校验值": 175.0,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/02_薪资描述统计"
+    },
+    {
+      "锚点": "薪资 IQR",
+      "读取值": 90.0,
+      "校验值": 90.0,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/02_薪资描述统计"
+    },
+    {
+      "锚点": "薪资 P10",
+      "读取值": 110.0,
+      "校验值": 110.0,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/02_薪资描述统计"
+    },
+    {
+      "锚点": "薪资 P90",
+      "读取值": 300.0,
+      "校验值": 300.0,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/02_薪资描述统计"
+    },
+    {
+      "锚点": "公司认证-无认证",
+      "读取值": 9104,
+      "校验值": 9104,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（认证块）"
+    },
+    {
+      "锚点": "公司认证-行业认证",
+      "读取值": 460,
+      "校验值": 460,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（认证块）"
+    },
+    {
+      "锚点": "公司认证-最佳雇主",
+      "读取值": 4542,
+      "校验值": 4542,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（认证块）"
+    },
+    {
+      "锚点": "公司认证-两者均有",
+      "读取值": 777,
+      "校验值": 777,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（认证块）"
+    },
+    {
+      "锚点": "公司认证 ε²",
+      "读取值": 0.197545,
+      "校验值": 0.197545,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（认证块）"
+    },
+    {
+      "锚点": "福利标签原子标签",
+      "读取值": 4328,
+      "校验值": 4328,
+      "一致": true,
+      "来源": "32_company_field_semantic_audit/02_宽表字段统计"
+    },
+    {
+      "锚点": "福利标签原子标签（指标日志）",
+      "读取值": 4328,
+      "校验值": 4328,
+      "一致": true,
+      "来源": "outputs/logs/metrics/stage_13_eda.json:company_tag_atoms"
+    },
+    {
+      "锚点": "福利标签进入比较",
+      "读取值": 183,
+      "校验值": 183,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "福利标签校正后显著",
+      "读取值": 114,
+      "校验值": 114,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "前5标签交集岗位数",
+      "读取值": 731,
+      "校验值": 731,
+      "一致": true,
+      "来源": "stage_13_eda.json:top_cliff_overlap.全部交集岗位数"
+    },
+    {
+      "锚点": "前5标签并集岗位数",
+      "读取值": 784,
+      "校验值": 784,
+      "一致": true,
+      "来源": "stage_13_eda.json:top_cliff_overlap.全部并集岗位数"
+    },
+    {
+      "锚点": "前5标签最大 Jaccard",
+      "读取值": 1.0,
+      "校验值": 1.0,
+      "一致": true,
+      "来源": "stage_13_eda.json:top_cliff_overlap.两两最大Jaccard"
+    },
+    {
+      "锚点": "技能主口径",
+      "读取值": 8822,
+      "校验值": 8822,
+      "一致": true,
+      "来源": "27_skill_eda_scope_audit/01_样本口径"
+    },
+    {
+      "锚点": "技能扩展口径",
+      "读取值": 16378,
+      "校验值": 16378,
+      "一致": true,
+      "来源": "27_skill_eda_scope_audit/01_样本口径"
+    },
+    {
+      "锚点": "技能仅模板口径",
+      "读取值": 766,
+      "校验值": 766,
+      "一致": true,
+      "来源": "27_skill_eda_scope_audit/01_样本口径"
+    },
+    {
+      "锚点": "技能列数",
+      "读取值": 44,
+      "校验值": 44,
+      "一致": true,
+      "来源": "30_model_comparison/02_特征维度"
+    },
+    {
+      "锚点": "文本维度",
+      "读取值": 16,
+      "校验值": 16,
+      "一致": true,
+      "来源": "30_model_comparison/02_特征维度"
+    },
+    {
+      "锚点": "最终特征维度",
+      "读取值": 320,
+      "校验值": 320,
+      "一致": true,
+      "来源": "30_model_comparison/02_特征维度"
+    },
+    {
+      "锚点": "基础特征维度 A+B+C",
+      "读取值": 241,
+      "校验值": 241,
+      "一致": true,
+      "来源": "31_ablation_robustness_shap/01_消融结果"
+    },
+    {
+      "锚点": "训练集样本数",
+      "读取值": 10418,
+      "校验值": 10418,
+      "一致": true,
+      "来源": "30_model_comparison/01_数据划分"
+    },
+    {
+      "锚点": "验证集样本数",
+      "读取值": 2232,
+      "校验值": 2232,
+      "一致": true,
+      "来源": "30_model_comparison/01_数据划分"
+    },
+    {
+      "锚点": "测试集样本数",
+      "读取值": 2233,
+      "校验值": 2233,
+      "一致": true,
+      "来源": "30_model_comparison/01_数据划分"
+    },
+    {
+      "锚点": "主模型 test MAE",
+      "读取值": 35.335506,
+      "校验值": 35.335506,
+      "一致": true,
+      "来源": "30_model_comparison/09_Test最终结果"
+    },
+    {
+      "锚点": "主模型 test RMSE",
+      "读取值": 64.623479,
+      "校验值": 64.623479,
+      "一致": true,
+      "来源": "30_model_comparison/09_Test最终结果"
+    },
+    {
+      "锚点": "主模型 test R²",
+      "读取值": 0.584606,
+      "校验值": 0.584606,
+      "一致": true,
+      "来源": "30_model_comparison/09_Test最终结果"
+    },
+    {
+      "锚点": "按公司分组划分 test MAE",
+      "读取值": 52.049937,
+      "校验值": 52.049937,
+      "一致": true,
+      "来源": "31_ablation_robustness_shap/04_Random_vs_GroupSplit"
+    },
+    {
+      "锚点": "标签岗位数-免费健身设施",
+      "读取值": 731,
+      "校验值": 731,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "标签岗位数-就近租房补贴",
+      "读取值": 731,
+      "校验值": 731,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "标签岗位数-餐饮",
+      "读取值": 732,
+      "校验值": 732,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "标签岗位数-节日礼品",
+      "读取值": 743,
+      "校验值": 743,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "标签岗位数-弹性工作制",
+      "读取值": 771,
+      "校验值": 771,
+      "一致": true,
+      "来源": "29_eda_statistical_analysis/11_统计检验（标签块）"
+    },
+    {
+      "锚点": "前5标签交集岗位数（只读复算）",
+      "读取值": 731,
+      "校验值": 731,
+      "一致": true,
+      "来源": "data/processed/job_salary_model_dataset.parquet"
+    },
+    {
+      "锚点": "前5标签并集岗位数（只读复算）",
+      "读取值": 784,
+      "校验值": 784,
+      "一致": true,
+      "来源": "data/processed/job_salary_model_dataset.parquet"
+    },
+    {
+      "锚点": "前5标签最大两两 Jaccard（只读复算）",
+      "读取值": 1.0,
+      "校验值": 1.0,
+      "一致": true,
+      "来源": "data/processed/job_salary_model_dataset.parquet"
+    },
+    {
+      "锚点": "消融 Full 配置 test MAE",
+      "读取值": 36.074723,
+      "校验值": 36.074723,
+      "一致": true,
+      "来源": "31_ablation_robustness_shap/01_消融结果"
+    }
+  ],
+  "figures": [
+    {
+      "figure_id": "图S01",
+      "stem": "图S01_样本筛选与口径流转_display",
+      "caption": "附图 A-7 正式薪资样本的筛选与口径流转",
+      "图内图题": "附图 A-7 正式薪资样本的筛选与口径流转",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.pdf"
+    },
+    {
+      "figure_id": "图S02",
+      "stem": "图S02_公司属性语义槽位异常修复构成_display",
+      "caption": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
+      "图内图题": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "异常三类构成",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "修复前后残留对照",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.pdf"
+    },
+    {
+      "figure_id": "图S03",
+      "stem": "图S03_数据划分与三子集薪资分布_display",
+      "caption": "附图 A-9 数据划分与三个子集的薪资分布对照",
+      "图内图题": "附图 A-9 数据划分与三个子集的薪资分布对照",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "子集规模",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "子集薪资分布",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.pdf"
+    },
+    {
+      "figure_id": "图S04",
+      "stem": "图S04_公司认证四类薪资分布与组间比较_display",
+      "caption": "图 5-2 公司认证状态的薪资分布与组间比较",
+      "图内图题": "图 5-2 公司认证状态的薪资分布与组间比较",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "四类分布",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "六组成对比较效应量",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.pdf"
+    },
+    {
+      "figure_id": "图S05",
+      "stem": "图S05_公司福利标签效应量与显著性总览_display",
+      "caption": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
+      "图内图题": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.pdf"
+    },
+    {
+      "figure_id": "图S06",
+      "stem": "图S06_高效应福利标签共现簇_display",
+      "caption": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
+      "图内图题": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "前 5 标签交集与并集规模",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "前 5 标签两两 Jaccard 热力图",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.pdf"
+    },
+    {
+      "figure_id": "图S05S06",
+      "stem": "图S05S06_公司福利标签薪资关联与共现_display",
+      "caption": "图 5-3 公司福利标签的薪资关联及共现特征",
+      "图内图题": "图 5-3 公司福利标签的薪资关联及共现特征",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "福利标签效应量与 BH-FDR 显著性",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "高效应福利标签共现结构",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现_display.pdf"
+    },
+    {
+      "figure_id": "图S07",
+      "stem": "图S07_结构化因素效应量排序_display",
+      "caption": "图 5-4 结构化因素的效应量排序",
+      "图内图题": "图 5-4 结构化因素的效应量排序",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.pdf"
+    },
+    {
+      "figure_id": "图S08",
+      "stem": "图S08_技能数量档与薪资_display",
+      "caption": "附图 A-10 技能数量档与薪资的关系",
+      "图内图题": "附图 A-10 技能数量档与薪资的关系",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "各档薪资分布",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "样本量与中位数",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.pdf"
+    },
+    {
+      "figure_id": "图S09",
+      "stem": "图S09_控制细分类前后技能薪资差异_display",
+      "caption": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
+      "图内图题": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.pdf"
+    },
+    {
+      "figure_id": "图S10",
+      "stem": "图S10_稳健性检查对照_display",
+      "caption": "图 8-5 稳健性检查对照",
+      "图内图题": "图 8-5 稳健性检查对照",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "MAE 对照",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "R² 对照",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.pdf"
+    },
+    {
+      "figure_id": "图S11",
+      "stem": "图S11_特征组增量bootstrap置信区间_display",
+      "caption": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
+      "图内图题": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.pdf"
+    },
+    {
+      "figure_id": "图S12",
+      "stem": "图S12_SHAP解释稳定性_display",
+      "caption": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
+      "图内图题": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.pdf"
+    },
+    {
+      "figure_id": "图S13",
+      "stem": "图S13_技能阈值与文本维度选择_display",
+      "caption": "附图 A-13 技能特征阈值与文本维度的验证集表现",
+      "图内图题": "附图 A-13 技能特征阈值与文本维度的验证集表现",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "技能阈值",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "文本维度",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.pdf"
+    },
+    {
+      "figure_id": "图S14",
+      "stem": "图S14_每岗福利标签数量分布_display",
+      "caption": "附图 A-14 每个岗位的公司福利标签数量分布",
+      "图内图题": "附图 A-14 每个岗位的公司福利标签数量分布",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.pdf"
+    },
+    {
+      "figure_id": "图S15",
+      "stem": "图S15_目标泄漏检查与特征组构成_display",
+      "caption": "附图 A-15 目标泄漏检查与特征组构成",
+      "图内图题": "附图 A-15 目标泄漏检查与特征组构成",
+      "图型": "supplementary",
+      "variant": "display",
+      "caption_structure_ok": true,
+      "no_top_title": true,
+      "four_spines_visible": true,
+      "inward_ticks": true,
+      "light_grid": true,
+      "axis_labels_present": true,
+      "legend_overlap_ratio": 0.0,
+      "legend_no_overlap": true,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_600dpi": true,
+      "pdf_valid": true,
+      "caption_ink_visible": true,
+      "caption_not_cropped": true,
+      "subfigures": [
+        {
+          "letter": "a",
+          "text": "泄漏字段检查状态",
+          "position_below": true,
+          "ink_visible": true
+        },
+        {
+          "letter": "b",
+          "text": "五组特征维度",
+          "position_below": true,
+          "ink_visible": true
+        }
+      ],
+      "subfigure_caption_visible": true,
+      "subfigure_label_sequence_ok": true,
+      "png_path": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.pdf"
+    }
+  ],
+  "paper_figures": [
+    {
+      "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 321701,
+      "pdf_bytes": 46719,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 355169,
+      "pdf_bytes": 47242,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 326422,
+      "pdf_bytes": 46181,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 449589,
+      "pdf_bytes": 57071,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 466798,
+      "pdf_bytes": 57543,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 622653,
+      "pdf_bytes": 65975,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 780175,
+      "pdf_bytes": 83750,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 455754,
+      "pdf_bytes": 58243,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 424367,
+      "pdf_bytes": 45829,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 447994,
+      "pdf_bytes": 58040,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 351298,
+      "pdf_bytes": 48543,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 379736,
+      "pdf_bytes": 56965,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 442640,
+      "pdf_bytes": 69713,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 479526,
+      "pdf_bytes": 48915,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 390974,
+      "pdf_bytes": 37141,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    },
+    {
+      "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成.png",
+      "论文版无图内总图题": true,
+      "png_bytes": 436465,
+      "pdf_bytes": 68549,
+      "门禁": {
+        "no_infigure_caption": true,
+        "no_top_title": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "inward_ticks": true,
+        "light_grid": true,
+        "four_spines_visible": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true,
+        "png_600dpi": true,
+        "pdf_valid": true
+      },
+      "未通过": []
+    }
+  ],
+  "gate_checks": {
+    "SCI_STYLE": true,
+    "SNS_PLT_ONLY": true,
+    "INWARD_TICKS": true,
+    "FOUR_SPINES_VISIBLE": true,
+    "LIGHT_GRID": true,
+    "CHINESE_FONT": true,
+    "BOTTOM_CAPTION_VISIBLE": true,
+    "SUBFIGURE_CAPTION_VISIBLE": true,
+    "SUBFIGURE_LABEL_SEQUENCE": true,
+    "PNG_600DPI": true,
+    "PDF_EXPORT": true,
+    "LEGEND_NO_OVERLAP": true,
+    "AXIS_LABEL_VISIBLE": true,
+    "NO_TITLE_ON_TOP": true,
+    "NO_FIGURE_POPUP": true,
+    "NO_PLT_SHOW": true,
+    "HEADLESS_SAVE_MODE": true,
+    "AUTO_CLOSE_FIGURE": true
+  },
+  "gate_detail": {
+    "figure_total": 16,
+    "subfigure_figures": 9,
+    "worst_legend_overlap": 0.0,
+    "backend": "Agg",
+    "interactive": false,
+    "show_calls": 0,
+    "figure_show_calls": 0,
+    "forbidden_in_notebook": [],
+    "open_figures": [],
+    "failed": [],
+    "failed_anchor_count": 0
+  },
+  "per_figure_results": [
+    {
+      "stem": "图S01_样本筛选与口径流转",
+      "caption": "附图 A-7 正式薪资样本的筛选与口径流转",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 321701,
+        "pdf_bytes": 46719,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.png",
+        "png_bytes": 372973,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S02_公司属性语义槽位异常修复构成",
+      "caption": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 355169,
+        "pdf_bytes": 47242,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.png",
+        "png_bytes": 421655,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S03_数据划分与三子集薪资分布",
+      "caption": "附图 A-9 数据划分与三个子集的薪资分布对照",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 326422,
+        "pdf_bytes": 46181,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.png",
+        "png_bytes": 382154,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S04_公司认证四类薪资分布与组间比较",
+      "caption": "图 5-2 公司认证状态的薪资分布与组间比较",
+      "论文去向": "正文 图 5-2（5.5.1 节）",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 449589,
+        "pdf_bytes": 57071,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.png",
+        "png_bytes": 503110,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S05_公司福利标签效应量与显著性总览",
+      "caption": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
+      "论文去向": "审计/展示",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 466798,
+        "pdf_bytes": 57543,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.png",
+        "png_bytes": 530422,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S06_高效应福利标签共现簇",
+      "caption": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
+      "论文去向": "审计/展示",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 622653,
+        "pdf_bytes": 65975,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.png",
+        "png_bytes": 684705,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S05S06_公司福利标签薪资关联与共现",
+      "caption": "图 5-3 公司福利标签的薪资关联及共现特征",
+      "论文去向": "正文 图 5-3（5.5.2 节）",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 780175,
+        "pdf_bytes": 83750,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现_display.png",
+        "png_bytes": 836071,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S07_结构化因素效应量排序",
+      "caption": "图 5-4 结构化因素的效应量排序",
+      "论文去向": "正文 图 5-4（5.6 节）",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 455754,
+        "pdf_bytes": 58243,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.png",
+        "png_bytes": 502231,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S08_技能数量档与薪资",
+      "caption": "附图 A-10 技能数量档与薪资的关系",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 424367,
+        "pdf_bytes": 45829,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.png",
+        "png_bytes": 474511,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S09_控制细分类前后技能薪资差异",
+      "caption": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
+      "论文去向": "正文 图 6-4（6.5 节）",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 447994,
+        "pdf_bytes": 58040,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.png",
+        "png_bytes": 505789,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S10_稳健性检查对照",
+      "caption": "图 8-5 稳健性检查对照",
+      "论文去向": "正文 图 8-5（8.3 节）",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 351298,
+        "pdf_bytes": 48543,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.png",
+        "png_bytes": 387982,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S11_特征组增量bootstrap置信区间",
+      "caption": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 379736,
+        "pdf_bytes": 56965,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.png",
+        "png_bytes": 430861,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S12_SHAP解释稳定性",
+      "caption": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 442640,
+        "pdf_bytes": 69713,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.png",
+        "png_bytes": 497385,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S13_技能阈值与文本维度选择",
+      "caption": "附图 A-13 技能特征阈值与文本维度的验证集表现",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 479526,
+        "pdf_bytes": 48915,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.png",
+        "png_bytes": 536389,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S14_每岗福利标签数量分布",
+      "caption": "附图 A-14 每个岗位的公司福利标签数量分布",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 390974,
+        "pdf_bytes": 37141,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.png",
+        "png_bytes": 446742,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    },
+    {
+      "stem": "图S15_目标泄漏检查与特征组构成",
+      "caption": "附图 A-15 目标泄漏检查与特征组构成",
+      "论文去向": "附录",
+      "passed": true,
+      "attempts": 1,
+      "first_pass": true,
+      "failed": [],
+      "gates": {
+        "inward_ticks": true,
+        "light_grid": true,
+        "caption_structure_ok": true,
+        "caption_ink_visible": true,
+        "caption_not_cropped": true,
+        "subfigure_caption_visible": true,
+        "subfigure_label_sequence_ok": true,
+        "png_600dpi": true,
+        "pdf_valid": true,
+        "four_spines_visible": true,
+        "no_top_title": true,
+        "axis_labels_present": true,
+        "legend_no_overlap": true
+      },
+      "paper": {
+        "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成.png",
+        "论文版无图内总图题": true,
+        "png_bytes": 436465,
+        "pdf_bytes": 68549,
+        "门禁": {
+          "no_infigure_caption": true,
+          "no_top_title": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "inward_ticks": true,
+          "light_grid": true,
+          "four_spines_visible": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true,
+          "png_600dpi": true,
+          "pdf_valid": true
+        },
+        "未通过": []
+      },
+      "display": {
+        "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.png",
+        "png_bytes": 481991,
+        "门禁": {
+          "inward_ticks": true,
+          "light_grid": true,
+          "caption_structure_ok": true,
+          "caption_ink_visible": true,
+          "caption_not_cropped": true,
+          "subfigure_caption_visible": true,
+          "subfigure_label_sequence_ok": true,
+          "png_600dpi": true,
+          "pdf_valid": true,
+          "four_spines_visible": true,
+          "no_top_title": true,
+          "axis_labels_present": true,
+          "legend_no_overlap": true
+        },
+        "未通过": []
+      }
+    }
+  ],
+  "summary": {
+    "total": 16,
+    "first_pass": 16,
+    "final_pass": 16,
+    "still_failed": 0,
+    "paper_caption_removed": 16,
+    "redraw_counts": {
+      "图S01_样本筛选与口径流转": 1,
+      "图S02_公司属性语义槽位异常修复构成": 1,
+      "图S03_数据划分与三子集薪资分布": 1,
+      "图S04_公司认证四类薪资分布与组间比较": 1,
+      "图S05_公司福利标签效应量与显著性总览": 1,
+      "图S06_高效应福利标签共现簇": 1,
+      "图S05S06_公司福利标签薪资关联与共现": 1,
+      "图S07_结构化因素效应量排序": 1,
+      "图S08_技能数量档与薪资": 1,
+      "图S09_控制细分类前后技能薪资差异": 1,
+      "图S10_稳健性检查对照": 1,
+      "图S11_特征组增量bootstrap置信区间": 1,
+      "图S12_SHAP解释稳定性": 1,
+      "图S13_技能阈值与文本维度选择": 1,
+      "图S14_每岗福利标签数量分布": 1,
+      "图S15_目标泄漏检查与特征组构成": 1
+    }
+  }
+}

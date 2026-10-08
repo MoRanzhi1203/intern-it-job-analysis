@@ -1,0 +1,78 @@
+{
+  "stage": "Stage26.2",
+  "seed": 42,
+  "图件": [
+    {
+      "stem": "图S28_特征组消融对比",
+      "png_path": "outputs\\figures\\supplementary\\图S28_特征组消融对比.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S28_特征组消融对比.pdf",
+      "png_pixel_size": [
+        9131,
+        3032
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 483058,
+      "pdf_size_bytes": 53315,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S29_招聘周期持续时长分布与累积分布",
+      "png_path": "outputs\\figures\\supplementary\\图S29_招聘周期持续时长分布与累积分布.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S29_招聘周期持续时长分布与累积分布.pdf",
+      "png_pixel_size": [
+        9525,
+        3295
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 541334,
+      "pdf_size_bytes": 54948,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S30_样本计划招聘覆盖每日活跃与新增结束",
+      "png_path": "outputs\\figures\\supplementary\\图S30_样本计划招聘覆盖每日活跃与新增结束.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S30_样本计划招聘覆盖每日活跃与新增结束.pdf",
+      "png_pixel_size": [
+        10004,
+        3320
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 979916,
+      "pdf_size_bytes": 82471,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    },
+    {
+      "stem": "图S31_主要岗位大类计划覆盖",
+      "png_path": "outputs\\figures\\supplementary\\图S31_主要岗位大类计划覆盖.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S31_主要岗位大类计划覆盖.pdf",
+      "png_pixel_size": [
+        10003,
+        3294
+      ],
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_size_bytes": 1004372,
+      "pdf_size_bytes": 89671,
+      "no_infigure_caption": true,
+      "subfigure_caption_visible": true,
+      "failed_paper_gates": []
+    }
+  ]
+}
