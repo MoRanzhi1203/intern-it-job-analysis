@@ -139,6 +139,27 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
   `05_..08_` 特征组消融 / Random vs Group Split / SHAP 蜂群图 / 技能 SHAP Top20）、
   `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 + 类别编码 schema + 文本降维 + 参数）。
 
+### 5.1 图件目录说明（`outputs/figures/`）
+
+每张图通常有 4 个变体：`<名>.png` / `<名>.pdf`（canonical）+ `<名>_display.png` / `<名>_display.pdf`
+（含图内题注，供 Word 嵌图），因此文件数为图数的 2~4 倍。
+
+| 目录 | 命名规范 | 用途（论文归属） | 生成脚本 | 状态 |
+| --- | --- | --- | --- | --- |
+| `figures/sci/` | `图NN_中文名` | 第 3 章：数据治理与岗位版本重构 | `18a`/`26e`/`26g` + `_figure_registry.json` | 现行 |
+| `figures/eda/` | `NN_英文名` | 第 4~6 章：正式 EDA（10 张） | `13_run_eda.py` | 现行 |
+| `figures/modeling/` | `NN_英文名` | 第 7~8 章：建模 / 消融 / SHAP（8 张） | `14`/`15` | 现行 |
+| `figures/supplementary/` | `图Sxx_中文名` | 附录补充图 | `18b` + `_stage26_*_registry.json` | 现行 |
+| `figures/time/` | `NN_英文名` | 第 4 章：业务时间维度（3 张，独立主题） | `33` → `49` | 现行 |
+| `figures/evidence/` | `Exx_…` / `A2_orig2_…` | Stage27.0 组合证据图；其 `01_source/_raw` 是 `40` 的输入 | `36` | 部分现行 |
+| `figures/evidence_native/` | `ExxX_…` | 现行工程证据截图（单图拆分） | `40`/`43`/`44` | 现行 |
+| `figures/`（根） | `fig_<章>_<序>_…` | 散图 + 3 个登记表 | `45`/`46`/`47` 等 | 现行 |
+| `results/figures/` | `fig_6` / `fig_7` | 「补全任务」交付物 | `62_completion_supplement.py` | 现行 |
+
+说明：目录按**论文章节 + 生成批次**划分，故数量较多。每张图的 PNG/PDF 与 `_display` 变体属正常配对，
+不是冗余。`figures/_compare_fig_8_1/`（图 8-1 的 A/B/C/D 选型候选）为临时产物，已于本轮删除，
+如需重出可运行 `scripts/57_fig8_1_variant_compare.py`。
+
 ## 6. Notebook
 
 `notebooks/` 目录当前未建立（见第 8 节）。后续 EDA / 建模 / 论文出图 Notebook 按统一规范新增；
@@ -162,8 +183,9 @@ Stage 00~11 不再保留 Notebook 双实现。
    两组 `35_*`（`35_recruitment_time_field_audit.xlsx` 与
    `35_visual_evidence_native_layout_registry.xlsx`），与第 5 节「全项目统一编号」的约定冲突；
    两组编号均被脚本引用，需统一规划后再调整。
-2. **两代证据图集并存**：`outputs/figures/evidence/`（旧，Stage27_0，脚本 36~39）已被
-   `outputs/figures/evidence_native/`（现行，Stage27_0a，脚本 40~44）取代，旧脚本仍引用旧集。
+2. **两代证据图集并存**：`outputs/figures/evidence/`（Stage27.0 组合图，脚本 36）的**组合图**已被
+   `evidence_native/`（Stage27.0A 单图，脚本 40/43/44）取代；但 `evidence/01_source/_raw`
+   （原始网页截图）仍是脚本 `40` 的输入，故旧目录**不能整体移除**。
 3. **顶层 `results/` 与 `outputs/` 功能重叠**：`results/` 为「补全任务」交付物
    （含 `补全任务_完成报告.md` 自述映射到论文段落），未纳入统一结构约定。
 4. **待补充目录**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
