@@ -280,7 +280,7 @@ def key_skill_table(membership: pd.DataFrame, universe_ids, scopes, skill_shap: 
     return pd.DataFrame(rows)
 
 
-def group_split_leakage(splits: pd.DataFrame, id_field: str = schema.ID_FIELD) -> dict:
+def group_split_leakage(splits: pd.DataFrame) -> dict:
     """公司 Group Split 的泄漏检查：同公司不得跨子集。"""
     frame = splits.dropna(subset=['company_group_split'])
     grouped = frame.groupby('company_entity_id')['company_group_split'].nunique()

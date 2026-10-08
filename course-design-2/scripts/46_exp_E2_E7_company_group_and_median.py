@@ -14,7 +14,6 @@ E7：沿用 5.8 节的 132 列设计矩阵、参照组与中位数回归模型�
 """
 from __future__ import annotations
 
-import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -27,6 +26,7 @@ sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
 from src import eda_analysis, model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
+from src.script_support import load_polish  # noqa: E402
 
 SEEDS = (42, 52, 62, 72, 82)
 BOOTSTRAP_ROUNDS = 1000
@@ -36,15 +36,6 @@ TEXT_DIM = 16
 RESULTS = project_paths.OUTPUTS_RESULTS_DIR
 FIGURES = project_paths.FIGURES_DIR
 RANDOM_SPLIT_BASELINE = 35.996481  # 同协议随机划分测试集 MAE（Stage26.4 统一协议）
-
-
-def load_polish():
-    spec = importlib.util.spec_from_file_location(
-        's26f', str(PROJECT / 'scripts' / '26f_stage26_4_final_polish.py'))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules['s26f'] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def _median_coefs(matrix, target, rows):

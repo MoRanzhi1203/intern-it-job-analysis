@@ -498,7 +498,7 @@ def build_skill_demand(membership: pd.DataFrame, universe: dict, config) -> tupl
 
 
 def build_category_skill_matrix(membership: pd.DataFrame, analysis: pd.DataFrame, universe: dict,
-                                main_rank: pd.DataFrame, config) -> pd.DataFrame:
+                                main_rank: pd.DataFrame) -> pd.DataFrame:
     """13.6 岗位细分类 × 高频技能命中率矩阵（分母 = 细分类内部岗位数）。"""
     categories = analysis[[schema.ID_FIELD, '岗位细分类集合']].explode('岗位细分类集合')
     categories = categories.dropna().rename(columns={'岗位细分类集合': '岗位细分类'})
@@ -510,8 +510,8 @@ def build_category_skill_matrix(membership: pd.DataFrame, analysis: pd.DataFrame
 
 
 def build_skill_salary(membership: pd.DataFrame, salary_layer: pd.DataFrame, model_ids: set,
-                       analysis: pd.DataFrame, universe: dict, main_rank: pd.DataFrame,
-                       config) -> tuple:
+                       analysis: pd.DataFrame, universe: dict,
+                       main_rank: pd.DataFrame) -> tuple:
     """08/09/13：技能薪资（逐技能）、岗位细分类内、技能数量档。
 
     逐技能与细分类内对比的限制集 = 主口径 ∩ 正式薪资样本；
@@ -565,8 +565,8 @@ def build_skill_salary(membership: pd.DataFrame, salary_layer: pd.DataFrame, mod
     return per_skill, within, count_table, test
 
 
-def build_robustness(membership: pd.DataFrame, model: pd.DataFrame, universe: dict,
-                     main_rank: pd.DataFrame, ext_rank: pd.DataFrame) -> pd.DataFrame:
+def build_robustness(model: pd.DataFrame, main_rank: pd.DataFrame,
+                     ext_rank: pd.DataFrame) -> pd.DataFrame:
     """12_稳健性：双口径排名一致性 + 薪资 1%/99% 截断对照。"""
     summary, detail = skill_eda.rank_robustness(main_rank, ext_rank)
     rows = [{'项目': key, '数值': value,

@@ -13,7 +13,6 @@ top 0.97）重绘，只改变 x 轴标题文本，不改动数据、行列选择
 """
 from __future__ import annotations
 
-import importlib.util
 import sys
 from pathlib import Path
 
@@ -26,6 +25,7 @@ from matplotlib.ticker import PercentFormatter  # noqa: E402
 import numpy as np  # noqa: E402
 
 from src import plot_style  # noqa: E402
+from src.script_support import load_script as _load  # noqa: E402
 
 STEM = '图S44_岗位细分类技能命中率热力图'
 # 打印宽 15.5 cm（与论文版心一致）；面板高由 5.2 in 拉长到 6.0 in（图更高）
@@ -68,14 +68,6 @@ def _percent_colorbar(fig) -> dict:
     colorbar.set_ylabel(COLORBAR_LABEL, fontsize=plot_style.FONT_SIZES['axis_label'])
     return {'色条名': COLORBAR_LABEL, '色条上限（数据最大值）': round(upper, 6),
             '色标刻度': ['%.0f%%' % (value * 100) for value in ticks]}
-
-
-def _load(alias: str, relative: str):
-    spec = importlib.util.spec_from_file_location(alias, str(PROJECT_ROOT / relative))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[alias] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def main() -> int:

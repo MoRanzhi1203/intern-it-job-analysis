@@ -35,7 +35,6 @@
 """
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import sys
@@ -51,6 +50,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src import (ablation_shap, figure_finalize, io_utils, model_training,  # noqa: E402
                  plot_style, project_paths, schema, skill_eda)
+from src.script_support import (build_assembler, dump_json, fit_eval,  # noqa: E402
+                                       grouped_columns, section_length, sha256_of)
 
 # ============================================================================
 # 常量与口径（与 Stage26.2 统一协议保持一致，便于逐项对照）
@@ -169,14 +170,6 @@ MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config',
 # ============================================================================
 # 通用工具
 # ============================================================================
-def sha256_of(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open('rb') as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def project_manifest() -> dict:
     manifest: dict = {}
     new_resolved = {path.resolve() for path in NEW_FILES}
@@ -198,12 +191,6 @@ def project_manifest() -> dict:
     return manifest
 
 
-def dump_json(path: Path, payload) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str),
-                    encoding='utf-8')
-
-
 def write_excel(path: Path, sheets: dict) -> None:
     with pd.ExcelWriter(path, engine='openpyxl') as writer:
         for name, frame in sheets.items():
@@ -214,19 +201,6 @@ def write_excel(path: Path, sheets: dict) -> None:
 # ============================================================================
 # 特征装配（移除后验特征）
 # ============================================================================
-def grouped_columns(feature_manifest: dict, frame: pd.DataFrame) -> dict:
-    grouped = ablation_shap.split_columns_by_group(
-        feature_manifest['numeric_columns'], feature_manifest['categorical_columns'],
-        feature_manifest['multi_value_columns'])
-    for _, spec in grouped.items():
-        for key in spec:
-            spec[key] = [column for column in spec[key] if column not in SAFE_F_STAGE26_1]
-    grouped['SafeF'] = {'numeric': [column for column in SAFE_F_FINAL
-                                    if column in frame.columns],
-                        'categorical': [], 'multi': []}
-    return grouped
-
-
 def drop_posterior(grouped: dict) -> dict:
     """从全部特征组中移除发布时点不可得、连续数值冗余与近常量的特征。"""
     cleaned = {}
@@ -235,61 +209,6 @@ def drop_posterior(grouped: dict) -> dict:
             key: [column for column in spec[key] if column not in REMOVED_FEATURES]
             for key in ('numeric', 'categorical', 'multi')}
     return cleaned
-
-
-def build_assembler(groups, grouped, skill_threshold: int, text_dim: int,
-                    scale_numeric: bool = False):
-    numeric, categorical, multi = [], [], []
-    for letter in groups:
-        numeric += grouped[letter]['numeric']
-        categorical += grouped[letter]['categorical']
-        multi += grouped[letter]['multi']
-    return model_training.SalaryFeatureAssembler(
-        numeric, categorical, multi,
-        skill_threshold=skill_threshold if 'D' in groups else 10 ** 9,
-        text_dim=text_dim if 'E' in groups else 0, scale_numeric=scale_numeric)
-
-
-def fit_eval(frame: pd.DataFrame, labels: pd.Series, groups, grouped, skill_map,
-             text_matrix: np.ndarray, text_by_id: dict, skill_threshold: int,
-             text_dim: int, model_key: str = 'LightGBM', params: dict | None = None,
-             random_state: int = SEED, scale_numeric: bool = False) -> dict:
-    values = frame[schema.ID_FIELD].map(labels).to_numpy()
-    train_frame = frame[values == 'train'].reset_index(drop=True)
-    valid_frame = frame[values == 'validation'].reset_index(drop=True)
-    test_frame = frame[values == 'test'].reset_index(drop=True)
-
-    def text_for(block):
-        return text_matrix[[text_by_id[job_id] for job_id in block[schema.ID_FIELD]]]
-
-    assembler = build_assembler(groups, grouped, skill_threshold, text_dim, scale_numeric)
-    assembler.fit(train_frame, skill_map, text_for(train_frame))
-    matrix_train = assembler.transform(train_frame, skill_map, text_for(train_frame))
-    matrix_valid = assembler.transform(valid_frame, skill_map, text_for(valid_frame))
-    matrix_test = assembler.transform(test_frame, skill_map, text_for(test_frame))
-    if model_key == 'Dummy':
-        from sklearn.dummy import DummyRegressor  # noqa: PLC0415
-
-        model = DummyRegressor(strategy=(params or {}).get('strategy', 'mean'))
-    else:
-        model = model_training.make_model(model_key, params or LIGHTGBM_PARAMS,
-                                          random_state=random_state)
-    model.fit(matrix_train, train_frame[schema.SALARY_MID_FIELD].to_numpy('float64'))
-    valid_pred = np.asarray(model.predict(matrix_valid), dtype='float64')
-    test_pred = np.asarray(model.predict(matrix_test), dtype='float64')
-    return {
-        'model': model, 'assembler': assembler,
-        '特征维度': int(assembler.schema.dimension),
-        '技能列数': int(len(assembler.schema.skill_columns)),
-        'n_train': int(len(train_frame)), 'n_validation': int(len(valid_frame)),
-        'n_test': int(len(test_frame)),
-        'valid_pred': valid_pred, 'test_pred': test_pred,
-        'test_frame': test_frame, 'valid_frame': valid_frame, 'train_frame': train_frame,
-        'validation': model_training.regression_metrics(
-            valid_frame[schema.SALARY_MID_FIELD].to_numpy('float64'), valid_pred),
-        'test': model_training.regression_metrics(
-            test_frame[schema.SALARY_MID_FIELD].to_numpy('float64'), test_pred),
-    }
 
 
 def paired_bootstrap(y_true, pred_without, pred_with, rounds: int = BOOTSTRAP_ROUNDS,
@@ -707,23 +626,6 @@ def mechanical_lead_count() -> int:
                    if not str(value).strip().startswith('#')))
 
 
-def section_length(file_name: str, start_pattern: str, end_pattern: str) -> dict:
-    text = visible_body((SOURCE_DIR / file_name).read_text(encoding='utf-8'))
-    lines = text.splitlines()
-    start = end = None
-    for position, line in enumerate(lines):
-        if start is None and re.match(start_pattern, line.strip()):
-            start = position
-        elif start is not None and re.match(end_pattern, line.strip()):
-            end = position
-            break
-    if start is None:
-        return {'段落数': 0, '汉字数': 0}
-    block = '\n'.join(lines[start:end]) if end else '\n'.join(lines[start:])
-    return {'段落数': len([item for item in lines[start:end or len(lines)] if item.strip()]),
-            '汉字数': han_count(block)}
-
-
 # ============================================================================
 # 主流程
 # ============================================================================
@@ -774,7 +676,7 @@ def run_compute() -> int:
         'Retrospective Temporal Split': temporal_labels,
     }
 
-    grouped = grouped_columns(feature_manifest, frame)
+    grouped = grouped_columns(feature_manifest, frame, SAFE_F_STAGE26_1, SAFE_F_FINAL)
     grouped_new = drop_posterior(grouped)
     skill_map = model_training.build_skill_map(membership, skill_eda.ALL_USABLE_SCOPES)
     text_matrix = model_training.load_text_matrix(
@@ -1362,7 +1264,7 @@ def run_baseline() -> int:
         '各章标题后首段': leads.to_dict('records'),
         '章首机械总起段数量': mechanical_lead_count(),
         '各章小结篇幅': summaries.to_dict('records'),
-        '3.2 数据采集方案': section_length('03_数据获取与预处理.md',
+        '3.2 数据采集方案': section_length(SOURCE_DIR, visible_body, han_count, '03_数据获取与预处理.md',
                                       r'^#{2,4}\s*3\.2', r'^#{2,4}\s*3\.3'),
     }
     dump_json(TEXT_BASELINE_PATH, payload)
@@ -1420,7 +1322,7 @@ def run_inventory() -> int:
     section = pd.DataFrame([
         {'项目': '3.2 数据采集方案（改前）', **baseline.get('3.2 数据采集方案', {})},
         {'项目': '3.2 数据采集方案（改后）',
-         **section_length('03_数据获取与预处理.md', r'^#{2,4}\s*3\.2', r'^#{2,4}\s*3\.3')},
+         **section_length(SOURCE_DIR, visible_body, han_count, '03_数据获取与预处理.md', r'^#{2,4}\s*3\.2', r'^#{2,4}\s*3\.3')},
     ])
 
     write_excel(TABLE_TEXT_AUDIT, {

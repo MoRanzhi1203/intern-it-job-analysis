@@ -37,7 +37,6 @@
 """
 from __future__ import annotations
 
-import importlib.util
 import json
 import re
 import sys
@@ -56,6 +55,8 @@ from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 
 from src import figure_finalize, io_utils, model_training, plot_style, project_paths, schema  # noqa: E402
+from src.script_support import (load_script as _load, make_patched_adjust,  # noqa: E402
+                                   make_patched_subplots)
 
 TABLES_DIR = project_paths.TABLES_DIR
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
@@ -77,24 +78,8 @@ def _apply_mode(kind: str, display_cm: float, panel_h: float, adjust: dict) -> N
     MODE.update(kind=kind, w=display_cm * CM * FONT_SCALE, panel_h=panel_h, adjust=adjust)
 
 
-def _patched_subplots(nrows=1, ncols=1, **kwargs):
-    if MODE['kind'] == 'raw':
-        return _ORIG_SUBPLOTS(nrows, ncols, **kwargs)
-    kwargs.pop('gridspec_kw', None)
-    if nrows == 1 and ncols >= 2:                       # 横排 → 纵排
-        kwargs['figsize'] = (MODE['w'], MODE['panel_h'] * ncols)
-        return _ORIG_SUBPLOTS(ncols, 1, **kwargs)
-    rows = max(1, nrows)
-    kwargs['figsize'] = (MODE['w'], MODE['panel_h'] * rows)
-    return _ORIG_SUBPLOTS(rows, ncols, **kwargs)
-
-
-def _patched_adjust(self, **kwargs):
-    return _ORIG_ADJUST(self, **MODE['adjust'])
-
-
-plt.subplots = _patched_subplots
-Figure.subplots_adjust = _patched_adjust
+plt.subplots = make_patched_subplots(lambda: MODE, _ORIG_SUBPLOTS)
+Figure.subplots_adjust = make_patched_adjust(lambda: MODE, _ORIG_ADJUST)
 
 # --------------------------------------------------------------------------- #
 # 子图名定位：按「横轴刻度标签 + 横轴名的实际下沿」下移，
@@ -126,14 +111,6 @@ plot_style.add_subfigure_caption = _patched_subfigcap
 # --------------------------------------------------------------------------- #
 # 通用工具
 # --------------------------------------------------------------------------- #
-def _load(alias: str, relative: str):
-    spec = importlib.util.spec_from_file_location(alias, str(PROJECT_ROOT / relative))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[alias] = module
-    spec.loader.exec_module(module)
-    return module
-
-
 def read_table(name: str, sheet: str) -> pd.DataFrame:
     return pd.read_excel(TABLES_DIR / name, sheet_name=sheet)
 

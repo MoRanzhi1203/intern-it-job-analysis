@@ -41,6 +41,7 @@ import pandas as pd  # noqa: E402
 
 from src import (io_utils, model_training, plot_style,  # noqa: E402
                  project_paths, quality, schema, skill_eda)
+from src.script_support import finish_figure as _finish  # noqa: E402
 
 STAGE = 'stage_14_model'
 TITLE = 'Stage 14 薪资预测模型对比、验证集选模与一次性 test 评估'
@@ -294,15 +295,6 @@ def figure_error_groups(error_table: pd.DataFrame, registry: list) -> dict:
                    subfigures=[(letter, f'{dimension}分组 MAE', ax)
                                for (letter, dimension), ax in zip(panels, axes)],
                    meta={'图表类型': '三联横向柱状图', '数据来源': '30 号分组误差表'})
-
-
-def _finish(fig, stem: str, caption: str, registry: list, subfigures=None, meta=None) -> dict:
-    import matplotlib.pyplot as plt  # noqa: PLC0415
-
-    diagnostics = plot_style.save_sci_figure(fig, stem, caption, subfigures=subfigures, meta=meta)
-    plt.close(fig)
-    registry.append(diagnostics)
-    return diagnostics
 
 
 def write_record(metrics: dict, audit: dict) -> Path:

@@ -18,7 +18,6 @@
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import re
 import sys
@@ -31,20 +30,13 @@ if str(PROJECT_ROOT) not in sys.path:
 from matplotlib import pyplot as plt  # noqa: E402
 
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
+from src.script_support import load_script as _load  # noqa: E402
 
 STEM = '图S59_城市学历与公司规模薪资中点中位数'
 PANELS = ['城市', '学历要求', '公司规模']
 # 与 26g 中「图 5-1（1×3 → 3×1）」完全相同的版式参数
 MODE_ARGS = ('stack', 10.5, 2.15,
              {'left': 0.20, 'right': 0.975, 'bottom': 0.115, 'top': 0.955, 'hspace': 0.72})
-
-
-def _load(alias: str, relative: str):
-    spec = importlib.util.spec_from_file_location(alias, str(PROJECT_ROOT / relative))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[alias] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def _apply_style(g) -> None:

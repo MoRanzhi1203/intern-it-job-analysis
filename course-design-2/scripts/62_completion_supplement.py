@@ -14,7 +14,6 @@
 """
 from __future__ import annotations
 
-import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -27,6 +26,7 @@ sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
 from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
+from src.script_support import load_polish  # noqa: E402
 
 SEED = 42
 SKILL_THRESHOLD = 100
@@ -37,15 +37,6 @@ TABLES = RESULTS / 'tables'
 FIGURES = RESULTS / 'figures'
 for _d in (RESULTS, TABLES, FIGURES):
     _d.mkdir(parents=True, exist_ok=True)
-
-
-def load_polish():
-    spec = importlib.util.spec_from_file_location(
-        's26f', str(PROJECT / 'scripts' / '26f_stage26_4_final_polish.py'))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules['s26f'] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 # =========================================================================== #

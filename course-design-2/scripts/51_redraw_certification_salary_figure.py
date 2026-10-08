@@ -20,7 +20,6 @@
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import re
 import sys
@@ -31,38 +30,13 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import figure_finalize, project_paths  # noqa: E402
+from src.script_support import load_script as _load  # noqa: E402
+from src.script_support import apply_style as _apply_style  # noqa: E402
 
 STEM = '图S60_公司认证状态的薪资分布与组间比较'
 # 与 26g 中「图 5-2（1×2 → 2×1，删除统计注释框）」完全相同的版式参数
 MODE_ARGS = ('stack', 15.5, 2.85,
              {'left': 0.30, 'right': 0.975, 'bottom': 0.145, 'top': 0.90, 'hspace': 0.72})
-
-
-def _load(alias: str, relative: str):
-    spec = importlib.util.spec_from_file_location(alias, str(PROJECT_ROOT / relative))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[alias] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def _apply_style(g) -> None:
-    """与 26g 的 main() 相同的样式初始化，保证出图与 Stage26.4 版本一致。"""
-    from matplotlib import pyplot as plt
-
-    from src import plot_style
-
-    plot_style.setup_sci_style()
-    plot_style.FONT_SIZES.update(g.TARGET_FONTS)
-    plt.rcParams.update({
-        'font.size': g.TARGET_FONTS['tick'],
-        'axes.labelsize': g.TARGET_FONTS['axis_label'],
-        'axes.titlesize': g.TARGET_FONTS['axis_label'],
-        'xtick.labelsize': g.TARGET_FONTS['tick'],
-        'ytick.labelsize': g.TARGET_FONTS['tick'],
-        'legend.fontsize': g.TARGET_FONTS['legend'],
-    })
-    plt.rcParams['axes.unicode_minus'] = False
 
 
 def clean_labels(fig) -> list:

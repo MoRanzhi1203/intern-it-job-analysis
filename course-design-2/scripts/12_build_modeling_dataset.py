@@ -402,7 +402,7 @@ def main() -> int:
         '03_Feature_Manifest': manifest,
         '04_目标泄漏黑名单': build_leakage_table(model_frame, salary.columns),
         '05_缺失值统计': modeling_dataset.build_missing_table(analysis, model_frame),
-        '06_技能特征候选': modeling_dataset.build_skill_threshold_table(membership, model_ids, config),
+        '06_技能特征候选': modeling_dataset.build_skill_threshold_table(membership, model_ids),
         '07_类别特征基数': modeling_dataset.build_cardinality_table(analysis),
         '08_模型样本筛选': sample_audit,
         '09_一岗一行检查': pd.DataFrame([

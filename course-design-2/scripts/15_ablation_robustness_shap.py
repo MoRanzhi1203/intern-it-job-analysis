@@ -41,6 +41,7 @@ import pandas as pd  # noqa: E402
 
 from src import (ablation_shap, io_utils, model_training, plot_style,  # noqa: E402
                  project_paths, quality, schema, skill_eda)
+from src.script_support import finish_figure as _finish  # noqa: E402
 
 STAGE = 'stage_15_ablation'
 TITLE = 'Stage 15 特征组消融、公司 Group Split 稳健性、技能价值验证与 TreeSHAP'
@@ -334,15 +335,6 @@ def figure_skill_shap(skill_table: pd.DataFrame, registry: list,
     fig.subplots_adjust(left=0.38, bottom=0.18)
     return _finish(fig, '08_skill_shap_top20', caption, registry,
                    meta={'图表类型': '横向柱状图', '数据来源': 'TreeSHAP 技能特征（presence 口径）'})
-
-
-def _finish(fig, stem: str, caption: str, registry: list, subfigures=None, meta=None) -> dict:
-    import matplotlib.pyplot as plt  # noqa: PLC0415
-
-    diagnostics = plot_style.save_sci_figure(fig, stem, caption, subfigures=subfigures, meta=meta)
-    plt.close(fig)
-    registry.append(diagnostics)
-    return diagnostics
 
 
 def pair_summary(increment: pd.DataFrame, pair_label: str) -> dict:

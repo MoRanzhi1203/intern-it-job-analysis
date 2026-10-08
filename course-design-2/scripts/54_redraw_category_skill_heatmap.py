@@ -19,7 +19,6 @@
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -31,6 +30,8 @@ if str(PROJECT_ROOT) not in sys.path:
 from matplotlib.ticker import PercentFormatter  # noqa: E402
 
 from src import figure_finalize, project_paths  # noqa: E402
+from src.script_support import load_script as _load  # noqa: E402
+from src.script_support import apply_style as _apply_style  # noqa: E402
 
 STEM = '图S63_岗位细分类技能命中率热力图'
 # 与 26g 中「图 6-2（热力图放大）」完全相同的版式参数
@@ -42,33 +43,6 @@ LABEL_ROTATION = 60
 COLORBAR_LABEL = '细分类内部技能命中率'
 COLORBAR_WIDTH = 0.016
 COLORBAR_GAP = 0.010
-
-
-def _load(alias: str, relative: str):
-    spec = importlib.util.spec_from_file_location(alias, str(PROJECT_ROOT / relative))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[alias] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def _apply_style(g) -> None:
-    """与 26g 的 main() 相同的样式初始化，保证出图与 Stage26.4 版本一致。"""
-    from matplotlib import pyplot as plt
-
-    from src import plot_style
-
-    plot_style.setup_sci_style()
-    plot_style.FONT_SIZES.update(g.TARGET_FONTS)
-    plt.rcParams.update({
-        'font.size': g.TARGET_FONTS['tick'],
-        'axes.labelsize': g.TARGET_FONTS['axis_label'],
-        'axes.titlesize': g.TARGET_FONTS['axis_label'],
-        'xtick.labelsize': g.TARGET_FONTS['tick'],
-        'ytick.labelsize': g.TARGET_FONTS['tick'],
-        'legend.fontsize': g.TARGET_FONTS['legend'],
-    })
-    plt.rcParams['axes.unicode_minus'] = False
 
 
 def align_column_labels(ax) -> list:

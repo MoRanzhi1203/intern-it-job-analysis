@@ -32,7 +32,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 import time
@@ -48,6 +47,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src import (eda_analysis, figure_finalize, io_utils, model_training,  # noqa: E402
                  plot_style, project_paths, schema, skill_eda)
+from src.script_support import sha256_of  # noqa: E402
 
 # ---------------------------------------------------------------- 常量与口径
 SEED = 42                       # 与项目既有划分一致（本脚本的检验本身无随机性）
@@ -86,14 +86,6 @@ MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config', 'n
 
 
 # ---------------------------------------------------------------- 通用工具
-def sha256_of(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open('rb') as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def project_manifest() -> dict:
     """项目内既有文件的 SHA-256 清单（跳过缓存目录与本脚本自身产物）。
 

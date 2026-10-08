@@ -39,7 +39,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import sys
@@ -57,6 +56,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src import (ablation_shap, eda_analysis, figure_finalize, io_utils,  # noqa: E402
                  model_training, plot_style, project_paths, schema, skill_eda)
+from src.script_support import build_assembler, project_manifest, sha256_of  # noqa: E402
 
 # ============================================================================
 # 常量与口径
@@ -143,33 +143,6 @@ WORDING_PATTERNS = [
 # ============================================================================
 # 通用工具
 # ============================================================================
-def sha256_of(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open('rb') as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def project_manifest() -> dict:
-    manifest: dict = {}
-    new_resolved = {path.resolve() for path in NEW_FILES}
-    for name in MANIFEST_SCOPE_DIRS:
-        base = PROJECT_ROOT / name
-        if not base.is_dir():
-            continue
-        for path in sorted(base.rglob('*')):
-            if not path.is_file() or any(part in SKIP_DIRS for part in path.parts):
-                continue
-            if path.resolve() in new_resolved:
-                continue
-            manifest[str(path.relative_to(PROJECT_ROOT)).replace('\\', '/')] = sha256_of(path)
-    readme = PROJECT_ROOT / 'README.md'
-    if readme.is_file() and readme.resolve() not in new_resolved:
-        manifest['README.md'] = sha256_of(readme)
-    return manifest
-
-
 def input_record(path: Path) -> dict:
     return {'路径': str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'),
             '字节数': int(path.stat().st_size), 'SHA256': sha256_of(path)}
@@ -266,18 +239,6 @@ def grouped_columns_with_safe_f(manifest: dict, frame: pd.DataFrame) -> dict:
                                     if column in frame.columns],
                         'categorical': [], 'multi': []}
     return grouped
-
-
-def build_assembler(groups, grouped, skill_threshold: int, text_dim: int):
-    numeric, categorical, multi = [], [], []
-    for letter in groups:
-        numeric += grouped[letter]['numeric']
-        categorical += grouped[letter]['categorical']
-        multi += grouped[letter]['multi']
-    return model_training.SalaryFeatureAssembler(
-        numeric, categorical, multi,
-        skill_threshold=skill_threshold if 'D' in groups else 10 ** 9,
-        text_dim=text_dim if 'E' in groups else 0)
 
 
 def fit_eval(frame: pd.DataFrame, labels: pd.Series, groups, grouped, skill_map,
@@ -646,7 +607,7 @@ def main() -> int:  # noqa: C901
     print('=' * 96)
     print('Stage26.2 方法修复与补充分析（只新增文件）')
     print('=' * 96)
-    manifest_before = project_manifest()
+    manifest_before = project_manifest(PROJECT_ROOT, MANIFEST_SCOPE_DIRS, SKIP_DIRS, NEW_FILES)
     print(f'运行前既有文件 SHA-256 清单：{len(manifest_before)} 个')
 
     # ---------------------------------------------------------------- 输入
@@ -1263,7 +1224,7 @@ def main() -> int:  # noqa: C901
                   'failed_paper_gates')} for item in registry]})
 
     # ---------------------------------------------------------------- 指标 JSON
-    manifest_after = project_manifest()
+    manifest_after = project_manifest(PROJECT_ROOT, MANIFEST_SCOPE_DIRS, SKIP_DIRS, NEW_FILES)
     changed = sorted(key for key in set(manifest_before) & set(manifest_after)
                      if manifest_before[key] != manifest_after[key])
     new_files = [input_record(path) for path in NEW_FILES

@@ -14,7 +14,6 @@
 """
 from __future__ import annotations
 
-import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -27,6 +26,7 @@ sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
 from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
+from src.script_support import load_polish  # noqa: E402
 
 BOOTSTRAP_ROUNDS = 2000
 PERMUTATION_ROUNDS = 200
@@ -37,15 +37,6 @@ BENEFIT_CLUSTER = ['免费健身设施', '就近租房补贴', '餐饮', '节日
 
 RESULTS = project_paths.OUTPUTS_RESULTS_DIR
 FIGURES = project_paths.FIGURES_DIR
-
-
-def load_polish():
-    spec = importlib.util.spec_from_file_location(
-        's26f', str(PROJECT / 'scripts' / '26f_stage26_4_final_polish.py'))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules['s26f'] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def paired_bootstrap_delta(y_true, pred_left, pred_right, rounds=BOOTSTRAP_ROUNDS, seed=SEED):

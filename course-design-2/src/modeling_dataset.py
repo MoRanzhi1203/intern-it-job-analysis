@@ -377,8 +377,7 @@ def _manifest_row(column: str, model_columns: set) -> dict:
     }
 
 
-def build_skill_threshold_table(membership: pd.DataFrame, model_ids: set,
-                                config=None) -> pd.DataFrame:
+def build_skill_threshold_table(membership: pd.DataFrame, model_ids: set) -> pd.DataFrame:
     """06_技能特征候选：各阈值保留的技能数、矩阵维度与覆盖率。"""
     scopes = ('REQUIREMENT_SECTION', 'FULL_TEXT_FALLBACK')
     frame = membership[membership['match_scope'].isin(scopes)

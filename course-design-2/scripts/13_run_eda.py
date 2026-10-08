@@ -506,8 +506,7 @@ def main() -> int:
                 f'业务能力 {len(layers[skill_eda.LAYER_BUSINESS])} / '
                 f'办公工具 {len(layers[skill_eda.LAYER_OFFICE])}）；未混为一榜')
 
-    matrix = eda_analysis.build_category_skill_matrix(membership, analysis, universe, main_rank,
-                                                     config)
+    matrix = eda_analysis.build_category_skill_matrix(membership, analysis, universe, main_rank)
     cooc = skill_eda.cooccurrence(membership, universe[skill_eda.SCOPE_MAIN], main_rank,
                                   layer=skill_eda.LAYER_TECHNICAL,
                                   scopes=skill_eda.SCOPE_MAIN)
@@ -519,8 +518,8 @@ def main() -> int:
                 '仅使用具体技术技能')
 
     per_skill, within, count_table, count_test = eda_analysis.build_skill_salary(
-        membership, salary, set(model[schema.ID_FIELD]), analysis, universe, main_rank, config)
-    robustness = eda_analysis.build_robustness(membership, model, universe, main_rank, ext_rank)
+        membership, salary, set(model[schema.ID_FIELD]), analysis, universe, main_rank)
+    robustness = eda_analysis.build_robustness(model, main_rank, ext_rank)
     summary = skill_eda.rank_robustness(main_rank, ext_rank)[0]
 
     # ---- 出图（10 张，技能相关 6 张） ----
