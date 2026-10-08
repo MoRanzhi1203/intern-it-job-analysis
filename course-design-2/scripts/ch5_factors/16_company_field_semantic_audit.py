@@ -375,7 +375,7 @@ def main() -> int:
     tag_atoms = int(tag_table.set_index('指标').loc['原子标签数', '数值'].replace(',', ''))
     tag_nonempty = int(tag_table.set_index('指标').loc['非空岗位数', '数值'].replace(',', ''))
 
-    # ---- 分类判定（全部由真实证据驱动） ----
+    # ---- 分类判定 ----
     wide_has_cert = bool(((wide_sheet['字段名'].eq(schema.CERT_TAG_FIELD))
                           & wide_sheet['字段是否存在'].eq('存在')).any())
     chain_spec = chain_sheet[chain_sheet['层级'].eq('Stage 13 因素规格（当前状态）')]

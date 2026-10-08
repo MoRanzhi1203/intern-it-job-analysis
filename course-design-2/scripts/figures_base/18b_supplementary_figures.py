@@ -71,7 +71,6 @@ TOP5_TAGS = ['免费健身设施', '就近租房补贴', '餐饮', '节日礼品
 ANCHOR_LOG: list = []
 
 
-# ------------------------------------------------------------------ 基础工具
 def read_sheet(filename: str, sheet: str) -> pd.DataFrame:
     return pd.read_excel(TABLES_DIR / filename, sheet_name=sheet)
 
@@ -155,7 +154,6 @@ def box_groups(ax, groups, labels, colors, ylabel, xlabel):
     return artists
 
 
-# ------------------------------------------------------------------ 图 S05 / S06 公共面板
 def tag_effect_panel(ax, fix: int = 0, legend_ncol: int = 4):
     """S05 面板：公司福利标签 Cliff's δ 与 BH-FDR 校正后 q 的效应量—显著性总览。"""
     block = V['label_block']
@@ -248,7 +246,6 @@ def tag_jaccard_heatmap(ax, fix: int = 0):
     return ax, image
 
 
-# ------------------------------------------------------------------ 数据装载
 def load_data() -> dict:
     data: dict = {}
     data['sample'] = read_sheet('ch4/21_eda_statistical_analysis.xlsx', '01_样本概况')
@@ -411,7 +408,6 @@ def build_anchor_values(data: dict, jobs: pd.DataFrame) -> dict:
     return values
 
 
-# ------------------------------------------------------------------ 图 S01
 def fig_s01(fix: int = 0):
     v = V
     labels = ['原始搜索观测', '唯一岗位实体', '明确薪资可解析', '正式薪资样本']
@@ -440,7 +436,6 @@ def fig_s01(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S02
 def fig_s02(fix: int = 0):
     anomaly = V['anomaly']
     fig, axes = panel_fig(fix, 2, (11.4, 4.9), wspace=0.42)
@@ -490,7 +485,6 @@ def fig_s02(fix: int = 0):
     return fig, [('a', '异常三类构成', ax_a), ('b', '修复前后残留对照', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S03
 def fig_s03(fix: int = 0):
     split = V['split_table']
     fig, axes = panel_fig(fix, 2, (11.4, 4.9), wspace=0.30)
@@ -516,7 +510,6 @@ def fig_s03(fix: int = 0):
     return fig, [('a', '子集规模', ax_a), ('b', '子集薪资分布', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S04
 def fig_s04(fix: int = 0):
     stats = V['stats_table']
     pair = stats[(stats['检验块'] == '成对比较（Mann–Whitney + BH-FDR）') &
@@ -564,14 +557,12 @@ def fig_s04(fix: int = 0):
     return fig, [('a', '四类分布', ax_a), ('b', '六组成对比较效应量', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S05
 def fig_s05(fix: int = 0):
     fig, ax = panel_fig(fix, 1, (8.8, 5.2))
     tag_effect_panel(ax, fix=fix, legend_ncol=4)
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S06
 def fig_s06(fix: int = 0):
     fig, axes = panel_fig(fix, 2, (11.8, 5.0), wspace=0.55)
     ax_a, ax_b = axes
@@ -584,7 +575,6 @@ def fig_s06(fix: int = 0):
                  ('b', '前 5 标签两两 Jaccard 热力图', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S05S06（合并双子图）
 def fig_s05s06(fix: int = 0):
     """图 5-3 公司福利标签的薪资关联及共现特征（S05 + S06 合并为 (a)(b) 双子图）。
 
@@ -616,7 +606,6 @@ def fig_s05s06(fix: int = 0):
                  ('b', '高效应福利标签共现结构', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S07
 def fig_s07(fix: int = 0):
     kw = V['kw_table'].copy()
     kw['对象'] = kw['检验对象'].astype(str)
@@ -642,7 +631,6 @@ def fig_s07(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S08
 def fig_s08(fix: int = 0):
     table = V['skill_count_table']
     diffs = ['0', '1', '2', '3', '4', '5+']
@@ -694,7 +682,6 @@ def fig_s08(fix: int = 0):
     return fig, [('a', '各档薪资分布', ax_a), ('b', '样本量与中位数', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S09
 def fig_s09(fix: int = 0):
     before_map = V['skill_salary_map']
     after_map = V['skill_in_cat_agg']
@@ -725,7 +712,6 @@ def fig_s09(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S10
 def fig_s10(fix: int = 0):
     extreme = V['robust_extreme'].set_index('实验')
     target = V['robust_target'].set_index('目标口径')
@@ -770,7 +756,6 @@ def fig_s10(fix: int = 0):
     return fig, [('a', 'MAE 对照', ax_a), ('b', 'R² 对照', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S11
 def fig_s11(fix: int = 0):
     rows = V['increment_rows']
     fig, ax = panel_fig(fix, 1, (9.0, 5.2))
@@ -805,7 +790,6 @@ def fig_s11(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S12
 def fig_s12(fix: int = 0):
     rank = V['shap_rank'].head(10).copy()
     stability = V['shap_stability']
@@ -840,7 +824,6 @@ def fig_s12(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S13
 def fig_s13(fix: int = 0):
     threshold = V['skill_threshold'].copy().sort_values('阈值')
     text_dim = V['text_dim'].copy()
@@ -889,7 +872,6 @@ def fig_s13(fix: int = 0):
     return fig, [('a', '技能阈值', ax_a), ('b', '文本维度', ax_b)]
 
 
-# ------------------------------------------------------------------ 图 S14
 def fig_s14(fix: int = 0):
     table = V['tag_per_job']
     counts = table['每岗标签数'].to_numpy(dtype=int)
@@ -931,7 +913,6 @@ def fig_s14(fix: int = 0):
     return fig, []
 
 
-# ------------------------------------------------------------------ 图 S15
 def fig_s15(fix: int = 0):
     blacklist = V['leak_blacklist']
     manifest = V['manifest']
@@ -990,7 +971,6 @@ def fig_s15(fix: int = 0):
     return fig, [('a', '泄漏字段检查状态', ax_a), ('b', '五组特征维度', ax_b)]
 
 
-# ------------------------------------------------------------------ 门禁与执行
 GATE_KEYS = ('inward_ticks', 'light_grid', 'caption_structure_ok', 'caption_ink_visible',
              'caption_not_cropped', 'subfigure_caption_visible',
              'subfigure_label_sequence_ok', 'png_600dpi', 'pdf_valid',

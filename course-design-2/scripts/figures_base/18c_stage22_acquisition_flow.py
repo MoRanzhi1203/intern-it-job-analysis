@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-"""图 S16：数据采集总体流程（论文正文图 3-1，Stage23 收口版）。
+"""论文图 3.3：数据采集总体流程。
 
-定位与约束
-----------
-- 只新增一张流程示意图，不改动任何统计结果、模型与既有图件；
-- 绘图风格唯一来源 ``src/plot_style.py``（本脚本只读该模块，不修改）；
-- 纯流程框图：关闭坐标轴，图名由底部总图题机制负责
-  （禁止 ``ax.set_title`` / ``fig.suptitle``）；
-- **双输出路径（Stage23）**：论文版 ``fig_3_3_acquisition_flow.png`` 不含图内总图题
-  （总图题交给 Word Caption）；展示版 ``fig_s16_acquisition_flow_display.png`` 底部带
-  Stage23 正式图题「图 3-1 数据采集总体流程」；两者均为 600 dpi PNG + 矢量 PDF；
-- 原始观测规模从只读原始数据文件的元信息读取并校验，不硬编码；
-- 只写 ``outputs/figures/supplementary/``。
+约束
+----
+- 只出这一张流程示意图，不改动统计结果、模型与其它图件；
+- 绘图风格唯一来源 ``src/plot_style.py``（只读该模块）；
+- 纯流程框图：关闭坐标轴，图内不写总图题
+  （不用 ``ax.set_title`` / ``fig.suptitle``）；
+- 双版本输出：论文版 ``fig_3_3_acquisition_flow.png`` 无图内总图题（总图题由 Word 题注承担）；
+  展示版 ``fig_3_3_acquisition_flow_display.png`` 底部带图题「图 3.3 数据采集总体流程」；
+  两者均为 600 dpi PNG + 矢量 PDF；
+- 原始观测规模取自只读原始数据的元信息，不硬编码；
+- 输出目录由 ``fig_<章>_`` 前缀路由到 ``outputs/figures/ch3/``。
 
 运行::
 
-    python scripts\\18c_stage22_acquisition_flow.py
+    python scripts/figures_base/18c_stage22_acquisition_flow.py
 """
 
 from __future__ import annotations
@@ -33,9 +33,9 @@ from src import project_paths  # noqa: E402
 from matplotlib import pyplot as plt  # noqa: E402
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch  # noqa: E402
 
-SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
+FIG_DIR = project_paths.FIGURES_DIR
 STEM = 'fig_3_3_acquisition_flow'
-CAPTION = '图 3-1 数据采集总体流程'
+CAPTION = '图 3.3 数据采集总体流程'
 EXPECTED_RAW_ROWS = 172063
 
 PALETTE = plot_style.PALETTE
@@ -128,10 +128,9 @@ def build_figure(rows_label: str):
     return fig
 
 
+def main() -> int:
     plot_style.setup_sci_style()
-    plot_style.setup_sci_style()
-    plot_style.SCI_FIGURES_DIR = SUPP_DIR
-    SUPP_DIR.mkdir(parents=True, exist_ok=True)
+    plot_style.SCI_FIGURES_DIR = FIG_DIR
     plot_style.FIGURE_REGISTRY.clear()
 
     anchors = figure_finalize.validate_anchors()
@@ -144,9 +143,9 @@ def build_figure(rows_label: str):
 
     fig = build_figure(f'{rows:,}')
     paper = figure_finalize.save_paper_figure(
-        fig, SUPP_DIR, STEM, subfigures=[],
+        fig, FIG_DIR, STEM, subfigures=[],
         meta={'图型': '流程图', '所属章节': '3.2 数据采集方案',
-              'Stage23正式图题': CAPTION, '论文去向': '正文 图 3-1（3.2 节）',
+              'Stage23正式图题': CAPTION, '论文去向': '正文 图 3.3（3.2 节）',
               'variant': 'paper',
               '数据来源': '数据采集机制清单（采集入口、菜单任务构建、标准化搜索 URL、'
                           '列表页与详情页抓取、多进程协同、双标签页、URL 规范化、联合键去重、'
@@ -154,7 +153,7 @@ def build_figure(rows_label: str):
               '规模锚点': {'原始岗位观测': rows}})
     plot_style.add_bottom_caption(fig, CAPTION)
     diagnostics = plot_style.save_sci_figure(
-        fig, f'{STEM}_display', CAPTION, figure_id='图S16',
+        fig, f'{STEM}_display', CAPTION, figure_id='图3.3',
         meta={'图内图题': CAPTION, '图型': '流程图', '所属章节': '3.2 数据采集方案',
               'variant': 'display'})
     plt.close(fig)
@@ -166,7 +165,7 @@ def build_figure(rows_label: str):
     failed_paper = figure_finalize.failed_paper_gates(paper)
 
     print('=' * 78)
-    print('图 S16（正文图 3-1）Stage23 双版本执行结果')
+    print('图 3.3 数据采集总体流程：双版本执行结果')
     print('=' * 78)
     print(f'原始观测行数（只读元信息）：{rows}')
     print(f'论文版（无图内总图题）：{paper["png_path"]}（{paper["png_size_bytes"]:,} B）'

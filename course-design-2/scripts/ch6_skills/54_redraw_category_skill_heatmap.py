@@ -46,12 +46,10 @@ COLORBAR_GAP = 0.010
 
 
 def align_column_labels(ax) -> list:
-    """x 轴标签按原图 60° 倾斜，末端锚定在各自列的刻度上，返回标签文本。
+    """x 轴标签 60° 倾斜，末端锚定在各自列刻度上，返回标签文本。
 
-    用 ``rotation_mode='anchor'`` ＋ ``ha='right'``：旋转绕「文本末端」进行，标签末端
-    正好落在所属列的刻度上（与本文时间序列图同一做法）。默认旋转模式会先旋转再按旋转后
-    包围盒对齐，整个标签会相对刻度整体左移；若改为按包围盒中心对齐，则标签中心而非末端
-    落在刻度上，同样不是列与标签的对应关系。
+    用 ``rotation_mode='anchor'`` ＋ ``ha='right'`` 绕文本末端旋转，标签末端落在所属列刻度上
+    （与本文时间序列图同一做法）；默认旋转模式按旋转后包围盒对齐，竖排标签会整体左移。
     """
     labels = [str(text.get_text()) for text in ax.get_xticklabels()]
     ax.set_xticklabels(labels, rotation=LABEL_ROTATION, ha='right', rotation_mode='anchor')

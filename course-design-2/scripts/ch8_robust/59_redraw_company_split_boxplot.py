@@ -58,7 +58,7 @@ def load_data() -> tuple[np.ndarray, np.ndarray, float]:
     """读两类划分的测试集 MAE 与基准线取值，并逐项断言与冻结值一致。"""
     company = pd.read_csv(REPEATS_CSV)['test MAE'].to_numpy('float64')
     summary = pd.read_csv(SUMMARY_CSV).set_index('指标')['取值']
-    # 该行名是冻结 CSV 中的取值键（原样保留以便对齐数据），不进入图件文字
+    # 该行名是冻结 CSV 的取值键，不进入图件文字
     baseline = float(summary.loc['随机划分同口径 MAE 基准'])
     seeds = pd.read_excel(METRICS_XLSX, sheet_name='08_多种子明细')
     random_mae = seeds[seeds['模型'] == 'LightGBM']['test MAE'].to_numpy('float64')

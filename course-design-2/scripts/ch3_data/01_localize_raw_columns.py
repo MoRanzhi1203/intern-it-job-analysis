@@ -320,15 +320,12 @@ def main() -> int:
     df_raw = io_utils.read_parquet(project_paths.RAW_PARQUET)
     print(f'输入（英文原始数据，只读）: {len(df_raw)} 行 × {df_raw.shape[1]} 列')
 
-    # A. 中文化
     df_cn = localize_columns(df_raw)
     print(f'汉化完成（仅列名）: {len(df_cn)} 行 × {df_cn.shape[1]} 列')
 
-    # B. 空白标准化
     df_standard, blank_counts = standardize_missing(df_cn)
     print(f'空白标准化: {len(blank_counts)} 个字段（raw 中保留原始空白表示，不修改）')
 
-    # C. 公司属性语义槽位异常检测与分型修复
     config = field_repair.load_company_attribute_anomaly_config()
     city_vocabulary = field_repair.build_city_vocabulary(
         df_standard, config['city_normalization']['separators'])
@@ -359,7 +356,6 @@ def main() -> int:
                 f'{diagnostics["修复后所在地可还原行数"]}、性质置缺失 '
                 f'{diagnostics["性质被置为缺失行数"]}；未修复行逐格未变，修复后残留 0')
 
-    # D. 数据类型统一 + 一致性校验
     df_final = unify_dtypes(df_repaired)
     repair_positions = set(audit_table['源记录序号'].tolist()) if len(audit_table) else set()
     consistency = verify_stage01(df_raw, df_final, repair_positions)
@@ -390,14 +386,12 @@ def main() -> int:
 
     io_utils.write_parquet(df_final, project_paths.INTERIM_CN_PARQUET, verify=True)
 
-    # ---- 阶段记录与审计表 ----
     quality_table = quality.field_quality_table(
         df_final, name_map={v: v for v in schema.COLUMN_NAME_CN.values()},
         description_map={schema.COLUMN_NAME_CN[en]: desc
                          for en, desc in schema.COLUMN_DESCRIPTION.items()})
     quality_table.insert(1, '英文列名', list(df_raw.columns))
-    io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_COLUMN_DICTIONARY,
-                         {'字段中英文对照表': quality_table})
+    io_utils.write_csv(quality_table, project_paths.TABLES_DIR / project_paths.TABLE_COLUMN_DICTIONARY)
 
     hint = field_repair.build_nature_lost_reference_hint(df_standard, audit_table)
     audit_sheets = {

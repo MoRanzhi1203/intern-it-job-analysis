@@ -53,8 +53,6 @@ TECH_TIME_KEYWORDS = [
     '采集时间', '爬取时间', '观测时间', '数据创建时间', '数据更新时间',
     'created_at', 'updated_at', 'create_time', 'update_time',
 ]
-# 业务时间字段（允许进入分析与条件入模）
-# 原始/治理层允许保留的技术时间字段（仅追溯、版本排序、审计）
 MIN_WINDOW_N = 30
 SKILLS = ['Python', 'SQL', '人工智能', '大模型']
 def scan_tech_time(columns) -> list:
@@ -270,7 +268,7 @@ def main() -> int:
     # 图T2、图T3：论文版式。绘制与门禁逻辑统一在 49 号重绘脚本的 save_salary_figure /
     # save_skill_figure 中：无图内总图题、600 dpi PNG + 矢量 PDF、内向刻度、浅虚线网格，
     # 薪资图对 n < 30 的窗口加浅色底纹，技能图横轴沿用「只排给出命中率的窗口」的原有口径，
-    # 避免与全文其他重绘图件样式漂移
+    # 与全文其他重绘图件保持同一版式
     figure_spec = importlib.util.spec_from_file_location(
         '_fig49_time_cohort', ROOT / 'scripts' / 'ch4_lifecycle' / '49_redraw_time_cohort_figures.py')
     figure_module = importlib.util.module_from_spec(figure_spec)

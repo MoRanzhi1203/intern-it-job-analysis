@@ -1,0 +1,112 @@
+﻿门禁项,状态,说明
+ARCHIVE_PRE_REFACTOR,PASS,归档目录已移除，历史证据在 git 历史中可检出 4/4 项
+BASELINE_RECORD,PASS,docs\records\00_refactor_baseline.md
+PROJECT_STRUCTURE,PASS,10/10 个目录存在
+SHARED_MODULES,PASS,79/79 项符号可用
+RAW_DATA_CHECK,PASS,172063 行 × 30 列，关键字段齐全，模式=reuse_existing
+COLUMN_LOCALIZATION,PASS,172063 行 × 30 列；除已登记的 467 行公司属性槽位修复外，取值与源数据逐格一致（改动字段：公司性质、公司所在地、公司规模）
+MISSING_STANDARDIZATION,PASS,raw 中文本空字符串/纯空格 314940 个（保持原样），工作副本标准化后残留 0 个；涉及字段 13 个
+COMPANY_ATTRIBUTE_ANOMALY_DETECT,PASS,仅检测（未修复）：性质像规模 451 行、规模像地点 356 行、两类同时 340 行 → 候选并集 467 行；FULL_SHIFT 340 / NATURE_ONLY 111 / SIZE_ONLY 16
+COMPANY_ATTRIBUTE_ANOMALY_REPAIR,PASS,确定性修复 467 行：规模还原 451、所在地还原 356、性质置缺失 451；未修复行逐格未变，修复后残留 0
+COMPANY_ATTRIBUTE_ANOMALY_AUDIT_EXPORT,PASS,"22 号合并审计表 8 张子表已写出（本阶段重算 6 张 + 结转 2 张一次性取证结果：['04_MySQL_vs_Parquet证据', '05_同公司正常参考']）；回读工作副本 172063 行"
+IDENTITY_AUDIT,PASS,身份字段唯一值 17144 / 17148
+CN_DATA_LOAD,PASS,172063 行 × 30 列，含「公司介绍图片链接」
+ITEM_URL_DROP,PASS,已删除「岗位搜索链接」，保留 29 列
+COMPANY_CERT_VALUE_AUDIT,PASS,非空 83800 / token 100490 / 文件名唯一值 2
+COMPANY_CERT_MAPPING,PASS,非空 URL token 100490 个全部映射成功，映射率 100%
+COMPANY_CERT_UNKNOWN_CHECK,PASS,未知文件名 0，未知 URL 0
+COMPANY_CERT_SOURCE_DROP,PASS,新增「公司认证标签」，删除「公司介绍图片链接」
+DETAIL_URL_NORMALIZE,PASS,17148 → 17144 个唯一链接，ID 唯一值 17144
+ID_URL_ONE_TO_ONE,PASS,唯一组合 17144，一对多 0
+CATEGORY_RELATION_BUILD,PASS,172063 行，原始命中次数合计 172063
+CATEGORY_RELATION_RECONCILE,PASS,关系表可完整还原岗位ID集合与分类集合（17144 个岗位）
+SOURCE_CATEGORY_AGG,PASS,分类关系表岗位ID集合与观测快照岗位ID集合一致
+OBSERVATION_BUILD,PASS,172055 行快照，原始观测记录数合计 172063
+CATEGORY_DUPLICATE_COLLAPSE,PASS,岗位 17144 个，同时间业务冲突组 0 个（全部留档）
+OBSERVATION_TIME_CHECK,PASS,每个岗位的观测时间序列单调不减，且无缺失
+OBSERVATION_AUDIT_EXPORT,PASS,6 个 Sheet 已生成
+CORE_SIGNATURE_BUILD,PASS,17584 个核心版本各自对应唯一核心签名，相邻核心版本签名必然不同（同一状态再次出现时保留为独立版本）
+FULL_SIGNATURE_BUILD,PASS,完整页面版本 21588 个，且完整版本数 >= 核心版本数
+VERSION_SEQUENCE_BUILD,PASS,同一岗位核心版本号严格为 1..K，完整页面版本号非递减
+VERSION_TIME_ORDER,PASS,版本时间顺序、版本号连续性、负间隔检查全部通过
+VERSION_CONTIGUITY,PASS,版本观测次数合计 172055 = 观测快照总数，版本时间区间不重叠且最终版本结束时间留空
+CHANGE_EVENT_BUILD,PASS,变化字段数合计 751 与变化事件行数一致，且旧值 != 新值
+FIELD_CONSISTENCY_AUDIT,PASS,21 个业务字段全部完成同岗位历史多值审计，19 个字段存在多值
+BUSINESS_CONFLICT_EXPORT,PASS,11 个 Sheet 已生成（变化事件与冲突岗位全部留档）
+VERSION_AUDIT_EXPORT,PASS,14 号版本审计表 11 个 Sheet
+FINAL_VERSION_SELECT,PASS,17144 个岗位均在最终核心版本内完成代表观测选择
+UNIQUE_ENTITY_BUILD,PASS,17144 行 × 46 列
+UNIQUE_ENTITY_ID_CHECK,PASS,实习岗位ID唯一 True，无缺失
+UNIQUE_ENTITY_URL_CHECK,PASS,规范化岗位详情链接唯一 True，无跟踪参数残留
+VERSION_TO_ENTITY_RECONCILE,PASS,由观测快照重算的版本号、观测次数、签名数与最终版本时间区间与版本历史完全一致
+CATEGORY_TO_ENTITY_RECONCILE,PASS,实体表分类集合、计数、原始记录数均可由关系表完整还原
+COMPANY_CERT_FIELD_CHECK,PASS,含「公司认证标签」且不含「公司介绍图片链接」
+ENTITY_AUDIT_EXPORT,PASS,7 个 Sheet 已生成
+TEXT_SOURCE_LOAD,PASS,版本历史 17584 行、实体 17144 行，含中文岗位描述原文字段
+TEXT_RAW_PRESERVE,PASS,原始岗位描述逐行与版本历史一致，衍生字段全部新增列，未回写覆盖原文
+TEXT_CLEAN_BUILD,PASS,清洗文本覆盖 17582 行，语义分析版与模型安全版分列构建
+TEXT_SECTION_SPLIT,PASS,"成功识别语义段 20201 段次；分段状态取值 ['完整', '未识别', '部分']，未识别样本不强拆"
+SALARY_LEAKAGE_REMOVAL,PASS,模型安全版官方泄漏残留 0 处、严格薪资样式残留 0 处，删除 2324 处，语义分析版与模型安全版分列
+MODEL_SAFE_STRICT_SALARY_PATTERN_CHECK,PASS,严格薪资样式（金额 + 元/块 · 时间单位 · k/万 · 面议 · ¥）残留 0 处，涉及版本 0 个；规则源 config/../src/text_utils.py（Stage 06 清洗与门禁、Stage 07 检测、tests 共用同一规则源）
+SKILL_CONFIG_LOAD,PASS,技能标准名 145 个、别名 549 个，来源 skills.yml
+TEXT_AUDIT_EXPORT,PASS,语料 17584 行、审计表 8 张子表已写出
+SKILL_CONFIG_SCHEMA,PASS,词典结构完整：145 标准名 / 549 别名 / 5 一级类型 / 17 技能组
+SKILL_ALIAS_UNIQUENESS,PASS,别名一对一校验通过（同一别名指向多个标准名时配置加载直接报错）：549 个别名，冲突 0
+SKILL_CATEGORY_HIERARCHY,PASS,三级结构完整：每个技能标准名都归属唯一技能组，技能组唯一归属一级类型（145 / 17 / 5）
+SKILL_REQUIREMENT_SECTION,PASS,要求段落识别 8822 个岗位；全文 fallback 7556 个；空文本 766 个（fallback 岗位不丢弃）
+SKILL_MODEL_SAFE_TEXT,PASS,技能提取输入为「岗位描述_模型安全版」（模型安全版），官方泄漏检测残留 0，严格薪资样式残留 0（规则源与 Stage 06 清洗、Stage 06 门禁、tests 完全一致）
+SKILL_FINAL_VERSION_SELECTION,PASS,技能画像只取最终核心版本：17144/17144 个岗位，未使用历史版本 union
+SKILL_EXTRACTION,PASS,11652 个岗位提取到技能，覆盖 145/145 个标准名，零技能岗位 5492 个
+SKILL_ALIAS_NORMALIZE,PASS,技能集合中全部为标准名（未标准化别名 []）
+SKILL_FAMILY_MAPPING,PASS,145 个技能标准名全部映射到 feature_family → group
+SKILL_AMBIGUOUS_TERM_GUARD,PASS,7 条歧义上下文规则生效（Agent / Word / C / R / Go / Spring / React），本轮排除 1150 次命中
+SKILL_JOB_LEVEL_BUILD,PASS,"long-format 37442 行，(intern_id, canonical_skill) 重复 0 行；岗位技能画像 17144 行（一岗一行，未展开技能布尔列）"
+TEXT_FEATURE_BUILD,PASS,特征表 17144 行与实体数一致，字段齐全（69 列）
+TEXT_FEATURE_COVERAGE,PASS,实体覆盖率 17144/17144，缺失 0 个
+CATEGORY_SKILL_COVERAGE_BUILD,PASS,12 个岗位大类的技能覆盖率已统计
+SKILL_AUDIT_EXPORT,PASS,14 张技能审计子表已写出，人工抽样 150 个岗位
+TEXT_FEATURE_AUDIT_EXPORT,PASS,特征表 + long-format + 16/26 号审计表已写出（技能需求类子表统一归口 26 号，16 号表移除历史重复子表 0 张）
+TFIDF_BASELINE_BUILD,PASS,TF-IDF 词表（完整 20000 / 去薪资 20000），仅作词面基线，不冒充深层语义
+EMBEDDING_MODEL_LOAD,NOT_RUN,句向量模型不可用：ModuleNotFoundError: No module named 'sentence_transformers'（不使用 TF-IDF 冒充深层语义）
+EMBEDDING_BUILD,NOT_RUN,句向量模型不可用，未生成任何向量（禁止伪造）
+SEMANTIC_DISTANCE_CHECK,NOT_RUN,句向量不可用，语义距离列为缺失值
+SAFE_TEXT_EMBEDDING_BUILD,NOT_RUN,句向量不可用，未生成安全文本向量
+FULL_SAFE_EMBEDDING_REUSE,NOT_RUN,句向量不可用，无法核对一致性
+SAFE_SEMANTIC_DISTANCE_CHECK,NOT_RUN,句向量不可用，去薪资语义距离缺失
+SAFE_SALARY_ALIGNMENT,NOT_RUN,句向量不可用或薪资变化样本为空
+TOKEN_LENGTH_AUDIT,NOT_RUN,句向量模型不可用，无法进行真实 token 审计
+TRUNCATION_SENSITIVITY,PASS,全样本 440 条 / 非截断 440 条 / 至少一侧截断 0 条，两套描述性对照均已输出（未删除样本）
+JOB_TEXT_EVENT_BUILD,PASS,"440 条文本语义事件 == sum(max(核心版本数-1,0)) = 440，候选类型标注全部保留「候选」字样"
+JOB_TEXT_VERSION_RECONCILE,PASS,语料 17584 行与版本历史 17584 行一一对应，岗位数一致（17144）
+JOB_TEXT_VERSION_SUMMARY,PASS,"版本历史新增摘要字段 ['相对上一版本JD语义距离', '相对上一版本JD语义距离_完整', '相对上一版本JD语义距离_去薪资', '相对上一版本新增技能数', '相对上一版本删除技能数', '是否显著JD语义变化候选']，共 48 列；兼容字段「相对上一版本JD语义距离」口径已切换到去薪资语义距离"
+JOB_TEXT_AUDIT_EXPORT,PASS,文本事件表与 21 张语义审计子表已写出（含双口径与截断审计）
+COMPANY_IDENTITY_BUILD,PASS,4495 行名称映射 → 4377 个正式实体，映射方式取值合法
+COMPANY_IDENTITY_AMBIGUITY_CHECK,PASS,"同名多实体 0 个（本轮已不再按所在地自动拆分，多对一映射 0 条），无法解析 0 行，置信度均在 [0,1] 区间"
+MULTI_LOCATION_COMPANY_CHECK,PASS,同名跨地域 77 行（规范名称 33 个）全部标记 MULTI_LOCATION_AMBIGUOUS 与人工复核，且不再生成「名称@所在地」实体
+FORMAL_COMPANY_IDENTITY_FILTER,PASS,"正式公司时序仅使用 ['APPROVED_ALIAS', 'EXACT_NORMALIZED_NAME']，实体数 4377，排除 MULTI_LOCATION_AMBIGUOUS / HIGH_CONFIDENCE_MATCH / UNRESOLVED"
+COMPANY_IDENTITY_AUDIT_EXPORT,PASS,映射表 4495 行、审计表 14 张子表已写出
+COMPANY_PROFILE_SNAPSHOT_BUILD,PASS,"165031 个「公司实体 × 观测时间」快照，状态分布 {'CONSISTENT': 154704, 'MISSING': 10327}"
+COMPANY_PROFILE_SNAPSHOT_UNIQUE,PASS,company_entity_id + 观测时间 严格唯一（行数 165031，重复键 0）
+COMPANY_SAME_TIME_CONFLICT_AUDIT,PASS,同时间多简介快照 0 个（涉及公司 0 家），主候选支持率仅用于人工审计，不用于自动进入正式时序
+AMBIGUOUS_SNAPSHOT_EXCLUSION,PASS,AMBIGUOUS 0 / MISSING 10327 快照全部不进入版本层；3899 个版本的有效观测数合计 154704 == CONSISTENT 154704，边界越界版本数 0；区间内部跨越歧义快照的版本 0 个、跨越缺失快照的版本 16 个（已计数留痕）
+COMPANY_VERSION_REBUILD,PASS,3664 个公司实体 → 3899 个连续简介版本（版本号连续、时间非降序，A→B→A 保留为三个版本；全部实体均来自正式时序准入集合，MULTI_LOCATION_AMBIGUOUS / HIGH_CONFIDENCE_MATCH / UNRESOLVED 出现 0 次）
+COMPANY_PROFILE_VERSION_BUILD,PASS,公司简介版本层 3899 行 × 14 列，字段与 schema 一致
+COMPANY_EVENT_REBUILD,PASS,"235 条公司简介语义变化事件 == sum(max(版本数-1,0)) = 235，跨歧义快照事件 0 条"
+COMPANY_TEXT_EVENT_BUILD,PASS,235 条公司简介语义变化事件，涉及 16 家公司
+COMPANY_TEXT_AUDIT_EXPORT,PASS,快照 165031 行、版本 3899 行、事件 235 行、审计表 14 张子表已写出
+SALARY_SOURCE_LOAD,PASS,岗位实体 17144 行，薪资信息非空 17144 行，主键唯一
+SALARY_FORM_AUDIT,PASS,"薪资形态仅 ['#-#/天', '#/天', '薪资面议']，共 3 种，已完整枚举"
+SALARY_PARSE_COVERAGE,PASS,已解析 14899 + 面议 2245 = 17144，解析失败 0
+SALARY_RANGE_VALIDITY,PASS,逻辑异常 16 行（上下限倒置 2、非正数 16），未静默删除，全部标记
+SALARY_UNIT_CONSISTENCY,PASS,已解析岗位单位取值 ['元/天']，全量薪资文本均含 /天，未做任何单位折算
+SALARY_MISSING_STRATEGY,PASS,面议 2245 行的数值列全为空（插补 0 行），已解析行的中点无缺失
+STRUCTURED_FIELD_PARSE,PASS,学历解析失败 0、每周到岗失败 0、实习月数失败 0；公司规模已知 17139 + 空 5 + 槽位异常 0 = 17144
+COMPANY_ATTRIBUTE_ANOMALY_RESIDUAL_CHECK,PASS,本阶段只复核残留、不修复：上游 Stage 01 确定性修复 467 行（涉及岗位 72），本阶段残留 公司规模 0 行 / 公司性质 0 行 = 0；修复后公司规模已知 17139 + 空 5 = 17144
+SALARY_JD_CONSISTENCY,PASS,岗位描述含薪资数字的岗位 471 个，共 492 条记录，其中冲突 60 条，已导出明细
+NO_LABEL_LEAKAGE,PASS,薪资派生列未出现在文本特征/语料层，模型安全版薪资残留 0
+STAGE11_AUDIT_EXPORT,PASS,薪资目标 17144 行、结构化特征 17144 行、审计表 16 张子表已写出
+REGRESSION_CHECK,PASS,16/20 项一致
+PIPELINE_ENTRY,PASS,"本次执行阶段 [6, 7, 8, 9, 10, 11]"
+INDEPENDENT_SCRIPT_RUN,PASS,"各阶段均由独立子进程 python scripts/xx.py 执行并生成门禁；未执行模块 ['EMBEDDING_MODEL_LOAD', 'EMBEDDING_BUILD', 'SEMANTIC_DISTANCE_CHECK', 'SAFE_TEXT_EMBEDDING_BUILD', 'FULL_SAFE_EMBEDDING_REUSE', 'SAFE_SEMANTIC_DISTANCE_CHECK', 'SAFE_SALARY_ALIGNMENT', 'TOKEN_LENGTH_AUDIT']"
+DOCUMENTATION_UPDATE,PASS,README 含 15/15 个必要标记，阶段记录/方法论文档 14/14 个
+FINAL_CHECK,PASS,"111 项门禁全部 PASS；NOT_RUN（未执行模块，未伪造 PASS）: ['EMBEDDING_MODEL_LOAD', 'EMBEDDING_BUILD', 'SEMANTIC_DISTANCE_CHECK', 'SAFE_TEXT_EMBEDDING_BUILD', 'FULL_SAFE_EMBEDDING_REUSE', 'SAFE_SEMANTIC_DISTANCE_CHECK', 'SAFE_SALARY_ALIGNMENT', 'TOKEN_LENGTH_AUDIT']"

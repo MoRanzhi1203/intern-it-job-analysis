@@ -215,7 +215,7 @@ def benjamini_hochberg(p_values) -> np.ndarray:
 def valid_salary_mask(salary: pd.DataFrame) -> pd.Series:
     """正式薪资样本掩码：非面议 + 解析成功 + 薪资中点有效 + 无逻辑异常。
 
-    注意：`薪资异常标志` 为文本列，正常行为空字符串（不是 0/NaN）。
+    `薪资异常标志` 为文本列，正常行为空字符串（不是 0/NaN）。
     """
     return (salary[schema.SALARY_NEGOTIABLE_FIELD].eq(0)
             & salary[schema.SALARY_PARSE_STATUS_FIELD].eq('已解析')

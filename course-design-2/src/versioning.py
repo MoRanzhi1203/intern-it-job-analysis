@@ -33,7 +33,7 @@ _JSON_SEPARATORS = (',', ':')
 
 
 def _json_default(value):
-    """JSON 兜底序列化：datetime / numpy 标量统一转稳定文本或原生类型。"""
+    """JSON 默认序列化：datetime / numpy 标量统一转稳定文本或原生类型。"""
     if isinstance(value, (pd.Timestamp, datetime, date)):
         return pd.Timestamp(value).isoformat()
     if isinstance(value, np.integer):
@@ -165,7 +165,7 @@ def collapse_observation_snapshots(frame: pd.DataFrame, url_field: str,
     })
 
     # 同时间点业务字段一致时，组内取值归一化后完全等价；冲突组进入审计表。
-    # 这里取排序后的组内首行作为快照取值，不丢弃任何冲突组。
+    # 取排序后的组内首行作为快照取值，不丢弃任何冲突组。
     first_rows = working.groupby([id_field, time_field], sort=True).head(1)
     snapshot = first_rows[[id_field, url_field, time_field, *business_fields]].copy()
     snapshot = snapshot.rename(columns={url_field: schema.URL_FIELD})

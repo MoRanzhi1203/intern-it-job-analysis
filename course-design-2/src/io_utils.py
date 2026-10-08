@@ -48,6 +48,14 @@ def write_parquet(frame: pd.DataFrame, path: Path, verify: bool = True) -> Path:
     return path
 
 
+def write_csv(frame: pd.DataFrame, path: Path) -> Path:
+    """写单表 CSV（utf-8-sig，Excel 打开中文不乱码）。"""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(path, index=False, encoding='utf-8-sig')
+    return path
+
+
 def excel_safe(frame: pd.DataFrame, limit: int = EXCEL_CELL_LIMIT) -> pd.DataFrame:
     """Excel 单元格长度保护：list 转文本、超长文本截断、datetime 转字符串。"""
     safe = frame.copy()

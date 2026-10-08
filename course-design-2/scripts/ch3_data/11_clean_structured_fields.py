@@ -491,7 +491,6 @@ def main() -> int:
                 == len(entity),
                 f'岗位实体 {len(entity)} 行，薪资信息非空 {len(entity)} 行，主键唯一')
 
-    # ---- 薪资解析 ----
     salary = parse_salary(entity[schema.SALARY_RAW_FIELD], config)
     shapes = salary_shape(entity[schema.SALARY_RAW_FIELD])
     shape_table = (shapes.rename('薪资形态').value_counts().rename_axis('薪资形态')
@@ -546,7 +545,6 @@ def main() -> int:
                 f'面议 {negotiable_count} 行的数值列全为空（插补 {negotiable_numeric} 行），'
                 '已解析行的中点无缺失')
 
-    # ---- 结构化字段 ----
     education_level = parse_education(entity[schema.EDUCATION_RAW_FIELD], config)
     weekly_days = parse_numeric_field(entity[schema.WEEKLY_RAW_FIELD],
                                       config['weekly_attendance']['pattern'])
@@ -638,7 +636,6 @@ def main() -> int:
     salary_targets[schema.SALARY_MID_DRIFT_FIELD] = (salary_targets[schema.SALARY_MID_FIELD]
                                                      - salary_targets[schema.SALARY_FIRST_MID_FIELD])
 
-    # ---- 审计表 ----
     distribution = quantile_table({
         '薪资下限（元/天）': salary_targets[schema.SALARY_MIN_FIELD],
         '薪资上限（元/天）': salary_targets[schema.SALARY_MAX_FIELD],

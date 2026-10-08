@@ -39,9 +39,7 @@ for _d in (RESULTS, TABLES, FIGURES):
     _d.mkdir(parents=True, exist_ok=True)
 
 
-# =========================================================================== #
 # 任务 2：正式最终模型真实值—预测值对照
-# =========================================================================== #
 def task2_actual_vs_predicted(polish):
     print('\n' + '=' * 70 + '\n任务 2：最终模型真实值—预测值对照图\n' + '=' * 70)
     model_frame = polish.io_utils.read_parquet(polish.project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
@@ -129,9 +127,7 @@ def task2_actual_vs_predicted(polish):
     return metrics, y_test, y_pred
 
 
-# =========================================================================== #
 # 任务 4：面议岗位与公开薪资岗位结构对照表
-# =========================================================================== #
 def task4_negotiable_vs_public():
     print('\n' + '=' * 70 + '\n任务 4：面议 vs 公开薪资结构对照表\n' + '=' * 70)
     src = project_paths.TABLES_DIR / 'ch5/44_stage26_2_negotiable_selection_bias.xlsx'
@@ -140,7 +136,6 @@ def task4_negotiable_vs_public():
     multi = pd.read_excel(src, sheet_name='03_结构对照_多值')
     concl = pd.read_excel(src, sheet_name='04_结论与口径')
 
-    # 完整表：单值 + 多值合并
     full = []
     for _, row in single.iterrows():
         hit = chi_single[chi_single['字段'] == row['字段']]
@@ -165,7 +160,7 @@ def task4_negotiable_vs_public():
     full_frame.to_csv(TABLES / 'table_5_negotiable_vs_public_salary_full.csv',
                       index=False, encoding='utf-8-sig')
 
-    # 正文精简表：只保留正文真正需要的代表性结果
+    # 正文精简表：只保留代表性结果
     want = [('工作城市', '北京'), ('公司规模', '2000人以上'), ('公司性质', '民营企业'),
             ('公司性质', '外资企业'), ('所属行业', '互联网/游戏/软件'), ('学历要求', '本科')]
     compact_rows = []
@@ -194,9 +189,7 @@ def task4_negotiable_vs_public():
     return compact, full_frame
 
 
-# =========================================================================== #
 # 任务 3：主要研究结果汇总表
-# =========================================================================== #
 def task3_main_findings(pred_metrics):
     print('\n' + '=' * 70 + '\n任务 3：主要研究结果汇总表\n' + '=' * 70)
     model_frame = pd.read_parquet(project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
@@ -289,9 +282,7 @@ def task3_main_findings(pred_metrics):
     return frame
 
 
-# =========================================================================== #
 # 任务 5（可选）：技能词云
-# =========================================================================== #
 def task5_skill_wordcloud():
     print('\n' + '=' * 70 + '\n任务 5：技能词云（主口径）\n' + '=' * 70)
     from wordcloud import WordCloud  # noqa: PLC0415
@@ -305,7 +296,7 @@ def task5_skill_wordcloud():
     font = Path(r'C:\Windows\Fonts\simhei.ttf')
     if not font.exists():
         font = Path(r'C:\Windows\Fonts\msyh.ttc')
-    # 截断色带下限，避免低频词落在接近白色的浅色而看不清
+    # 截断色带下限，使低频词不落到接近白色的浅色
     cmap = mcolors.LinearSegmentedColormap.from_list(
         'blues_readable', plt.cm.Blues(np.linspace(0.35, 1.0, 256)))
     cloud = WordCloud(font_path=str(font), width=2000, height=1200,

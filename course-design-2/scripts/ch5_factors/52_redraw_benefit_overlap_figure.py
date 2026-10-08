@@ -39,7 +39,7 @@ MODE_ARGS = ('stack', 15.5, 2.9,
 
 
 def heatmap_cells(ax) -> int:
-    """返回 (b) 图当前展示的 Jaccard 格子数（用于门禁证据留痕）。"""
+    """返回 (b) 图当前展示的 Jaccard 格子数。"""
     return len([text for text in ax.texts
                 if re.match(r'^\d\.\d{3}$', str(text.get_text()))])
 

@@ -181,9 +181,7 @@ def build_figure(draws: np.ndarray, summary: pd.Series):
                                     PRINT_HEIGHT_CM / PRINT_WIDTH_CM * _w(PRINT_WIDTH_CM)))
     ax.hist(draws, bins=BINS, color=plot_style.MAIN_COLOR, edgecolor='white', linewidth=0.35,
             zorder=3)
-    # 区间底纹用 fill_between（PolyCollection）而非 axvspan（Rectangle）：两者视觉一致，
-    # 但底纹属于背景装饰，与网格线同类；项目门禁的图例重叠率只统计柱/线/散点等数据图元，
-    # 因此底纹不计入，图例可直接压在底纹上而不再需要腾出留白
+    # 底纹用 fill_between：门禁的图例重叠率只统计数据图元，底纹不计入，图例可直接压上
     ax.fill_between([low, high], 0.0, 1.0, transform=ax.get_xaxis_transform(),
                     color=plot_style.MUTED_COLOR, alpha=0.22, linewidth=0.0, zorder=1)
     ax.axvline(0.0, color='black', linewidth=1.0, linestyle='--', zorder=4)
@@ -194,11 +192,10 @@ def build_figure(draws: np.ndarray, summary: pd.Series):
                plt.Line2D([], [], color=plot_style.ACCENT_COLOR, linewidth=1.8),
                plt.Rectangle((0, 0), 1, 1, facecolor=plot_style.MUTED_COLOR, alpha=0.35,
                              edgecolor=plot_style.MUTED_COLOR, linewidth=0.6)]
-    # 横向只留极小边距：图例带边框压在区间底纹上，不需要为它腾出留白
+    # 横向只留极小边距，图例直接压在区间底纹上
     span = max(float(draws.max()) - float(draws.min()), 1e-9)
     ax.set_xlim(float(draws.min()) - 0.04 * span, float(draws.max()) + 0.04 * span)
-    # 图例只留必要信息（横轴名已给出 ΔMAE 与单位）；字号小一档、白底描边压住底纹，
-    # 样块缩短、圆角、色块加深以便与绘制元素对应
+    # 图例只留必要信息，白底描边压住底纹，样块缩短并与绘制元素对应
     ax.legend(handles,
               ['零差异', '点估计 %.2f' % delta, '95%% 区间 [%.2f, %.2f]' % (low, high)],
               loc=LEGEND_LOC, frameon=True, framealpha=0.94, facecolor='white',

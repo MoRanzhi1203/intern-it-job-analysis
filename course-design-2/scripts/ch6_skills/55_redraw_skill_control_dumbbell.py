@@ -48,7 +48,7 @@ PRINT_HEIGHT_CM = 8.6
 CM = 1.0 / 2.54
 FONT_SCALE = 11.0 / 12.0
 FONTS = {'axis_label': 12.0, 'tick': 11.0, 'legend': 11.0, 'annotation': 10.5}
-# 冻结值锚点（原图 V['skill_salary_map'] 与 V['skill_in_cat_agg']，用于防止重算漂移）
+# 冻结值锚点（原图 V['skill_salary_map'] 与 V['skill_in_cat_agg']）
 ANCHORS = {'Excel': (-10.0, 0.0), 'Agent': (50.0, 51.9), 'SQL': (50.0, 60.2),
            'Java': (75.0, 93.4), 'Python': (60.0, 122.8), '大模型': (50.0, 125.0)}
 

@@ -170,7 +170,6 @@ def main() -> int:
     quality.stage_banner(STAGE, TITLE)
     frame, source_mode = load_or_export(args.reuse_existing, args.force_export, args.chunk_size)
 
-    # 统计表
     quality_table = quality.field_quality_table(frame)
     overview = pd.DataFrame([
         {'指标': '行数', '数值': len(frame)},
@@ -182,11 +181,10 @@ def main() -> int:
     io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_RAW_SCHEMA_AUDIT,
                          {'数据规模概览': overview, '字段Schema审计': quality_table})
 
-    # 阶段记录
     record_path = write_record(frame, source_mode)
     print(f'阶段记录: {project_paths.relative_to_root(record_path)}')
 
-    # 门禁：真实校验（列结构 / 非空 / 关键字段 / 映射覆盖）
+    # 门禁：列结构 / 非空 / 关键字段 / 映射覆盖
     validate_raw_frame(frame)
     gates.check(
         'RAW_DATA_CHECK',

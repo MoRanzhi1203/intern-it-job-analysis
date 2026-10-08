@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """脚本级共享支撑：收纳原在多个 scripts/*.py 中逐份复制的通用 helper。
 
-本模块把「各阶段 / 出图脚本」重复实现的通用工具统一实现一次（动态装载脚本、
-文件 SHA-256、26f 装载、论文样式初始化、图件收尾、JSON 落盘、特征装配器构造），
-各脚本改为导入使用，避免「各阶段重复造轮子」。仅承载无副作用、与具体阶段口径
-无关的工具；带阶段全局依赖的 helper 仍留在各自脚本内。
+本模块集中实现各阶段与出图脚本重复使用的通用工具（动态装载脚本、文件 SHA-256、
+26f 装载、论文样式初始化、图件收尾、JSON 落盘、特征装配器构造），各脚本导入使用。
+只收纳无副作用、与具体阶段口径无关的工具；带阶段全局依赖的 helper 仍留在各自脚本内。
 """
 
 from __future__ import annotations
@@ -76,7 +75,7 @@ def finish_figure(fig, stem: str, caption: str, registry: list,
 
 
 def dump_json(path: Path, payload) -> None:
-    """写出 UTF-8 缩进 JSON（非可序列化值以 str 兜底）。"""
+    """写出 UTF-8 缩进 JSON（非可序列化值转为 str）。"""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str),

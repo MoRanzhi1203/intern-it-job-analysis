@@ -406,7 +406,7 @@ def tfidf_cosine_for_pairs(matrix, row_index: dict, pairs) -> np.ndarray:
 # ---------------------------------------------------------------- 阈值与检查
 
 def quantile_thresholds(values, prefix: str = '') -> dict:
-    """统计 P50 / P75 / P90 / P95（阈值必须来自真实分布，禁止拍脑袋）。"""
+    """统计 P50 / P75 / P90 / P95（阈值取自真实分布）。"""
     series = pd.Series(values, dtype='float64').dropna()
     if series.empty:
         return {f'{prefix}P50': float('nan'), f'{prefix}P75': float('nan'),
@@ -527,7 +527,7 @@ def classify_company_text_change(row: dict, thresholds: dict) -> str:
 
 
 def build_threshold_source(thresholds: dict, extra: dict | None = None) -> pd.DataFrame:
-    """把阈值来源写成审计表（禁止拍脑袋阈值：必须记录分布样本量与人工依据）。"""
+    """把阈值来源写成审计表（阈值取自真实分布，并记录样本量与人工依据）。"""
     rows = []
     for key, value in thresholds.items():
         if key.endswith('样本数'):

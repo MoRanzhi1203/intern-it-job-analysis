@@ -374,7 +374,6 @@ def main() -> int:
     print(f'原子替换完成: {project_paths.relative_to_root(project_paths.PROCESSED_UNIQUE_PARQUET)}'
           f'（{len(final_reloaded)} 行 × {final_reloaded.shape[1]} 列）')
 
-    # 8) 指标与审计表
     metrics = {
         'unique_job_rows': int(len(entity_v2)),
         'unique_job_columns': int(entity_v2.shape[1]),

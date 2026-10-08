@@ -73,8 +73,7 @@ ANCHORS = {
 }
 ANCHOR_BASE_MAE = 35.476021
 ANCHOR_ROUNDS = 200
-# 按用户要求删除横轴名「置换对象」：论文版门禁的 axis_labels_present 因此判不过，
-# 属主动豁免项（横轴含义由 6 个刻度标签与载体文档承担），不视为图件缺陷
+# 按用户要求删除横轴名「置换对象」：门禁 axis_labels_present 判不过，登记为主动豁免项
 WAIVED_GATES = {'axis_labels_present': '横轴名按用户要求删除'}
 
 
@@ -114,8 +113,7 @@ def build_figure(frame: pd.DataFrame):
     positions = np.arange(len(frame), dtype='float64')
     ax.bar(positions, values, width=0.62, color=colors, edgecolor='black', linewidth=0.5,
            zorder=3)
-    # 误差线逐柱单独画，不用 bar(yerr=...)：后者把 6 根柱的帽线合并成一条跨全宽的
-    # Line2D，其包围盒覆盖整个坐标区，会让「图例与数据图元重叠率」门禁误报
+    # 误差线逐柱单独画：bar(yerr=...) 会把帽线合并成跨全宽的 Line2D，导致重叠率门禁误报
     for position, value, error in zip(positions, values, errors):
         ax.plot([position, position], [value - error, value + error], color='black',
                 linewidth=0.8, zorder=4)
@@ -134,8 +132,7 @@ def build_figure(frame: pd.DataFrame):
                        ha='right', va='top', fontsize=XLABEL_FONTSIZE)
     ax.set_xlim(-0.55, len(frame) - 0.45)
     ax.set_ylim(0.0, top * 1.16)
-    # 横轴名与整条图例均按用户要求删除：横轴含义由 6 个刻度标签承担，
-    # 「簇 = 5 列同步置换」「误差线 = 标准差」「置换 200 次」由载体文档（表与正文）承担
+    # 横轴名与整条图例按用户要求删除：含义由 6 个刻度标签与载体文档承担
     ax.set_ylabel('置换后 MAE 增量（元/天）', fontsize=FONTS['axis_label'])
     plot_style.apply_sci_axis(ax, grid_axis='y')
     fig.subplots_adjust(left=0.10, right=0.995, bottom=0.19, top=0.96)

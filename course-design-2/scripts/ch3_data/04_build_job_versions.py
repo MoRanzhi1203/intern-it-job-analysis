@@ -290,7 +290,6 @@ def main() -> int:
         raise ValueError('变化事件表列与 schema.CHANGE_EVENT_COLUMNS 不一致')
     print(f'回读校验通过: 版本 {len(reloaded_versions)} 行，变化事件 {len(reloaded_events)} 行')
 
-    # 4) 指标与审计表
     metrics = {
         'observation_snapshots': int(len(snapshots)),
         'core_versions': int(len(versions)),

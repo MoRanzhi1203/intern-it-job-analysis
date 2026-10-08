@@ -124,10 +124,10 @@ ARCHIVE_HISTORY_PROBES = [
 
 # ---- 本阶段涉及的表文件名（全项目统一编号，禁止两套编号并存） ----
 TABLE_RAW_SCHEMA_AUDIT = 'ch3/01_raw_schema_audit.xlsx'
-TABLE_COLUMN_DICTIONARY = 'ch3/02_column_dictionary.xlsx'
+TABLE_COLUMN_DICTIONARY = 'ch3/02_column_dictionary.csv'
 TABLE_IDENTITY_AUDIT = 'ch3/03_identity_audit.xlsx'
 TABLE_IDENTITY_CONFLICTS = 'ch3/04_identity_conflicts.xlsx'
-TABLE_REGRESSION_CHECK = 'ch3/06_refactor_regression_check.xlsx'
+TABLE_REGRESSION_CHECK = 'ch3/06_refactor_regression_check.csv'
 # ---- 岗位重复观测时序重构（Stage 03~05 正式产物） ----
 TABLE_OBSERVATION_AUDIT = 'ch3/07_observation_snapshot_audit.xlsx'
 TABLE_VERSION_AUDIT = 'ch3/08_job_version_audit.xlsx'

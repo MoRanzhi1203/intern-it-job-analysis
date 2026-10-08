@@ -45,7 +45,7 @@ PRINT_HEIGHT_CM = 7.4
 CM = 1.0 / 2.54
 FONT_SCALE = 11.0 / 12.0
 FONTS = {'axis_label': 12.0, 'tick': 11.0, 'legend': 11.0, 'annotation': 10.5}
-# 冻结值锚点（45 号实验 E3 输出，用于防止读入漂移）
+# 冻结值锚点：45 号实验 E3 输出（读入漂移校验）
 ANCHORS = {'MAE': [35.4336, 22.7183, 29.4076, 63.3567],
            'nMAE': [0.2953, 0.1377, 0.1368, 0.2112]}
 
@@ -74,7 +74,7 @@ def build_figure(body: pd.DataFrame):
 
     positions = np.arange(len(body), dtype='float64')
     panels = [('MAE（元/天）', 'MAE', plot_style.MAIN_COLOR, np.arange(0.0, 80.1, 20.0), 80.0),
-              # (b) 的 y 轴名精简为 nMAE：口径（MAE / 组内薪资中位数）已在子图名与载体正文给出
+              # (b) 轴名简写为 nMAE，口径（MAE / 组内薪资中位数）见子图名与载体正文
               ('nMAE', 'nMAE', plot_style.ACCENT_COLOR, np.arange(0.0, 0.31, 0.1), 0.36)]
     for ax, (ylabel, column, color, ticks, top) in zip(axes, panels):
         values = body[column].to_numpy('float64')
@@ -83,7 +83,7 @@ def build_figure(body: pd.DataFrame):
         ax.set_xticks(positions)
         ax.set_xticklabels(['Q1', 'Q2', 'Q3', 'Q4'])
         ax.set_xlim(-0.62, len(body) - 0.38)
-        # 显式给定上限与刻度：留出柱顶余量，又不产生超出坐标区的空刻度
+        # 显式给定上限与刻度，留出柱顶余量又不产生空刻度
         ax.set_yticks(ticks)
         ax.set_ylim(0.0, top)
         ax.set_xlabel('薪资四分位组', fontsize=FONTS['axis_label'])

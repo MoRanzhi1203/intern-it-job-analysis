@@ -444,7 +444,6 @@ def main() -> int:
     membership = io_utils.read_parquet(project_paths.JOB_SKILL_MEMBERSHIP_PARQUET)
     print(f'建模样本 {len(model_frame):,}；技能关系 {len(membership):,} 行')
 
-    # ---- 划分 ----
     splits = model_training.build_splits(model_frame)
     group_split = model_training.build_company_group_split(model_frame)
     splits_path = io_utils.write_parquet(
@@ -628,7 +627,7 @@ def main() -> int:
                 f"排序前 3：{'、'.join(comparison.head(3)['模型'].tolist())}；"
                 '选择只用 train/validation')
 
-    # ---- 锁定配置 → 预处理器保持 train-only 拟合，估计器在 train+validation 重拟合 → test 只评估一次 ----
+    # 锁定配置：预处理器保持 train-only 拟合，估计器在 train+validation 重拟合，test 只评估一次
     fit_ids = train_ids | valid_ids
     fit_frame = model_frame[model_frame[schema.ID_FIELD].isin(fit_ids)].reset_index(drop=True)
     # 预处理器沿用选模阶段在 train 上拟合的装配器（技能列、类别水平、中位数、SVD 均不接触 validation/test）
@@ -663,7 +662,6 @@ def main() -> int:
                 f'test 仅在锁定配置后评估一次（n = {len(test_frame):,}，MAE {final_test["MAE"]}），'
                 '技能阈值/文本维度/超参数/模型族均在 train+validation 上确定，未据 test 调整')
 
-    # ---- 预测结果 ----
     prediction_rows = []
     for model_key, result in model_results.items():
         valid_pred = result['fit']['valid_pred']
@@ -686,7 +684,6 @@ def main() -> int:
     predict_frame = pd.concat([*prediction_rows, final_frame], ignore_index=True)
     predictions_path = io_utils.write_parquet(predict_frame, project_paths.MODEL_PREDICTIONS_PARQUET)
 
-    # ---- 模型产出 ----
     artifact_dir = project_paths.SALARY_MODEL_DIR
     artifact_dir.mkdir(parents=True, exist_ok=True)
     joblib.dump({'assembler': final_assembler, 'model': final_model},
@@ -751,7 +748,6 @@ def main() -> int:
                 f'{len(artifact_files)} 个文件：pipeline + feature manifest + skill columns + '
                 f'category encoder schema + text reducer + model params（非裸 estimator）')
 
-    # ---- 审计表 ----
     split_sheet = build_split_sheet(splits, model_frame, group_split)
     dimension_sheet = build_dimension_sheet(final_assembler, threshold_table, dimension_table)
     comparison_sheet = comparison.rename(columns={'validation_MAE': 'validation_MAE',
@@ -802,7 +798,6 @@ def main() -> int:
                 'validation 比较 / test 最终结果 / 预测残差 / 阈值与维度选择 / 门禁）')
     audit_path = io_utils.write_excel(audit_path, audit_sheets)
 
-    # ---- 图 ----
     style_snapshot = plot_style.setup_sci_style()
     project_paths.MODELING_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     plot_style.SCI_FIGURES_DIR = project_paths.MODELING_FIGURES_DIR

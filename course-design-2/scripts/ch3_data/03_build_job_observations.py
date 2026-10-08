@@ -296,14 +296,12 @@ def main() -> int:
     io_utils.write_parquet(membership, project_paths.PROCESSED_CATEGORY_MEMBERSHIP_PARQUET,
                            verify=True)
 
-    # 6) 回读校验
     reloaded = io_utils.read_parquet(project_paths.OBSERVATION_SNAPSHOT_PARQUET)
     reloaded_membership = io_utils.read_parquet(project_paths.PROCESSED_CATEGORY_MEMBERSHIP_PARQUET)
     if len(reloaded) != len(snapshot) or list(reloaded.columns) != list(snapshot.columns):
         raise ValueError('观测快照回读不一致')
     print(f'回读校验通过: 快照 {len(reloaded)} 行，分类关系 {len(reloaded_membership)} 行')
 
-    # 7) 审计表与指标
     metrics = {
         'raw_rows': int(len(df_raw)),
         'raw_columns': raw_columns,

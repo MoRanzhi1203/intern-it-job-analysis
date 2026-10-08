@@ -333,7 +333,6 @@ def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd
     tfidf_full_values = text_semantics.tfidf_cosine_for_pairs(matrix_full, tfidf_row_index, pair_keys)
     tfidf_safe_values = text_semantics.tfidf_cosine_for_pairs(matrix_safe, tfidf_row_index, pair_keys)
 
-    # ---- 句向量相似度 ----
     full_type = text_semantics.TEXT_TYPE_JOB_FULL
     safe_type = text_semantics.TEXT_TYPE_JOB_SAFE
     full_similarity = _pair_values(artifacts['arrays'].get(full_type),

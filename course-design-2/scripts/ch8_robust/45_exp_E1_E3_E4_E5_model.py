@@ -211,7 +211,6 @@ def main() -> int:
         project_paths.RESULTS_E1_E3_E4_E5 / 'final_model_preprocessing_scope_sensitivity.csv',
         index=False, encoding='utf-8-sig')
 
-    # ================= E1 =================
     e1 = paired_bootstrap_delta(y_test, final_pred['LightGBM'], final_pred['CatBoost'])
     e1_frame = pd.DataFrame([{'检验': 'LightGBM 与 CatBoost 测试集配对误差差', **e1}])
     e1_frame.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'model_comparison_paired_bootstrap.csv',
@@ -242,7 +241,6 @@ def main() -> int:
     fig.savefig(FIGURES / 'fig_8_5_lgbm_catboost_paired_difference.png', dpi=600)
     plt.close(fig)
 
-    # ================= E3 =================
     e3 = quartile_relative_error(y_test, final_pred['LightGBM'])
     e3.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'test_error_by_salary_quartile.csv',
               index=False, encoding='utf-8-sig')
@@ -264,7 +262,6 @@ def main() -> int:
     fig.savefig(FIGURES / 'fig_7_8_error_by_salary_quartile.png', dpi=600)
     plt.close(fig)
 
-    # ================= E4 =================
     ablation = pd.read_excel(polish.TABLE_METRICS, sheet_name='02_消融五配置')
     delta = pd.read_excel(polish.TABLE_METRICS, sheet_name='03_消融增量bootstrap')
     base = ablation[ablation['配置'] == 'A+B+C'].iloc[0]
@@ -278,10 +275,9 @@ def main() -> int:
     delta['基准说明'] = delta['比较'].str.split(' 对 ').str[1].map(
         lambda text: '基准 = ' + str(text))
     delta.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'ablation_delta_mae_summary.csv', index=False, encoding='utf-8-sig')
-    ablation.to_excel(project_paths.RESULTS_E1_E3_E4_E5 / 'ablation_config_summary.xlsx', index=False)
+    ablation.to_csv(project_paths.RESULTS_E1_E3_E4_E5 / 'ablation_config_summary.csv', index=False, encoding='utf-8-sig')
     print('[E4] 消融配置 %d 行、增量检验 %d 行已写出' % (len(ablation), len(delta)))
 
-    # ================= E5 =================
     feature_names = list(assembler.feature_names())
     columns = {}
     for tag in BENEFIT_CLUSTER:

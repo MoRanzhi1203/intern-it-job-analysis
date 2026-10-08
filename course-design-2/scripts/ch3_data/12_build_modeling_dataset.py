@@ -378,7 +378,6 @@ def main() -> int:
                 f'非法特征组 {invalid_groups or "无"}）；'
                 f"参与模型字段 {int((manifest['是否参与模型'] == 1).sum())} 个")
 
-    # ---- 审计表 ----
     git_info = git_state()
     sources = {
         '最终岗位实体': {'path': project_paths.relative_to_root(

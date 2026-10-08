@@ -121,8 +121,8 @@ def bootstrap_mae_difference(y_true, pred_a, pred_b, rounds: int = BOOTSTRAP_ROU
 def tree_shap_values(model, matrix) -> np.ndarray:
     """LightGBM 原生 TreeSHAP（pred_contrib）：返回 (n, n_features) 的 SHAP 矩阵。
 
-    注意：当输入为稀疏矩阵时 LightGBM 会返回**稀疏**贡献矩阵（形状 n × (特征数 + 1)，
-    最后一列为基准值 base value），此处统一转为稠密并去掉基准值列。
+    稀疏输入时 LightGBM 返回稀疏贡献矩阵（形状 n × (特征数 + 1)，最后一列为基准值
+    base value），统一转为稠密并去掉基准值列。
     """
     contrib = model.predict(matrix, pred_contrib=True)
     if hasattr(contrib, 'toarray'):

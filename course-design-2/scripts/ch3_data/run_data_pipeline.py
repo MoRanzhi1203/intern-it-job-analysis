@@ -350,8 +350,7 @@ def run_regression_check(logger: PipelineLogger) -> tuple:
     """
     metrics = load_pipeline_metrics()
     table = quality.compare_with_baseline(metrics)
-    path = io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_REGRESSION_CHECK,
-                                {'回归核验': table})
+    path = io_utils.write_csv(table, project_paths.TABLES_DIR / project_paths.TABLE_REGRESSION_CHECK)
     logger.write(f'回归核验表: {project_paths.relative_to_root(path)}')
     for row in table.itertuples(index=False):
         logger.write(f'  {row.指标}: 基线={row.历史基线} 新结果={row.新流水线结果} '
@@ -547,8 +546,7 @@ def main() -> int:
         logger.write(f'{row.门禁项} = {row.状态}{note_text}')
 
     gate_table = quality.summarize_gates(merged_gates)
-    io_utils.write_excel(project_paths.TABLES_DIR / 'ch3/00_pipeline_gate_summary.xlsx',
-                         {'门禁汇总': gate_table})
+    io_utils.write_csv(gate_table, project_paths.TABLES_DIR / 'ch3/00_pipeline_gate_summary.csv')
     # 持久化 runner 门禁，避免 gates/runner.json 停留在历史状态
     gates.save(project_paths.GATES_DIR / 'runner.json')
 

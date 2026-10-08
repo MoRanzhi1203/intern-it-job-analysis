@@ -82,8 +82,8 @@ plt.subplots = make_patched_subplots(lambda: MODE, _ORIG_SUBPLOTS)
 Figure.subplots_adjust = make_patched_adjust(lambda: MODE, _ORIG_ADJUST)
 
 # --------------------------------------------------------------------------- #
-# 子图名定位：按「横轴刻度标签 + 横轴名的实际下沿」下移，
-# 保证子图名与坐标轴及其刻度不重叠（§13 / §15：子图标题与坐标轴不得重叠）。
+# 子图名定位：按「横轴刻度标签 + 横轴名的实际下沿」下移，与坐标轴及其刻度不重叠
+# （§13 / §15 要求）。
 # --------------------------------------------------------------------------- #
 _ORIG_SUBFIGCAP = plot_style.add_subfigure_caption
 
@@ -160,8 +160,7 @@ def reposition_captions(fig, gap_px: float = 10.0) -> int:
     """按**最终版式**重排子图名：置于「横轴刻度标签与横轴名」下沿之下 gap_px 像素处。
 
     子图名以 axes 分数坐标定位，而 axes 高度在 `subplots_adjust` 后会变化，
-    因此必须在版式固定后用实际像素几何重新锚定，才能真正消除
-    「子图标题与坐标轴/刻度重叠」。
+    须在版式固定后用实际像素几何重新锚定，以消除子图标题与坐标轴 / 刻度重叠。
     """
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
@@ -224,8 +223,8 @@ def round_labels(fig, ndigits: int = 3) -> None:
 def setup_18b(b18) -> None:
     """按 18b.main 的同一顺序载入冻结锚点（只读，不写回任何文件）。
 
-    与 scripts/ch4_lifecycle/26e_stage26_3_figure_refresh.py 的装载块完全一致，
-    以保证图内数值与 Stage23 冻结锚点一一对应。
+    与 scripts/ch4_lifecycle/26e_stage26_3_figure_refresh.py 的装载块一致，
+    使图内数值与 Stage23 冻结锚点一一对应。
     """
     b18.DATA = b18.load_data()
     b18.JOB = b18.build_job_frame()

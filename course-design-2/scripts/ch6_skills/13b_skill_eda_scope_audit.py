@@ -46,7 +46,7 @@ DEFAULT_NO_CAUSAL_NOTE = '本表为描述性关联，禁止解读为因果；技
 
 def build_scope_table(features: pd.DataFrame, membership: pd.DataFrame,
                       universe: dict) -> pd.DataFrame:
-    """01_样本口径：三种口径岗位数与覆盖率（分母明确，避免读者误解）。"""
+    """01_样本口径：三种口径岗位数与覆盖率。"""
     total = len(features)
     rows = []
     for name, scope, note in [

@@ -169,7 +169,6 @@ def main() -> int:
     if len(work) != len(df_raw) or work.shape[1] != raw_columns - 1:
         raise ValueError('删除「岗位搜索链接」后规模异常')
 
-    # 身份字段统计
     identity_stats = quality.identity_field_stats(work, schema.IDENTITY_FIELDS)
     print('身份字段统计:')
     print(identity_stats.to_string(index=False))
@@ -185,7 +184,6 @@ def main() -> int:
     print('双向映射审计:')
     print(mapping_rows.to_string(index=False))
 
-    # URL 规范化
     work[schema.URL_NORM_FIELD] = url_utils.normalize_series(work[schema.URL_FIELD])
     raw_url_unique = int(work[schema.URL_FIELD].nunique())
     norm_url_unique = int(work[schema.URL_NORM_FIELD].nunique())
@@ -252,7 +250,6 @@ def main() -> int:
         print(f'  其中规范化后已收敛为一对一的记录数: '
               f'{int((conflict_records["规范化后该ID的链接数"] == 1).sum())}')
 
-    # 输出统计表
     io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_IDENTITY_AUDIT, {
         '身份字段统计': identity_stats,
         '双向映射审计': mapping_rows,
@@ -296,7 +293,6 @@ def main() -> int:
                                structure_audit, normalize_cause)
     print(f'阶段记录: {project_paths.relative_to_root(record_path)}')
 
-    # 门禁
     gates.assert_frame('IDENTITY_AUDIT', identity_stats,
                        expected_rows=2, required_columns=['字段', '非空数量', '唯一值数量'],
                        note=f'身份字段唯一值 {unique_intern_id} / {raw_url_unique}')

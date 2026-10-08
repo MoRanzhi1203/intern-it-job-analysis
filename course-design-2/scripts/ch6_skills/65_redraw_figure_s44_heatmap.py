@@ -92,8 +92,8 @@ def main() -> int:
     fig, subfigures, meta = a18.build_07_category_skill_heatmap({})
 
     # ---- x 轴刻度标签（技能名，60° 竖排）向右移动：改用 anchor 旋转模式 ----
-    # 默认旋转模式下 matplotlib 是把「旋转后包围盒的右沿」对齐到刻度，竖排标签因此整体左移；
-    # rotation_mode='anchor' 改为绕标签末端旋转，使标签末端落在各自列的刻度上（与图 S63 一致）。
+    # 默认旋转模式按旋转后包围盒右沿对齐，竖排标签整体左移；
+    # rotation_mode='anchor' 绕标签末端旋转，使末端落在各自列刻度上（与图 S63 一致）。
     ax = fig.axes[0]
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()

@@ -105,9 +105,6 @@ def _legend_on(layout: dict) -> bool:
     return bool(layout.get('legend_on', True))
 
 
-# ---------------------------------------------------------------- 冻结数值锚点校验
-
-
 def run_anchor_validation() -> list:
     """Stage23 锚点统一校验（实现见 ``src/figure_finalize.validate_anchors``，只读冻结产物）。"""
     return figure_finalize.validate_anchors()
@@ -115,9 +112,6 @@ def run_anchor_validation() -> list:
 
 def print_anchor_validation(records: list) -> bool:
     return figure_finalize.print_anchor_validation(records)
-
-
-# ---------------------------------------------------------------- 只读数据装载
 
 
 def read_predictions() -> pd.DataFrame:
@@ -135,9 +129,6 @@ def final_test_metrics(predictions: pd.DataFrame) -> dict:
         'RMSE': float(np.sqrt(np.mean((truth - pred) ** 2))),
         'R2': float(1.0 - np.sum((truth - pred) ** 2) / np.sum((truth - truth.mean()) ** 2)),
     }
-
-
-# ---------------------------------------------------------------- eda 组（10 张）
 
 
 def build_01_sample_structure(layout: dict):
@@ -524,9 +515,6 @@ def build_10_scope_robustness(layout: dict):
         '数据来源': f'{TABLE_29} / 12_稳健性；{TABLE_27} / 11_双口径稳健性'}
 
 
-# ---------------------------------------------------------------- modeling 组（7 张）
-
-
 def build_11_model_comparison(layout: dict):
     """图 7-1 模型验证集 MAE / RMSE 比较。"""
     validation = table(TABLE_30, '08_Validation比较')
@@ -811,8 +799,6 @@ def build_17_skill_shap_top20(layout: dict):
                      '数据来源': f'{TABLE_31} / 08_技能SHAP（必要时并用 12_关键技能SHAP）'}
 
 
-# ---------------------------------------------------------------- Stage23 正式图题与落位
-
 # （组别, 文件名, Stage23 正式图题（展示版底部图题）, 绘图函数, 回答的问题, 正文去向）
 figure_specs = [
     ('eda', '01_sample_structure', '图 4-1 正式分析样本与技能提取口径结构',
@@ -853,9 +839,6 @@ figure_specs = [
      '图 8-4 技能特征 SHAP Top20（条长 = mean|SHAP|，标记 = presence_direction）',
      build_17_skill_shap_top20, '技能特征的预测贡献强度与方向', '正文 图 8-4（8.4.2 节）'),
 ]
-
-
-# ---------------------------------------------------------------- 出图与门禁
 
 
 def render(group: str, stem: str, caption: str, builder, question: str,

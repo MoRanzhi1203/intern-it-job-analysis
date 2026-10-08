@@ -37,7 +37,6 @@ TITLE = 'Stage 06 岗位版本文本语料准备'
 UNRECOGNIZED_MIN_FREQ = 30
 # 高频技术词候选的最大输出数量
 UNRECOGNIZED_TOP_N = 50
-# 英文技术词候选形态（排除纯数字与过短词）
 def load_inputs() -> tuple:
     """读取岗位版本历史与最终岗位实体表。"""
     versions = io_utils.read_parquet(project_paths.PROCESSED_VERSION_HISTORY_PARQUET)

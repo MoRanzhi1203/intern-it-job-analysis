@@ -843,7 +843,6 @@ def main() -> int:
     stability_spearman = '；'.join(f"{row['随机种子']}: {row['与主模型 mean|SHAP| 排名 Spearman']}"
                                   for row in stability_rows)
 
-    # ---- 门禁 ----
     metrics = {
         'split_counts': {'train': len(random_train), 'validation': len(random_valid),
                          'test': len(random_test)},
@@ -885,7 +884,6 @@ def main() -> int:
     audit_path = project_paths.TABLES_DIR / project_paths.TABLE_ABLATION_SHAP
     audit_path = io_utils.write_excel(audit_path, audit_sheets)
 
-    # ---- 图 ----
     style_snapshot = plot_style.setup_sci_style()
     project_paths.MODELING_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     plot_style.SCI_FIGURES_DIR = project_paths.MODELING_FIGURES_DIR
