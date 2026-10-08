@@ -6,7 +6,7 @@
      执行后把 DataFrame 的 pandas 渲染结果固化进 notebook，便于直接截图。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\44_stage27_0a_build_query_notebook.py
+    python scripts\\44_stage27_0a_build_query_notebook.py
 """
 from __future__ import annotations
 

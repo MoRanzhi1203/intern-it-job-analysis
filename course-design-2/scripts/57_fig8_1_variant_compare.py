@@ -17,7 +17,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\57_fig8_1_variant_compare.py
+    python scripts\\57_fig8_1_variant_compare.py
 """
 
 from __future__ import annotations

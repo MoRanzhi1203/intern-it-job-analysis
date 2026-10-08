@@ -14,7 +14,7 @@
     5. N_t 只表示样本中可重构的计划招聘需求窗口覆盖量，不是实际市场需求、招聘人数或预测。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\47_exp_E8_planned_demand_series.py
+    python scripts\\47_exp_E8_planned_demand_series.py
 """
 from __future__ import annotations
 

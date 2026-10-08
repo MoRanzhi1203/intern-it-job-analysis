@@ -10,7 +10,7 @@
     - 任务 6（论文图号冲突）不在本脚本，见 Markdown / Word 源文件与生成脚本的同步修改。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\62_completion_supplement.py
+    python scripts\\62_completion_supplement.py
 """
 from __future__ import annotations
 

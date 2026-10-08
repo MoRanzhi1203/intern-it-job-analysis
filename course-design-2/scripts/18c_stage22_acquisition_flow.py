@@ -15,7 +15,7 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\18c_stage22_acquisition_flow.py
+    python scripts\\18c_stage22_acquisition_flow.py
 """
 
 from __future__ import annotations

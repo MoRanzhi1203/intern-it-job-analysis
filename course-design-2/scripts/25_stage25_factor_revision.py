@@ -27,7 +27,7 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\25_stage25_factor_revision.py
+    python scripts\\25_stage25_factor_revision.py
 """
 
 from __future__ import annotations
@@ -796,7 +796,7 @@ def main() -> int:
     payload = {
         'stage': 'Stage25',
         '脚本路径': 'scripts/25_stage25_factor_revision.py',
-        '运行命令': 'E:\\anaconda3\\envs\\reptile\\python.exe '
+        '运行命令': 'python '
                 'scripts\\25_stage25_factor_revision.py',
         '运行时间': {'开始': datetime.fromtimestamp(started).isoformat(timespec='seconds'),
                  '结束': datetime.now().isoformat(timespec='seconds'),

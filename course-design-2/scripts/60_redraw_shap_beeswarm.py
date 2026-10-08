@@ -26,7 +26,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\60_redraw_shap_beeswarm.py
+    python scripts\\60_redraw_shap_beeswarm.py
 """
 
 from __future__ import annotations

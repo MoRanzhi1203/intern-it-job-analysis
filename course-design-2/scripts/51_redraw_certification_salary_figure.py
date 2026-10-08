@@ -15,7 +15,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\51_redraw_certification_salary_figure.py
+    python scripts\\51_redraw_certification_salary_figure.py
 """
 
 from __future__ import annotations

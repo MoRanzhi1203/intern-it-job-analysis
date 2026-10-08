@@ -9,7 +9,7 @@
 5. 网页图保持原界面，不重绘、不做信息图化。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\40_stage27_0a_native_assets.py
+    python scripts\\40_stage27_0a_native_assets.py
 """
 from __future__ import annotations
 

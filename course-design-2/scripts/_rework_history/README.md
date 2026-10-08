@@ -26,6 +26,11 @@
 | `37_stage27_0_paper_build.py` | Stage27.0 | 论文装配，被 `41_stage27_0a_paper_build.py` 取代；仅被同样归档的 38 引用 |
 | `38_stage27_0_verify.py` | Stage27.0 | 装配核验，被 `42_stage27_0a_verify.py` 取代；零引用 |
 | `39_stage27_0_image_privacy_scan.ps1` | Stage27.0 | 旧证据图隐私扫描；零引用 |
+| `24a_build_stage24_docx.py` | Stage24 | Word 装配，读写 `outputs/paper/`、`docs/paper/stage23/`（均不存在且无创建逻辑）；仅被同批归档脚本引用 |
+| `24b_qa_render.py` | Stage24 | Word QA 渲染，目标 `outputs/paper/qa`（不存在）；零引用 |
+| `24c_appendix_data.py` | Stage24 | 附录数据，仅被同样归档的 24a 引用 |
+| `41_stage27_0a_paper_build.py` | Stage27.0A | 论文装配，目标 `outputs/paper/`、`docs/paper/stage27_0a/`（不存在）；仅被同样归档的 42 引用 |
+| `42_stage27_0a_verify.py` | Stage27.0A | 装配核验，读取 `outputs/paper/`（不存在）；零引用 |
 | `63_fix_figure_7_7_word.py` | 收尾 | 对 Word 的一次性补丁；零引用 |
 | `64_replace_stale_heatmap_in_word.py` | 收尾 | 替换 Word 内旧热力图的一次性补丁；零引用 |
 

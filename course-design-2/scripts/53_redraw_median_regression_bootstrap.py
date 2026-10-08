@@ -15,7 +15,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\53_redraw_median_regression_bootstrap.py
+    python scripts\\53_redraw_median_regression_bootstrap.py
 """
 
 from __future__ import annotations

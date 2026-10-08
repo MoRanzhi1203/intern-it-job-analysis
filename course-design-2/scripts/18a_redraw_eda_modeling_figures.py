@@ -17,7 +17,7 @@
 - 视觉规范唯一来源 ``src/plot_style.py``（本脚本不修改该模块）。
 
 运行：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts/18a_redraw_eda_modeling_figures.py
+    python scripts/18a_redraw_eda_modeling_figures.py
 """
 
 from __future__ import annotations

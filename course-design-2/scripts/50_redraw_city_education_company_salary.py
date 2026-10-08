@@ -13,7 +13,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\50_redraw_city_education_company_salary.py
+    python scripts\\50_redraw_city_education_company_salary.py
 """
 
 from __future__ import annotations

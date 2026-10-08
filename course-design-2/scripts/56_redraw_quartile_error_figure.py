@@ -16,7 +16,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\56_redraw_quartile_error_figure.py
+    python scripts\\56_redraw_quartile_error_figure.py
 """
 
 from __future__ import annotations

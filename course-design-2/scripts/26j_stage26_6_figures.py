@@ -11,8 +11,8 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26j_stage26_6_figures.py audit
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26j_stage26_6_figures.py figures
+    python scripts\\26j_stage26_6_figures.py audit
+    python scripts\\26j_stage26_6_figures.py figures
 """
 from __future__ import annotations
 

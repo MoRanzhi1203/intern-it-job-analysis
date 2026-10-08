@@ -27,7 +27,7 @@ S06（高效应标签共现簇）的**同一份冻结数据**合并为双子图
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\18b_supplementary_figures.py
+    python scripts\\18b_supplementary_figures.py
 """
 
 from __future__ import annotations

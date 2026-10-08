@@ -32,8 +32,8 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26g_stage26_4_figure_rebuild.py
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26g_stage26_4_figure_rebuild.py shap
+    python scripts\\26g_stage26_4_figure_rebuild.py
+    python scripts\\26g_stage26_4_figure_rebuild.py shap
 """
 from __future__ import annotations
 

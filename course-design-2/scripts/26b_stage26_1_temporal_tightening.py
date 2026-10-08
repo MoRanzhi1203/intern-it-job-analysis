@@ -37,7 +37,7 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26b_stage26_1_temporal_tightening.py
+    python scripts\\26b_stage26_1_temporal_tightening.py
 """
 
 from __future__ import annotations
@@ -2553,7 +2553,7 @@ def main() -> int:  # noqa: C901
     payload = {
         'stage': 'Stage26.1',
         '脚本路径': 'scripts/26b_stage26_1_temporal_tightening.py',
-        '运行命令': ('E:\\anaconda3\\envs\\reptile\\python.exe '
+        '运行命令': ('python '
                  'scripts\\26b_stage26_1_temporal_tightening.py'),
         '运行时间': {'开始': datetime.fromtimestamp(started).isoformat(timespec='seconds'),
                  '结束': datetime.now().isoformat(timespec='seconds'),

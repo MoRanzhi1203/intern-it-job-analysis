@@ -19,7 +19,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\55_redraw_skill_control_dumbbell.py
+    python scripts\\55_redraw_skill_control_dumbbell.py
 """
 
 from __future__ import annotations

@@ -8,7 +8,7 @@
 4. 代码图不出现 IDE 侧边栏、文件树、绝对路径、账号 / 密码 / token / cookie。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\36_stage27_0_evidence_assets.py
+    python scripts\\36_stage27_0_evidence_assets.py
 """
 from __future__ import annotations
 

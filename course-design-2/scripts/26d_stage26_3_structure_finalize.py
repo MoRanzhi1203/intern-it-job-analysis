@@ -19,9 +19,9 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26d_stage26_3_structure_finalize.py baseline
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26d_stage26_3_structure_finalize.py compute
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26d_stage26_3_structure_finalize.py inventory
+    python scripts\\26d_stage26_3_structure_finalize.py baseline
+    python scripts\\26d_stage26_3_structure_finalize.py compute
+    python scripts\\26d_stage26_3_structure_finalize.py inventory
 
 新增输出::
 

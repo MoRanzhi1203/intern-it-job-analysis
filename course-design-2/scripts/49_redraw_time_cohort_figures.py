@@ -18,7 +18,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\49_redraw_time_cohort_figures.py
+    python scripts\\49_redraw_time_cohort_figures.py
 """
 
 from __future__ import annotations

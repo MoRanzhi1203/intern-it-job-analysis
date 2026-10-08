@@ -10,7 +10,7 @@
     不参与任何选择。所有结论只写为统计关联 / 预测贡献 / 模型行为。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\45_exp_E1_E3_E4_E5_model.py
+    python scripts\\45_exp_E1_E3_E4_E5_model.py
 """
 from __future__ import annotations
 

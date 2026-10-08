@@ -27,7 +27,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\61_redraw_benefit_cluster_permutation.py
+    python scripts\\61_redraw_benefit_cluster_permutation.py
 """
 
 from __future__ import annotations

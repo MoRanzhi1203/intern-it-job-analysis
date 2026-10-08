@@ -10,7 +10,7 @@ E7：沿用 5.8 节的 132 列设计矩阵、参照组与中位数回归模型�
     并列对照 95% 区间。不修改任何已定义解释变量、不做显著性筛选。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\46_exp_E2_E7_company_group_and_median.py
+    python scripts\\46_exp_E2_E7_company_group_and_median.py
 """
 from __future__ import annotations
 

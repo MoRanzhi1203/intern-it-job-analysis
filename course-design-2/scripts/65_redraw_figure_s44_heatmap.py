@@ -9,7 +9,7 @@ S44 由 ``scripts/26e_stage26_3_figure_refresh.py`` 在 2026-09-19 生成，其 
 相同的版式参数**（single，打印宽 15.5 cm，面板高 5.2，left 0.36 / right 0.98 / bottom 0.30 /
 top 0.97）重绘，只改变 x 轴标题文本，不改动数据、行列选择、配色与色标。
 
-用法：E:\\anaconda3\\envs\\reptile\\python.exe scripts\\65_redraw_figure_s44_heatmap.py
+用法：python scripts\\65_redraw_figure_s44_heatmap.py
 """
 from __future__ import annotations
 

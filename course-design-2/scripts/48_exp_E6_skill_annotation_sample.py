@@ -13,7 +13,7 @@
        具体技术技能层级与较粗层级，并报告微平均与宏平均。
 
 用法：
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\48_exp_E6_skill_annotation_sample.py
+    python scripts\\48_exp_E6_skill_annotation_sample.py
 """
 from __future__ import annotations
 

@@ -14,7 +14,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\54_redraw_category_skill_heatmap.py
+    python scripts\\54_redraw_category_skill_heatmap.py
 """
 
 from __future__ import annotations

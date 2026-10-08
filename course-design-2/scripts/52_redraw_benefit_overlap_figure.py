@@ -12,7 +12,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\52_redraw_benefit_overlap_figure.py
+    python scripts\\52_redraw_benefit_overlap_figure.py
 """
 
 from __future__ import annotations

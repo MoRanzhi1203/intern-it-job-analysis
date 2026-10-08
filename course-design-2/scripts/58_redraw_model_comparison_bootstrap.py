@@ -25,7 +25,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\58_redraw_model_comparison_bootstrap.py
+    python scripts\\58_redraw_model_comparison_bootstrap.py
 """
 
 from __future__ import annotations

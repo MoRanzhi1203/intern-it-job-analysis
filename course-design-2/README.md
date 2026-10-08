@@ -169,6 +169,6 @@ Stage 00~11 不再保留 Notebook 双实现。
 4. **待补充目录**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
    当前不存在；指向这些路径的失效引用已在本轮清理，相关叙述保留为待补充目标。
 5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于本轮删除。
-6. **返工脚本已归档**：13 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
-   （Stage23.1、Stage26.x 中途稿、Stage27.0 装配链、Word 一次性补丁等）已移至
-   `scripts/_rework_history/`，附索引说明；现行流程不依赖该目录。
+6. **返工脚本已归档**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
+   （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）
+   已移至 `scripts/_rework_history/`，附索引说明；现行流程不依赖该目录。

@@ -34,7 +34,7 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26c_stage26_2_final_consolidation.py
+    python scripts\\26c_stage26_2_final_consolidation.py
 """
 
 from __future__ import annotations
@@ -1281,7 +1281,7 @@ def main() -> int:  # noqa: C901
     payload = {
         'stage': 'Stage26.2',
         '脚本路径': 'scripts/26c_stage26_2_final_consolidation.py',
-        '运行命令': ('E:\\anaconda3\\envs\\reptile\\python.exe '
+        '运行命令': ('python '
                  'scripts\\26c_stage26_2_final_consolidation.py'),
         '运行时间': {'开始': datetime.fromtimestamp(started).isoformat(timespec='seconds'),
                  '结束': datetime.now().isoformat(timespec='seconds')},

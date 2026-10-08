@@ -14,7 +14,7 @@
 
 用法：:
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\59_redraw_company_split_boxplot.py
+    python scripts\\59_redraw_company_split_boxplot.py
 """
 
 from __future__ import annotations

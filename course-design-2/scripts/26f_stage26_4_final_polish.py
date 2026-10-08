@@ -18,9 +18,9 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26f_stage26_4_final_polish.py baseline
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26f_stage26_4_final_polish.py compute
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26f_stage26_4_final_polish.py textaudit
+    python scripts\\26f_stage26_4_final_polish.py baseline
+    python scripts\\26f_stage26_4_final_polish.py compute
+    python scripts\\26f_stage26_4_final_polish.py textaudit
 
 新增输出::
 

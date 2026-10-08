@@ -35,7 +35,7 @@
 
 运行::
 
-    E:\\anaconda3\\envs\\reptile\\python.exe scripts\\26e_stage26_3_figure_refresh.py
+    python scripts\\26e_stage26_3_figure_refresh.py
 """
 from __future__ import annotations
 
