@@ -96,12 +96,6 @@
 | `48_exp_E6_skill_annotation_sample.py` | E6 技能抽取人工核验抽样表（→ `data/interim/skill_annotation_sample.xlsx`） |
 | `62_completion_supplement.py` | 补全任务交付物（→ `outputs/deliverables/`） |
 
-## 7. 归档
-
-| 目录 | 说明 |
-| --- | --- |
-| `_rework_history/` | 已被取代 / 零引用的返工脚本，不参与现行流程（详见该目录 README） |
-
 ## 调用约定
 
 - 统一从项目根执行：`python scripts/<name>.py`；全量流水线：`python scripts/run_data_pipeline.py --reuse-existing-raw`；

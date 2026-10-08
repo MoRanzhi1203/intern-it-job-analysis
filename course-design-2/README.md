@@ -6,9 +6,8 @@
 
 ## 1. 项目结构
 
-> 本节描述**磁盘上实际存在的结构**。`tests/`、`notebooks/`、`docs/methodology`、
-> `docs/records`、`docs/prompts`、`outputs/logs/` 目录已建立（以 `.gitkeep` 占位），
-> 其中的阶段记录 / 方法论文档 / 门禁与指标 JSON 在流水线运行时生成。
+> 本节描述**磁盘上实际存在的结构**。`docs/methodology`、`docs/records`、`outputs/logs/`
+> 目录已建立（以 `.gitkeep` 占位），其中的阶段记录 / 方法论文档 / 门禁与指标 JSON 在流水线运行时生成。
 
 ```text
 course-design-2/
@@ -20,14 +19,10 @@ course-design-2/
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
 ├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
 ├─ scripts/                全部脚本（扁平；按职责分组的索引见 scripts/README.md）
-│  └─ _rework_history/     已归档的返工 / 被取代脚本（说明见该目录 README，不参与现行流程）
 ├─ docs/
 │  ├─ paper/               论文终稿（.docx / .pdf，只读保护区）
 │  ├─ methodology/         方法论文档目录（流水线运行时生成）
-│  ├─ records/             阶段记录目录（流水线运行时生成）
-│  └─ prompts/             提示词目录
-├─ notebooks/              EDA / 建模 / 论文出图 Notebook（待新增）
-├─ tests/                  静态检查与测试（待新增）
+│  └─ records/             阶段记录目录（流水线运行时生成）
 └─ outputs/
    ├─ tables/              审计表（现行编号唯一；_legacy/ 为历史遗留表）
    ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
@@ -196,25 +191,29 @@ Stage 00~11 不再保留 Notebook 双实现。
 3. **顶层 `results/` 已归并**：原顶层 `results/` 已并入 `outputs/`，并按语义拆分为
    `outputs/results/`（实验数值 CSV/JSON）与 `outputs/deliverables/`（「补全任务」报告 / 派生表 / 派生图）；
    生成脚本 `62_completion_supplement.py` 与交付文档内的路径引用同步更新。
-4. **待补充目录已建立**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
+4. **运行期目录已建立**：`docs/methodology`、`docs/records`、`outputs/logs/`（含 `gates`/`metrics`）
    已建立（`.gitkeep` 占位）并纳入 `project_paths.ensure_directories()` 的幂等创建列表；
-   其中的阶段记录 / 方法论 / 门禁与指标 JSON 仍由流水线运行时生成。
+   其中的阶段记录 / 方法论 / 门禁与指标 JSON 仍由流水线运行时生成；
+   `tests/`、`notebooks/`、`docs/prompts/` 三个纯占位目录已随本轮清理移除。
 5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于上一轮删除。
-6. **返工脚本已归档**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
+6. **返工脚本已删除**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
    （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）
-   已移至 `scripts/_rework_history/`，附索引说明；现行流程不依赖该目录。
+   已随本轮清理删除，仅存于 Git 历史（提交历史可追溯）。
+7. **26 系列递进链经评估不合并**：`26b→26j` 共 7 个脚本、约 8,270 行，含 23 处有意的跨脚本
+   动态装载（`26g` 需接收 `18a/18b` 的模块对象、`26e` 需 `26c` 的两个独立模块实例），
+   合并为单文件会显著降低可维护性且无法离线验证，故保留现结构。
 
 ### 8.1 本轮附带的路径收口
 
-- **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅归档脚本 `18d` 生成）
-  与 `outputs/figures/supplementary/_stage26_5_map/`（仅归档脚本 `26i` 使用的地图缓存，可重新下载）。
+- **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅已删除的历史脚本 `18d` 生成）
+  与 `outputs/figures/supplementary/_stage26_5_map/`（仅已删除的历史脚本 `26i` 使用的地图缓存，可重新下载）。
 - **文件归位**：`data/skill_annotation_sample.xlsx` 从 `data/` 根移到 `data/interim/`，
   生成脚本 `48_exp_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
 - **文档门禁路径修正**：`run_data_pipeline.py` 的 `check_documentation()` 由读取不存在的
   `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
 - **硬编码路径收口**：`45/46/47/53/56/58/59/61/62` 等脚本中手写的 `outputs/results`、
   `data/processed/model_splits.parquet` 等改为经 `project_paths`（新增 `OUTPUTS_RESULTS_DIR` 常量）取得。
-- **数据层归档**：14 张仅被 `scripts/_rework_history/` 归档脚本引用的历史审计表已 `git mv` 至
+- **数据层归档**：14 张仅被已删除的历史脚本引用的历史审计表已 `git mv` 至
   `outputs/tables/_legacy/`（顶层只保留现行审计表）；`data/processed` 中的 stage26 试验产物仍被
   现行 `26b` 引用，保持原位。
 - **元数据与产物分离**：出图脚本写出的 4 个 `*_registry.json` 由 `outputs/figures/` 迁至

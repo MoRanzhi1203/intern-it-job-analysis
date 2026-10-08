@@ -103,16 +103,10 @@ METRICS_DIR = LOGS_DIR / 'metrics'
 
 # ---- 文档目录 ----
 DOCS_DIR = PROJECT_ROOT / 'docs'
-PROMPTS_DIR = DOCS_DIR / 'prompts'
 RECORDS_DIR = DOCS_DIR / 'records'
 # ---- 方法论文档目录（论文「数据预处理」章节的唯一技术来源） ----
 METHODOLOGY_DIR = DOCS_DIR / 'methodology'
 METHODOLOGY_PREPROCESSING_DOC = METHODOLOGY_DIR / 'data_preprocessing_pipeline.md'
-
-# ---- 测试目录 ----
-TESTS_DIR = PROJECT_ROOT / 'tests'
-# ---- Notebook 目录（后续 EDA / 建模 / 论文出图） ----
-NOTEBOOKS_DIR = PROJECT_ROOT / 'notebooks'
 
 # ---- 归档目录（仅历史证据；已按用户要求移除，历史证据改由 git 历史承载） ----
 ARCHIVE_DIR = PROJECT_ROOT / 'archive'
@@ -222,7 +216,7 @@ def ensure_directories() -> list[Path]:
         TABLES_DIR, FIGURES_DIR, EDA_FIGURES_DIR, MODELING_FIGURES_DIR,
         MODELS_DIR, SALARY_MODEL_DIR, LOGS_DIR, GATES_DIR, METRICS_DIR,
         OUTPUTS_RESULTS_DIR, REGISTRIES_DIR, DELIVERABLES_DIR,
-        RECORDS_DIR, METHODOLOGY_DIR, PROMPTS_DIR, TESTS_DIR, NOTEBOOKS_DIR,
+        RECORDS_DIR, METHODOLOGY_DIR,
     ]
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)
