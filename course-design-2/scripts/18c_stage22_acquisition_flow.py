@@ -128,8 +128,8 @@ def build_figure(rows_label: str):
     return fig
 
 
-def main() -> int:
-    snapshot = plot_style.setup_sci_style()
+    plot_style.setup_sci_style()
+    plot_style.setup_sci_style()
     plot_style.SCI_FIGURES_DIR = SUPP_DIR
     SUPP_DIR.mkdir(parents=True, exist_ok=True)
     plot_style.FIGURE_REGISTRY.clear()

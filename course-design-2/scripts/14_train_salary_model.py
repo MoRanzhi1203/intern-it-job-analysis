@@ -441,10 +441,7 @@ def main() -> int:
     quality.stage_banner(STAGE, TITLE)
 
     model_frame = io_utils.read_parquet(project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
-    analysis = io_utils.read_parquet(project_paths.JOB_ANALYSIS_DATASET_PARQUET,
-                                     columns=[schema.ID_FIELD, schema.SKILL_SCOPE_FIELD])
     membership = io_utils.read_parquet(project_paths.JOB_SKILL_MEMBERSHIP_PARQUET)
-    universe = skill_eda.load_scope_universe(analysis)
     print(f'建模样本 {len(model_frame):,}；技能关系 {len(membership):,} 行')
 
     # ---- 划分 ----
@@ -565,7 +562,6 @@ def main() -> int:
     # ---- 模型网格（仅 validation） ----
     model_results = {}
     grid_details = {}
-    prediction_frames = []
     for model_key, grid in MODEL_GRIDS.items():
         rows = []
         best = None

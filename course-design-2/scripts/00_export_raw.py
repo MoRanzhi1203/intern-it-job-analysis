@@ -163,8 +163,8 @@ def write_record(frame: pd.DataFrame, source_mode: str) -> Path:
 def main() -> int:
     global LOGGER
     args = parse_args()
-    project_paths.ensure_directories()
-    LOGGER = quality.configure_logging()
+    quality.configure_logging()
+    quality.configure_logging()
     gates = quality.GateRegistry(STAGE)
 
     quality.stage_banner(STAGE, TITLE)

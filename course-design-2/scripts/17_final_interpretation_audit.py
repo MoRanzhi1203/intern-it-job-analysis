@@ -42,7 +42,6 @@ EXPECTED_TEST_RMSE = 64.623479
 EXPECTED_TEST_R2 = 0.584606
 EXPECTED_RANDOM_FULL_MAE = 36.074723
 EXPECTED_GROUP_SPLIT_MAE = 52.049937
-EXPECTED_SHAP_ROWS = 2233
 FROZEN_GATES = ['stage_12_modeling', 'stage_13_eda', 'stage_14_model', 'stage_15_ablation',
                 'stage_16_company_field']
 PRESENCE_COLUMNS = ['model_job_count', 'model_job_frequency', 'test_present_n', 'test_absent_n',
@@ -714,7 +713,6 @@ def main() -> int:
                 f"08_全阶段门禁 + 09_测试结果）；"
                 f"pytest {test_sheet.set_index('项目').loc['结果摘要', '取值']}")
     audit_path, record_path, audit_sheets = publish(test_sheet)
-    gate_sheet = audit_sheets['08_全阶段门禁']
     print(f'审计表: {project_paths.relative_to_root(audit_path)}')
     print(f'记录: {project_paths.relative_to_root(record_path)}')
     print('EXPERIMENT_FREEZE = TRUE')

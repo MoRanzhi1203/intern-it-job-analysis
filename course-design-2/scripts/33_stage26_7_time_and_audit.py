@@ -54,20 +54,9 @@ TECH_TIME_KEYWORDS = [
     'created_at', 'updated_at', 'create_time', 'update_time',
 ]
 # 业务时间字段（允许进入分析与条件入模）
-BUSINESS_TIME_FIELDS = ['发布时间', '投递截止日期', 'segment_start', 'segment_end',
-                        'episode_start', 'episode_end']
 # 原始/治理层允许保留的技术时间字段（仅追溯、版本排序、审计）
-RAW_ALLOWED_TECH_FIELDS = ['观测时间', '数据创建时间', '数据更新时间',
-                           '最终版本首次观测时间', '最终版本末次观测时间',
-                           'created_at', 'updated_at',
-                           '版本首次观测时间', '版本末次观测时间']
-
 MIN_WINDOW_N = 30
 SKILLS = ['Python', 'SQL', '人工智能', '大模型']
-SKILL_LAYER = {'Python': '具体技术技能', 'SQL': '具体技术技能',
-               '人工智能': '技术领域', '大模型': '具体技术技能'}
-
-
 def scan_tech_time(columns) -> list:
     """返回列名中命中技术时间关键词的字段列表。"""
     hits = []
@@ -185,7 +174,6 @@ def main() -> int:
     monthly = monthly_table(entity, ID, SALARY_MID)
     monthly.index.name = '月份'
 
-    weekday_cov = entity[PUBLISH].dt.dayofweek.notna().mean()
     time_summary = {
         '发布时间范围': f'{entity[PUBLISH].min().date()} ~ {entity[PUBLISH].max().date()}',
         '唯一岗位实体数': int(len(entity)),

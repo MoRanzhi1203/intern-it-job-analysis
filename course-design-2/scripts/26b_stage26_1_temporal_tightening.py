@@ -67,7 +67,6 @@ SEED = 42
 BOOTSTRAP_ROUNDS = ablation_shap.BOOTSTRAP_ROUNDS          # 1000
 BOOTSTRAP_SEED = ablation_shap.BOOTSTRAP_SEED              # 42
 GAP_THRESHOLD_DAYS = 7
-REFERENCE_DATE = pd.Timestamp('2022-01-01')
 MAJOR_CATEGORIES = ['人工智能', '后端开发', '前端开发', '数据', '产品', '运营']
 MANUAL_SAMPLE_SIZE = 80
 PANEL_MAX_ROWS = 20_000_000
@@ -1334,13 +1333,12 @@ def _window_marks(ax, date_min, date_max, legend=True):
     return []
 
 
-def figure_s23(episodes: pd.DataFrame, relaxed: pd.DataFrame, registry: list) -> dict:
+def figure_s23(episodes: pd.DataFrame, registry: list) -> dict:
     import matplotlib.pyplot as plt  # noqa: PLC0415
 
     duration = episodes.loc[episodes['final_observed_planned_duration_days'] > 0,
                             'final_observed_planned_duration_days']
     rounds_strict = episodes.groupby('intern_id')['episode_count_strict'].first()
-    rounds_relaxed = relaxed.groupby('intern_id')['episode_no_relaxed'].max()
     fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.6))
 
     ax = axes[0]
@@ -2093,8 +2091,8 @@ def main() -> int:  # noqa: C901
     print(f"44 号表已写入；QA③ T3 新建 Strict Episode = {t3_new_strict}；"
           f"QA⑤ 重叠 = {overlap_count}；QA⑧ {panel_info['rows']:,} == {duration_sum:,}")
 
-    # ---- Step 3：日级面板与生命周期统计 ----
-    panel_path = io_utils.write_parquet(panel_info['panel'], PANEL_PATH)
+    io_utils.write_parquet(panel_info['panel'], PANEL_PATH)
+    io_utils.write_parquet(panel_info['panel'], PANEL_PATH)
     step_e = run_daily_metrics(panel_info, episodes)
     daily = step_e['daily']
     relaxed_daily = daily_from_episodes(relaxed_episodes)
@@ -2321,8 +2319,6 @@ def main() -> int:  # noqa: C901
         (project_paths.SALARY_MODEL_DIR / 'feature_manifest.json').read_text(encoding='utf-8'))
     model_params = json.loads(
         (project_paths.SALARY_MODEL_DIR / 'model_params.json').read_text(encoding='utf-8'))
-    stage25_key = model_params['model_key']
-    stage25_params = model_params['params']
     stage25_skill_threshold = int(model_params['skill_threshold'])
     stage25_text_dim = int(model_params['text_dim'])
     grouped = grouped_columns_with_safe_f(feature_manifest, f_frame)
@@ -2383,7 +2379,6 @@ def main() -> int:  # noqa: C901
         (project_paths.METRICS_DIR / 'stage_26_temporal.json').read_text(encoding='utf-8'))
     stage26_step_b = stage26_metrics['StepB_周期识别']
     stage26_step_i = stage26_metrics['StepI_F组消融']
-    stage26_step_j = stage26_metrics['StepJ_TemporalSplit']
     stage26_f_increment = [row for row in stage26_step_i['增量与bootstrap']
                            if row['比较（加入特征组后）'].startswith('A+B+C+D+E+F vs')]
     strict_reopen = reopen_table[reopen_table['检验对象'].str.startswith('Strict')].iloc[0]
@@ -2464,7 +2459,7 @@ def main() -> int:  # noqa: C901
     # ---- 图件 ----
     snapshot = plot_style.setup_sci_style()
     registry: list = []
-    figure_s23(episodes, relaxed_episodes, registry)
+    figure_s23(episodes, registry)
     figure_s24(daily, registry)
     category_daily = category_daily_counts(panel_info, daily)
     figure_s25(category_daily, daily, registry)

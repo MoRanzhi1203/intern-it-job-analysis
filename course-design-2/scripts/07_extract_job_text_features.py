@@ -193,7 +193,6 @@ def build_features(entity: pd.DataFrame, latest: pd.DataFrame, skill_records: li
 def build_skill_frequency(features: pd.DataFrame, matcher: skill_extraction.SkillMatcher) -> pd.DataFrame:
     """技能频率：岗位数 / 覆盖率 / 一级类型 / 技能组 / 要求段落内命中岗位数。"""
     config = matcher.config
-    id_field = schema.ID_FIELD
     rows = []
     for skill in config.skill_to_group:
         hit = features[schema.SKILL_SET_FIELD].map(lambda skills: skill in set(skills or []))

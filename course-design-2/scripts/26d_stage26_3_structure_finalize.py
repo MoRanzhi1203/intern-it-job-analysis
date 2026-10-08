@@ -244,8 +244,7 @@ def missing_rate(frame: pd.DataFrame, column: str) -> float:
 
 
 def build_diagnostics(frame: pd.DataFrame, feature_manifest: dict,
-                      labels: pd.Series, membership: pd.DataFrame,
-                      entity_publish: pd.Series) -> dict:
+                      labels: pd.Series, membership: pd.DataFrame) -> dict:
     """建模前特征诊断（对进入模型的候选特征全量诊断，并标注最终处置）。"""
     numeric = list(feature_manifest['numeric_columns'])
     categorical = list(feature_manifest['categorical_columns'])
@@ -328,7 +327,6 @@ def build_diagnostics(frame: pd.DataFrame, feature_manifest: dict,
         'Spearman ρ', key=lambda series: series.abs(), ascending=False)
     correlation_table = correlation.round(6).reset_index().rename(columns={'index': '特征'})
 
-    frame_publish = frame[schema.ID_FIELD].map(entity_publish)
     categories = [set(items) if isinstance(items, (list, tuple, np.ndarray)) else set()
                   for items in frame['岗位大类集合']]
     category_array = np.array(categories, dtype=object)
@@ -686,7 +684,7 @@ def run_compute() -> int:
 
     # ---------------------------------------------------------- A 建模前诊断
     diagnostics = build_diagnostics(frame, feature_manifest,
-                                    random_labels, membership, entity_publish)
+                                    random_labels, membership)
     print('建模前诊断：缺失率表 %d 行 / 近常量 %d 行 / 高冗余对 %d 对'
           % (len(diagnostics['missing']), len(diagnostics['variance']),
              len(diagnostics['redundancy'])))

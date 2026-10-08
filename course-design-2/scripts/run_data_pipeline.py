@@ -56,9 +56,6 @@ STAGE_SCRIPTS = {
     11: ('scripts/11_clean_structured_fields.py', 'Stage 11 结构化业务字段清洗与薪资目标解析'),
 }
 LAST_STAGE = max(STAGE_SCRIPTS)
-GATE_JSON_KEYS = [*quality.PIPELINE_STAGES, 'runner']
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='course-design-2 数据流水线总执行器')
     parser.add_argument('--from-stage', type=int, default=0, choices=list(STAGE_SCRIPTS))

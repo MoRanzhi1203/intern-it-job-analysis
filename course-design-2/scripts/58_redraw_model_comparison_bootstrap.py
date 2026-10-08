@@ -106,7 +106,6 @@ def compute_draws() -> tuple[np.ndarray, dict]:
     labels = splits.set_index(schema.ID_FIELD)['split']
     split_series = labels.reindex(model_frame[schema.ID_FIELD]).to_numpy()
     is_test = split_series == 'test'
-    is_valid = split_series == 'validation'
     test_frame = model_frame.loc[is_test].reset_index(drop=True)
     fit_frame = model_frame.loc[~is_test].reset_index(drop=True)
     text_for = lambda block: text_matrix[[text_by_id[j] for j in block[schema.ID_FIELD]]]

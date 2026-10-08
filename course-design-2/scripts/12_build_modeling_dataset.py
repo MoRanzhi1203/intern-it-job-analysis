@@ -39,7 +39,7 @@ if str(PROJECT_ROOT) not in sys.path:
 import pandas as pd  # noqa: E402
 
 from src import (io_utils, modeling_dataset, project_paths, quality,  # noqa: E402
-                 schema, skill_extraction, text_utils)
+                 schema, text_utils)
 
 STAGE = 'stage_12_modeling'
 TITLE = 'Stage 12 建模数据集构建、特征分组与泄漏审计'
@@ -295,7 +295,6 @@ def main() -> int:
     company_map = io_utils.read_parquet(project_paths.COMPANY_ENTITY_MAP_PARQUET)
     text_index = io_utils.read_parquet(project_paths.JOB_TEXT_EMBEDDING_INDEX_PARQUET)
     membership = io_utils.read_parquet(project_paths.JOB_SKILL_MEMBERSHIP_PARQUET)
-    config = skill_extraction.load_skill_config()
     print(f'输入: 实体 {len(entity)} / 薪资 {len(salary)} / 技能关系 {len(membership)} 行')
 
     analysis = modeling_dataset.build_analysis_dataset(entity, structured, text_features,

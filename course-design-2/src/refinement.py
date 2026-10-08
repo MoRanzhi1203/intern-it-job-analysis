@@ -267,7 +267,6 @@ def build_audit_tables(baseline: dict, stage_metrics: dict,
     job_metrics = stage_metrics.get('stage_08', {})
     company_metrics = stage_metrics.get('stage_10', {})
     identity_metrics = stage_metrics.get('stage_09', {})
-    baseline_job = (baseline.get('job') or {}).get('指标') or {}
     baseline_company = (baseline.get('company') or {}).get('指标') or {}
 
     overview_rows = [

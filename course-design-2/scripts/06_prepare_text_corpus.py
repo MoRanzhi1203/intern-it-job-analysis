@@ -38,9 +38,6 @@ UNRECOGNIZED_MIN_FREQ = 30
 # 高频技术词候选的最大输出数量
 UNRECOGNIZED_TOP_N = 50
 # 英文技术词候选形态（排除纯数字与过短词）
-TECH_WORD_PATTERN = r'^[A-Za-z][A-Za-z0-9+#._\-]{2,}$'
-
-
 def load_inputs() -> tuple:
     """读取岗位版本历史与最终岗位实体表。"""
     versions = io_utils.read_parquet(project_paths.PROCESSED_VERSION_HISTORY_PARQUET)

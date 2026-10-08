@@ -126,7 +126,6 @@ def main() -> int:
 
     # ---- 敏感性：剔除窗口长度最高 1% 的周期 ----
     cutoff = float(window.quantile(0.99))
-    kept = expandable & (window.reindex(unique.index).fillna(0) <= cutoff)
     kept_index = window[window <= cutoff].index
     trimmed = unique.loc[kept_index]
     trimmed_series = build_series(trimmed['p_date'].tolist(), trimmed['d_date'].tolist(),
