@@ -30,9 +30,7 @@ course-design-2/
    │  ├─ eda/              Stage 13 正式 EDA 图件
    │  ├─ modeling/         Stage 14 建模图件
    │  ├─ supplementary/    补充图件（含 *_display 展示版，供 Word 嵌图）
-   │  ├─ evidence/         证据截图（旧版，Stage27_0，脚本 36~39）
-   │  ├─ evidence_native/  证据截图（现行版，Stage27_0a，脚本 40~44，论文构建引用）
-   │  └─ time/             时间维度分析图件（脚本 33 / 35）
+   │  └─ time/             时间维度分析图件（脚本 33 / 49）
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
    └─ results/             「补全任务」交付物（补充 CSV / 图件）
 ```
@@ -151,8 +149,6 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 | `figures/modeling/` | `NN_英文名` | 第 7~8 章：建模 / 消融 / SHAP（8 张） | `14`/`15` | 现行 |
 | `figures/supplementary/` | `图Sxx_中文名` | 附录补充图 | `18b` + `_stage26_*_registry.json` | 现行 |
 | `figures/time/` | `NN_英文名` | 第 4 章：业务时间维度（3 张，独立主题） | `33` → `49` | 现行 |
-| `figures/evidence/` | `Exx_…` / `A2_orig2_…` | Stage27.0 组合证据图；其 `01_source/_raw` 是 `40` 的输入 | `36` | 部分现行 |
-| `figures/evidence_native/` | `ExxX_…` | 现行工程证据截图（单图拆分） | `40`/`43`/`44` | 现行 |
 | `figures/`（根） | `fig_<章>_<序>_…` | 散图 + 3 个登记表 | `45`/`46`/`47` 等 | 现行 |
 | `results/figures/` | `fig_6` / `fig_7` | 「补全任务」交付物 | `62_completion_supplement.py` | 现行 |
 
@@ -179,13 +175,14 @@ Stage 00~11 不再保留 Notebook 双实现。
 
 1. **审计表编号重复**：`outputs/tables/` 实际编号已延伸至 74，且存在同名编号冲突——
    两组 `33_*`（`33_final_interpretation_audit.xlsx` 与 `33_business_time_dimension_analysis.xlsx`）、
-   两组 `34_*`（`34_stage25_factor_revision.xlsx` 与 `34_visual_evidence_registry.xlsx`）、
-   两组 `35_*`（`35_recruitment_time_field_audit.xlsx` 与
-   `35_visual_evidence_native_layout_registry.xlsx`），与第 5 节「全项目统一编号」的约定冲突；
-   两组编号均被脚本引用，需统一规划后再调整。
-2. **两代证据图集并存**：`outputs/figures/evidence/`（Stage27.0 组合图，脚本 36）的**组合图**已被
-   `evidence_native/`（Stage27.0A 单图，脚本 40/43/44）取代；但 `evidence/01_source/_raw`
-   （原始网页截图）仍是脚本 `40` 的输入，故旧目录**不能整体移除**。
+   两组 `34_*`（`34_stage25_factor_revision.xlsx` 与 `34_visual_evidence_registry.xlsx`），
+   与第 5 节「全项目统一编号」的约定冲突；两组编号均被脚本引用，需统一规划后再调整。
+   （原 `35_*` 冲突已随 `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。）
+2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）与
+   `outputs/figures/evidence/`（Stage27.0 组合图）两个目录、其生成脚本（`36`/`40`/`43`/`44`）
+   及布局登记表 `35_visual_evidence_native_layout_registry.xlsx` 已按要求删除；
+   归档脚本（`41`/`42`）中的 `evidence_native/*` 图片清单引用随之失效（仅存档留痕）。
+   论文 `.docx` 内已嵌入这些截图，正文不受影响。
 3. **顶层 `results/` 与 `outputs/` 功能重叠**：`results/` 为「补全任务」交付物
    （含 `补全任务_完成报告.md` 自述映射到论文段落），未纳入统一结构约定。
 4. **待补充目录**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
