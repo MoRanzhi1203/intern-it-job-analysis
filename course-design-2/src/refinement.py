@@ -554,7 +554,7 @@ def build_record_lines(baseline: dict, stage_metrics: dict, tables: dict,
         '> 本轮预期变化不得被判为 FAIL；核心回归项（raw = 172,063、唯一岗位 ID = 17,144、'
         'ID↔URL 1:1、最终实体 = 17,144、分类关系集合一致）必须保持不变。',
         '',
-        '## 9.1 差异原因定量说明（由真实产物计算，禁止拍脑袋解释）',
+        '## 9.1 差异原因定量说明（由真实产物计算）',
         '',
     ]
     for line in _diff_reason_lines():

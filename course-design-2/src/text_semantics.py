@@ -537,7 +537,7 @@ def build_threshold_source(thresholds: dict, extra: dict | None = None) -> pd.Da
             '指标': key,
             '阈值': round(float(value), 6) if not np.isnan(value) else np.nan,
             '样本数': thresholds.get(f'{base}样本数', np.nan),
-            '来源': '全体相邻版本语义距离的真实分位数统计（非人工拍脑袋设定）',
+            '来源': '全体相邻版本语义距离的真实分位数统计',
             '用途': f'{base} 显著变化候选判定',
         })
     if extra:

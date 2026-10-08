@@ -886,7 +886,7 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
         f"- 版本对存在截断数：{int(overview['版本对存在截断数'])}；",
         '- 不因截断比例高低删除样本，另出「非截断样本」对照统计（19 号子表）。',
         '',
-        '## 7. 阈值来源（禁止拍脑袋）',
+        '## 7. 阈值来源',
         '',
         '| 指标 | 阈值 | 样本数 | 来源 |',
         '| --- | --- | --- | --- |',
