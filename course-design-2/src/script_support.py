@@ -39,7 +39,7 @@ def load_script(alias: str, relative: str):
 
 def load_polish():
     """装载 ``26f_stage26_4_final_polish``（多脚本复用的正式口径工具集）。"""
-    return load_script('s26f', 'scripts/26f_stage26_4_final_polish.py')
+    return load_script('s26f', 'scripts/ch4_lifecycle/26f_stage26_4_final_polish.py')
 
 
 def apply_style(g) -> None:

@@ -18,18 +18,23 @@ course-design-2/
 │  ├─ processed/           Stage 04~11 正式产物
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
 ├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
-├─ scripts/                全部脚本（扁平；按职责分组的索引见 scripts/README.md）
+├─ scripts/                全部脚本（按论文章节分目录，索引见 scripts/README.md）
+│  ├─ ch3_data/            Stage 00~12 数据获取与预处理（14）
+│  ├─ ch4_lifecycle/       第 4 章 岗位特征与招聘生命周期（11）
+│  ├─ ch5_factors/         第 5 章 薪资影响因素（8）
+│  ├─ ch6_skills/          第 6 章 技能特征与薪资关联（4）
+│  ├─ ch7_model/           第 7 章 薪资预测模型（3）
+│  ├─ ch8_robust/          第 8 章 稳健性 / 泛化 / 解释（5）
+│  ├─ figures_base/        论文出图基座 18a/18b/18c（3）
+│  └─ supp/                补全任务实验与交付 48/62（2）
 ├─ docs/
 │  ├─ paper/               论文终稿（.docx / .pdf，只读保护区）
 │  ├─ methodology/         方法论文档目录（流水线运行时生成）
 │  └─ records/             阶段记录目录（流水线运行时生成）
 └─ outputs/
-   ├─ tables/              审计表（现行编号唯一；_legacy/ 为历史遗留表）
-   ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
-   │  ├─ (根)              fig_4_7 / fig_5_7 / fig_7_8 / fig_8_9 / fig_8_10 / fig_8_11
-   │  ├─ eda/              fig_05_tech_skill_top20
-   │  ├─ supplementary/    fig_s09 / s16 / s44 / s50 / s55 / s59 / s60 / s62 / s63 / s64 / s66 / s68 / s69 / s70 / s71
-   │  └─ time/             fig_01 / fig_02 / fig_03
+   ├─ tables/              审计表（编号 00~59 连续；按论文章节分目录 ch3~ch8；_legacy/ 为历史遗留表）
+   ├─ figures/             论文 docx 实际出现的图件，按论文章节分目录、以论文图号命名
+   │  ├─ ch3/ ~ ch8/       fig_<章>_<序>_<slug>.png（如 ch4/fig_4_6_planned_demand_by_job_category.png）
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
    ├─ logs/                门禁 / 指标 JSON 与流水线日志（运行时生成）
    ├─ registries/          图件登记元数据（*_registry.json，与图件本体分离）
@@ -42,16 +47,16 @@ course-design-2/
 
 ```bash
 # 全流程（复用已存在 raw，不访问 MySQL）
-python scripts/run_data_pipeline.py --reuse-existing-raw
+python scripts/ch3_data/run_data_pipeline.py --reuse-existing-raw
 
 # 指定阶段区间
-python scripts/run_data_pipeline.py --from-stage 1 --to-stage 11 --reuse-existing-raw
+python scripts/ch3_data/run_data_pipeline.py --from-stage 1 --to-stage 11 --reuse-existing-raw
 
 # 强制重新从 MySQL 导出 raw（仅在确需刷新原始快照时使用）
-python scripts/run_data_pipeline.py --force-export-raw
+python scripts/ch3_data/run_data_pipeline.py --force-export-raw
 
 # 单阶段独立运行（每个脚本均可独立执行）
-python scripts/01_localize_raw_columns.py
+python scripts/ch3_data/01_localize_raw_columns.py
 
 # 静态检查（tests/ 当前未建立，见第 8 节）
 python -m compileall src scripts
@@ -61,34 +66,34 @@ python -m compileall src scripts
 
 | Stage | 职责 | 实现脚本 |
 | --- | --- | --- |
-| 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `scripts/00_export_raw.py` |
-| 01 | 源记录标准化与公司属性语义槽位异常修复 | `scripts/01_localize_raw_columns.py` |
-| 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `scripts/02_audit_job_identity.py` |
-| 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `scripts/03_build_job_observations.py` |
-| 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `scripts/04_build_job_versions.py` |
-| 05 | 最终岗位实体（最终核心版本优先） | `scripts/05_build_unique_jobs.py` |
-| 06 | 岗位版本文本语料 | `scripts/06_prepare_text_corpus.py` |
-| 07 | 技能与文本特征 | `scripts/07_extract_job_text_features.py` |
-| 08 | 岗位描述语义时序（完整 / 去薪资双口径） | `scripts/08_build_job_text_semantics.py` |
-| 09 | 公司实体识别 | `scripts/09_resolve_company_entities.py` |
-| 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/10_build_company_text_semantics.py` |
-| 11 | 结构化字段清洗与薪资目标解析 | `scripts/11_clean_structured_fields.py` |
+| 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `scripts/ch3_data/00_export_raw.py` |
+| 01 | 源记录标准化与公司属性语义槽位异常修复 | `scripts/ch3_data/01_localize_raw_columns.py` |
+| 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `scripts/ch3_data/02_audit_job_identity.py` |
+| 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `scripts/ch3_data/03_build_job_observations.py` |
+| 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `scripts/ch3_data/04_build_job_versions.py` |
+| 05 | 最终岗位实体（最终核心版本优先） | `scripts/ch3_data/05_build_unique_jobs.py` |
+| 06 | 岗位版本文本语料 | `scripts/ch3_data/06_prepare_text_corpus.py` |
+| 07 | 技能与文本特征 | `scripts/ch3_data/07_extract_job_text_features.py` |
+| 08 | 岗位描述语义时序（完整 / 去薪资双口径） | `scripts/ch3_data/08_build_job_text_semantics.py` |
+| 09 | 公司实体识别 | `scripts/ch3_data/09_resolve_company_entities.py` |
+| 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/ch3_data/10_build_company_text_semantics.py` |
+| 11 | 结构化字段清洗与薪资目标解析 | `scripts/ch3_data/11_clean_structured_fields.py` |
 
-正式问题的专项审计表：`14_text_semantic_refinement_audit.xlsx`（文本语义封版）、
-`16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
-`17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）。
+正式问题的专项审计表：`ch3/14_text_semantic_refinement_audit.xlsx`（文本语义封版）、
+`ch3/16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
+`ch3/17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）。
 
 ## 3.1 独立脚本层（Stage 12~17，不进入 Stage 00~11 流水线）
 
 | 脚本 | 职责 | 审计表 |
 | --- | --- | --- |
-| `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `20_modeling_dataset_audit.xlsx` |
-| `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `21_eda_statistical_analysis.xlsx` |
-| `scripts/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `19_skill_eda_scope_audit.xlsx` |
-| `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `22_model_comparison.xlsx` |
-| `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `23_ablation_robustness_shap.xlsx` |
-| `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `24_company_field_semantic_audit.xlsx` |
-| `scripts/17_final_interpretation_audit.py` | 最终解释审计与封版 | `25_final_interpretation_audit.xlsx` |
+| `scripts/ch3_data/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
+| `scripts/ch4_lifecycle/13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
+| `scripts/ch6_skills/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
+| `scripts/ch7_model/14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
+| `scripts/ch8_robust/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
+| `scripts/ch5_factors/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
+| `scripts/ch5_factors/17_final_interpretation_audit.py` | 最终解释审计与封版 | `ch5/25_final_interpretation_audit.xlsx` |
 
 术语纪律：**公司认证**（公司认证标签，最佳雇主 / 行业认证）与**公司标签（福利标签）**
 （公司标签列表，免费健身设施等）必须严格区分；技能 SHAP 方向以 `presence_direction`
@@ -121,23 +126,23 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 5. 正式审计
 
-- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（**编号 00–59 连续**）；
+- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（**编号 00–59 连续**，按论文章节归入 `ch3/`~`ch8/`）；
   历史遗留表（旧流水线 05~12、Stage26.3~26.6 归档脚本产出）已归入 `outputs/tables/_legacy/`（见第 8.1 节）；
 - 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
   （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成（目录已建立）；
-- 专项审计：`16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
-  含 MySQL↔raw 跨源证据）、`17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
-  `18_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
-  `19_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 双口径与分层榜单，含双口径稳健性）、
-   `20_modeling_dataset_audit.xlsx`（Stage 12 建模数据集、Feature Manifest 与目标泄漏审计）、
-   `21_eda_statistical_analysis.xlsx`（Stage 13 正式 EDA 与统计检验，15 张子表）、
-   `22_model_comparison.xlsx`（Stage 14 薪资预测模型对比、验证集选模与一次性 test 结果）、
-  `23_ablation_robustness_shap.xlsx`（Stage 15 特征组消融、公司 Group Split、极端值/目标稳健性、
+- 专项审计：`ch3/16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
+  含 MySQL↔raw 跨源证据）、`ch3/17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
+  `ch3/18_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
+  `ch6/19_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 双口径与分层榜单，含双口径稳健性）、
+   `ch3/20_modeling_dataset_audit.xlsx`（Stage 12 建模数据集、Feature Manifest 与目标泄漏审计）、
+   `ch4/21_eda_statistical_analysis.xlsx`（Stage 13 正式 EDA 与统计检验，15 张子表）、
+   `ch7/22_model_comparison.xlsx`（Stage 14 薪资预测模型对比、验证集选模与一次性 test 结果）、
+  `ch8/23_ablation_robustness_shap.xlsx`（Stage 15 特征组消融、公司 Group Split、极端值/目标稳健性、
    TreeSHAP 整体与技能排名，11 张子表）、
-  `24_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
-  `25_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
+  `ch5/24_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
+  `ch5/25_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
   presence 口径 + 核心结果回归保护 + 门禁与测试）。
-- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `fig_05_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
+- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `fig_6_1_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
 - 建模图件与模型产出：`figures/modeling/` 目录已按第 5.1 节留存口径**整体移除**；
   模型产出仍保留于 `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 +
   类别编码 schema + 文本降维 + 参数）。
@@ -146,13 +151,18 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 `outputs/figures/` 现**只保留论文 docx 中实际出现的 26 张图**（严格逐文件口径）：
 
-| 位置 | 图件 |
-| --- | --- |
-| `figures/` 根 | `fig_4_7` / `fig_5_7` / `fig_7_8` / `fig_8_9` / `fig_8_10` / `fig_8_11` |
-| `figures/eda/` | `fig_05_tech_skill_top20` |
-| `figures/supplementary/` | `fig_s09`/`s16`/`s44`/`s50`/`s55`/`s59`/`s60`/`s62`/`s63`/`s64`/`s66`/`s68`/`s69`/`s70`/`s71` |
-| `figures/time/` | `fig_01` / `fig_02` / `fig_03`（发布时间队列与技能时间结构） |
-| `outputs/deliverables/figures/` | `fig_7_actual_vs_predicted_salary` |
+| 目录 | 论文图号 | 文件（stem） |
+| --- | --- | --- |
+| `figures/ch3/` | 图 3.3 | `fig_3_3_acquisition_flow` |
+| `figures/ch4/` | 图 4.1~4.10 | `fig_4_1_formal_sample_jd_processing_result`、`fig_4_2_salary_midpoint_distribution`、`fig_4_3_main_subcategory_salary_quartile`、`fig_4_4_province_distribution`、`fig_4_5_recruitment_duration_distribution`、`fig_4_6_planned_demand_by_job_category`、`fig_4_7_active_cycle_salary_quartile`、`fig_4_8_publish_cohort_count`、`fig_4_9_salary_by_publish_time`、`fig_4_10_skill_or_category_time_structure` |
+| `figures/ch5/` | 图 5.4~5.7 | `fig_5_4_city_education_company_size_salary`、`fig_5_5_certification_salary_distribution`、`fig_5_6_high_effect_benefit_label_cluster`、`fig_5_7_median_regression_cluster_bootstrap` |
+| `figures/ch6/` | 图 6.1 / 6.3 / 6.4 | `fig_6_1_tech_skill_top20`、`fig_6_3_category_skill_hit_heatmap`（+ `_alt` 另一版）、`fig_6_4_skill_salary_control_dumbbell` |
+| `figures/ch7/` | 图 7.8 | `fig_7_8_error_by_salary_quartile` |
+| `figures/ch8/` | 图 8.5/8.6/8.9/8.10/8.11 | `fig_8_5_lgbm_catboost_paired_difference`、`fig_8_6_company_split_mae_distribution`、`fig_8_9_shap_beeswarm`、`fig_8_10_skill_shap_contribution`、`fig_8_11_benefit_cluster_permutation` |
+| `outputs/deliverables/figures/` | — | `fig_7_actual_vs_predicted_salary` |
+
+**图号来源**：以 docx 内嵌图片的 SHA-256（21/25 命中）与像素尺寸（其余 4 张）逐一匹配到 `图 X.Y` 题注；
+第 3 章图与「核心代码」类截图不纳入本目录管理。
 
 **留存口径**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
 逐文件校验「SHA256 完全一致 或 32×32 灰度归一化互相关 NCC ≥ 0.95」；不满足者一律删除。
@@ -177,11 +187,11 @@ Stage 00~11 不再保留 Notebook 双实现。
 以下登记项本轮已处理，改动均同步修改了脚本引用与 README：
 
 1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
-   原 `33_business_time_dimension_analysis.xlsx` 与 `25_final_interpretation_audit.xlsx` 编号冲突，
-   前者已改为 `59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
+   原 `33_business_time_dimension_analysis.xlsx` 与 `ch5/25_final_interpretation_audit.xlsx` 编号冲突，
+   前者已改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
    `49_redraw_time_cohort_figures` 同步更新，并收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
    原 `34_visual_evidence_registry.xlsx` 为已删除证据阶段（见第 2 条）的陈旧产物、零现行引用，已删除，
-   `26_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
+   `ch5/26_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
    （原 `35_*` 冲突已随 `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。）
 2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）与
    `outputs/figures/evidence/`（Stage27.0 组合图）两个目录、其生成脚本（`36`/`40`/`43`/`44`）

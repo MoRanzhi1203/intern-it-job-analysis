@@ -1,10 +1,20 @@
 # scripts 目录索引
 
-本目录脚本**保持扁平**（不建子目录），以便统一用 `python scripts/<name>.py` 调用。
-这是**硬约束**：绝大多数脚本用 `Path(__file__).resolve().parents[1]` 定位项目根，
-一旦下沉到子目录，`parents[1]` 会指向 `scripts/` 而非项目根，导致全部路径解析失效。
-因此改用「扁平 + 本索引」的方式解决可导航性；下表按职责分组，便于快速定位。
+本目录按**论文章节**分入子目录（Stage 00~12 与第 3~8 章），调用写 `python scripts/<组>/<name>.py`。
 
+| 目录 | 论文对应 | 脚本 |
+| --- | --- | --- |
+| `ch3_data/` | 数据获取与预处理 | `run_data_pipeline.py`、`00`~`12` |
+| `ch4_lifecycle/` | 第 4 章 岗位特征与招聘生命周期 | `13`、`26b`~`26j`、`33`、`47`、`49` |
+| `ch5_factors/` | 第 5 章 薪资影响因素 | `16`、`17`、`25`、`46`、`50`~`53` |
+| `ch6_skills/` | 第 6 章 技能特征与薪资关联 | `13b`、`54`、`55`、`65` |
+| `ch7_model/` | 第 7 章 薪资预测模型 | `14`、`56`、`58` |
+| `ch8_robust/` | 第 8 章 稳健性/泛化/解释 | `15`、`45`、`59`~`61` |
+| `figures_base/` | 全章出图基座 | `18a`、`18b`、`18c` |
+| `supp/` | 补全任务 | `48`、`62` |
+
+> 定位约定已随之调整：脚本用 `Path(__file__).resolve().parents[2]` 定位项目根（较原扁平结构多一层）；
+> 跨脚本装载一律写「项目根 + 相对路径」，如 `scripts/figures_base/18a_redraw_eda_modeling_figures.py`。
 > 编号说明：脚本编号仅用于排序，**权威分组以本表为准**。存在历史缺号（如缺 `57`），
 > 且 `13_run_eda` / `13b_skill_eda_scope_audit` 同属 Stage 13（`13b` 为技能 EDA 支线，避免重号）。
 
@@ -27,7 +37,7 @@
 | `04_build_job_versions.py` | Stage 04 岗位版本时序（核心/完整双签名 + 变化事件） |
 | `05_build_unique_jobs.py` | Stage 05 最终岗位实体构建（最终核心版本优先 + 原子替换） |
 | `06_prepare_text_corpus.py` | Stage 06 岗位版本文本语料准备 |
-| `07_extract_job_text_features.py` | Stage 07 技能与文本特征（→ `18_job_skill_extraction_audit.xlsx`） |
+| `07_extract_job_text_features.py` | Stage 07 技能与文本特征（→ `ch3/18_job_skill_extraction_audit.xlsx`） |
 | `08_build_job_text_semantics.py` | Stage 08 岗位描述语义时序（完整 / 去薪资双口径） |
 | `09_resolve_company_entities.py` | Stage 09 公司实体识别（跨地域不自动拆分） |
 | `10_build_company_text_semantics.py` | Stage 10 公司简介快照 / 版本 / 语义时序 |
@@ -39,13 +49,13 @@
 
 | 脚本 | 说明 | 主要审计表 |
 | --- | --- | --- |
-| `12_build_modeling_dataset.py` | 建模宽表与目标泄漏审计 | `20_modeling_dataset_audit.xlsx` |
-| `13_run_eda.py` | 正式 EDA 与统计检验 | `21_eda_statistical_analysis.xlsx` |
-| `13b_skill_eda_scope_audit.py` | 技能 EDA 双口径 + 分层榜单 + 稳健性 | `19_skill_eda_scope_audit.xlsx` |
-| `14_train_salary_model.py` | 模型对比与验证集选模 | `22_model_comparison.xlsx` |
-| `15_ablation_robustness_shap.py` | 消融 / 公司 Group Split / TreeSHAP | `23_ablation_robustness_shap.xlsx` |
-| `16_company_field_semantic_audit.py` | 公司字段语义只读取证（公司认证 vs 标签） | `24_company_field_semantic_audit.xlsx` |
-| `17_final_interpretation_audit.py` | 最终解释审计与封版 | `25_final_interpretation_audit.xlsx` |
+| `12_build_modeling_dataset.py` | 建模宽表与目标泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
+| `13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
+| `13b_skill_eda_scope_audit.py` | 技能 EDA 双口径 + 分层榜单 + 稳健性 | `ch6/19_skill_eda_scope_audit.xlsx` |
+| `14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
+| `15_ablation_robustness_shap.py` | 消融 / 公司 Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
+| `16_company_field_semantic_audit.py` | 公司字段语义只读取证（公司认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
+| `17_final_interpretation_audit.py` | 最终解释审计与封版 | `ch5/25_final_interpretation_audit.xlsx` |
 
 ## 4. 论文图件（收口与重绘）
 
@@ -76,7 +86,7 @@
 
 | 脚本 | 说明 | 主要审计表 |
 | --- | --- | --- |
-| `25_stage25_factor_revision.py` | 多值类别二元检验 / 中位数基线 / 图 S17 | `26_stage25_factor_revision.xlsx` |
+| `25_stage25_factor_revision.py` | 多值类别二元检验 / 中位数基线 / 图 S17 | `ch5/26_stage25_factor_revision.xlsx` |
 | `26b_stage26_1_temporal_tightening.py` | Stage26.1 招聘生命周期与时序口径收紧 | 44–48 |
 | `26c_stage26_2_final_consolidation.py` | Stage26.2 方法修复与补充分析 | 49–54 |
 | `26d_stage26_3_structure_finalize.py` | Stage26.3 结构精简配套必要重算 | 55–59 |
@@ -84,7 +94,7 @@
 | `26f_stage26_4_final_polish.py` | Stage26.4 数据/模型修正配套重算 | 60–64 |
 | `26g_stage26_4_figure_rebuild.py` | Stage26.4 图件重构 | — |
 | `26j_stage26_6_figures.py` | Stage26.6 图件去留审计 / 地域口径 / 重绘 | 70–74 |
-| `33_stage26_7_time_and_audit.py` | Stage26.7 业务时间维度专题分析（+ `figures/time/01–03`） | `59_business_time_dimension_analysis.xlsx` |
+| `33_stage26_7_time_and_audit.py` | Stage26.7 业务时间维度专题分析（+ `figures/time/01–03`） | `ch4/59_business_time_dimension_analysis.xlsx` |
 
 ## 6. 「补全任务」实验与交付
 
@@ -98,7 +108,7 @@
 
 ## 调用约定
 
-- 统一从项目根执行：`python scripts/<name>.py`；全量流水线：`python scripts/run_data_pipeline.py --reuse-existing-raw`；
+- 统一从项目根执行：`python scripts/<name>.py`；全量流水线：`python scripts/ch3_data/run_data_pipeline.py --reuse-existing-raw`；
 - 所有脚本以 `Path(__file__).resolve().parents[1]` 定位项目根，**不要**把脚本移入子目录；
-- 脚本间复用（`importlib` 动态加载）一律写「项目根 + 相对路径」，如 `str(PROJECT_ROOT / 'scripts' / '26f_stage26_4_final_polish.py')`；
+- 脚本间复用（`importlib` 动态加载）一律写「项目根 + 相对路径」，如 `str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '26f_stage26_4_final_polish.py')`；
   重命名脚本时必须同步更新引用（含 `run_data_pipeline.py` 的 `STAGE_SCRIPTS` 与 `.md/.json` 归档记录）。

@@ -388,9 +388,10 @@ def save_sci_figure(fig, stem: str, caption: str, subfigures=None, figure_id: st
     ``meta`` 为图片元信息（图表类型、数据来源、推荐等级、建议章节等），写入登记表。
     """
     subfigures = list(subfigures or [])
-    SCI_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
-    png_path = SCI_FIGURES_DIR / f'{stem}.png'
-    pdf_path = SCI_FIGURES_DIR / f'{stem}.pdf'
+    out_dir = project_paths.figure_chapter_dir(stem, SCI_FIGURES_DIR)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    png_path = out_dir / f'{stem}.png'
+    pdf_path = out_dir / f'{stem}.pdf'
 
     diagnostics: dict = {'figure_id': figure_id or stem.split('_')[0], 'stem': stem,
                          'caption': caption}

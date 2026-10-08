@@ -750,7 +750,7 @@ def figure_tech_skill_top20(rank_table: pd.DataFrame, registry: list) -> dict:
     caption = '图05 核心技术技能 Top20（主口径 REQUIREMENT_SECTION，分母 8,822 个岗位）'
     plot_style.add_bottom_caption(fig, caption)
     fig.subplots_adjust(left=0.3, bottom=0.16)
-    return _finish(fig, 'fig_05_tech_skill_top20', caption,
+    return _finish(fig, 'fig_6_1_tech_skill_top20', caption,
                    meta={'图表类型': '横向柱状图', '数据来源': 'job_skill_membership（主口径）'},
                    registry=registry)
 
