@@ -34,7 +34,7 @@ STAGE = 'stage_04'
 TITLE = 'Stage 04 岗位版本时序构建'
 
 
-def build_audit_tables(versions: pd.DataFrame, events: pd.DataFrame, snapshots: pd.DataFrame,
+def build_audit_tables(versions: pd.DataFrame, events: pd.DataFrame,
                        field_table: pd.DataFrame, aba: pd.DataFrame,
                        time_issues: pd.DataFrame, metrics: dict) -> dict:
     """构造 14 号岗位版本审计表集合。"""
@@ -320,7 +320,7 @@ def main() -> int:
     }
     io_utils.write_json(project_paths.METRICS_DIR / f'{STAGE}.json', metrics)
 
-    audit_tables = build_audit_tables(versions, events, snapshots, field_table, aba,
+    audit_tables = build_audit_tables(versions, events, field_table, aba,
                                       time_issues, metrics)
     io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_VERSION_AUDIT, audit_tables)
     gates.check('BUSINESS_CONFLICT_EXPORT',

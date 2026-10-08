@@ -94,8 +94,7 @@ def quartile_relative_error(y_true, y_pred):
     return pd.DataFrame(rows)
 
 
-def benefit_cluster_block(polish, model_frame, skill_map, text_matrix, text_by_id,
-                          assembler, groups, grouped):
+def benefit_cluster_block(model_frame):
     """构造福利标签簇的岗位级命中标志与描述统计。"""
     tags = model_frame[schema.COMPANY_TAG_LIST_FIELD]
     flat = tags.apply(lambda value: set(value) if value is not None else set())
@@ -335,9 +334,7 @@ def main() -> int:
                      '置换次数': PERMUTATION_ROUNDS, '基准 MAE': base_mae})
     perm = pd.DataFrame(rows)
     perm.to_csv(RESULTS / 'benefit_cluster_permutation.csv', index=False, encoding='utf-8-sig')
-    descriptive = benefit_cluster_block(polish, model_frame, skill_map, text_matrix,
-                                        text_by_id, assembler, polish.MODEL_FEATURE_GROUPS,
-                                        grouped)
+    descriptive = benefit_cluster_block(model_frame)
     descriptive['测试集上完全相同的簇内标签列'] = duplicate_pairs or '无'
     descriptive['簇内标签'] = BENEFIT_CLUSTER
     descriptive['置换口径'] = ('对测试集特征矩阵中对应的 one-hot 列做行置换；'

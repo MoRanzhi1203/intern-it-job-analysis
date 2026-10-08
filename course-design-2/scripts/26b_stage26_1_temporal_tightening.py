@@ -467,7 +467,7 @@ def assign_episodes(segments: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
-def build_episodes(segments: pd.DataFrame, keep_all_segments: bool = False) -> pd.DataFrame:
+def build_episodes(segments: pd.DataFrame) -> pd.DataFrame:
     """Episode 级聚合（一行 = 一个 Strict Episode，附 Relaxed 归属）。"""
     frame = segments.sort_values(['intern_id', 'episode_no_strict', 'segment_no'],
                                 kind='stable')
@@ -607,7 +607,7 @@ def run_daily_metrics(panel_info: dict, episodes: pd.DataFrame) -> dict:
     return {'daily': daily}
 
 
-def category_daily_counts(panel_info: dict, daily: pd.DataFrame, episodes: pd.DataFrame) -> dict:
+def category_daily_counts(panel_info: dict, daily: pd.DataFrame) -> dict:
     valid = panel_info['valid_episodes']
     episode_index = panel_info['episode_index']
     day_index = day_numbers(panel_info['panel']['date']) - day_numbers(
@@ -624,7 +624,7 @@ def category_daily_counts(panel_info: dict, daily: pd.DataFrame, episodes: pd.Da
 # ============================================================================
 # Step 3：Safe-F 与 Future Leakage Audit
 # ============================================================================
-def build_safe_f(segments: pd.DataFrame, episodes: pd.DataFrame, versions: pd.DataFrame,
+def build_safe_f(segments: pd.DataFrame, episodes: pd.DataFrame,
                  model_frame: pd.DataFrame, entity_publish: pd.Series) -> tuple:
     rep_map = segments.loc[segments['segment_start'].eq(
         segments['intern_id'].map(entity_publish)),
@@ -899,7 +899,7 @@ def run_ablation(model_frame: pd.DataFrame, splits: pd.DataFrame, grouped: dict,
 def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, grouped: dict,
                        skill_map: dict, text_matrix: np.ndarray, text_by_id: dict,
                        stage25_skill_threshold: int, stage25_text_dim: int,
-                       stage25_params: dict, random_metrics: dict) -> dict:
+                       random_metrics: dict) -> dict:
     axis = model_frame[schema.ID_FIELD].map(entity_publish)
     if axis.isna().any():
         raise ValueError('存在无业务发布时间的建模样本，禁止无口径回填')
@@ -2139,7 +2139,7 @@ def main() -> int:  # noqa: C901
                 if len(durations) else None,
             'T1 重招岗位数': int(t1_block),
             'T1 比例': round(t1_block / jobs, 8) if jobs else None,
-            '峰值日活跃计划周期数': int(category_daily_counts(panel_info, daily, episodes)
+            '峰值日活跃计划周期数': int(category_daily_counts(panel_info, daily)
                                  [category].max())})
     category_table = pd.DataFrame(category_rows)
 
@@ -2315,7 +2315,7 @@ def main() -> int:  # noqa: C901
     # ---- Step 5：Safe-F + 消融 ----
     entity_publish = entity_time.set_index('intern_id')['_entity_publish']
     f_frame, f_features, rep_frame, f_missing = build_safe_f(
-        segments, episodes, versions, model_frame, entity_publish)
+        segments, episodes, model_frame, entity_publish)
     leak_table = leakage_audit(f_frame, rep_frame)
     feature_manifest = json.loads(
         (project_paths.SALARY_MODEL_DIR / 'feature_manifest.json').read_text(encoding='utf-8'))
@@ -2370,7 +2370,7 @@ def main() -> int:  # noqa: C901
                       'RMSE': float(random_row['test_RMSE']), 'R2': float(random_row['test_R2'])}
     step_j = run_temporal_split(f_frame, entity_publish, grouped, skill_map, text_matrix,
                                 text_by_id, stage25_skill_threshold, stage25_text_dim,
-                                stage25_params, random_metrics)
+                                random_metrics)
     sheets_47 = step_j['sheets']
     sheets_47['01_Temporal划分'] = step_j['sheets']['01_Temporal划分']
     io_utils.write_excel(TABLES / TABLE_FILES[3], sheets_47)
@@ -2466,7 +2466,7 @@ def main() -> int:  # noqa: C901
     registry: list = []
     figure_s23(episodes, relaxed_episodes, registry)
     figure_s24(daily, registry)
-    category_daily = category_daily_counts(panel_info, daily, episodes)
+    category_daily = category_daily_counts(panel_info, daily)
     figure_s25(category_daily, daily, registry)
     figure_s26(daily, registry)
     figure_s27(daily, relaxed_daily, strict_per_job, relaxed_per_job, registry)

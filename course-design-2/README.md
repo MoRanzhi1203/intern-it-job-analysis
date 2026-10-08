@@ -29,7 +29,7 @@ course-design-2/
 ├─ notebooks/              EDA / 建模 / 论文出图 Notebook（待新增）
 ├─ tests/                  静态检查与测试（待新增）
 └─ outputs/
-   ├─ tables/              审计表（全项目统一编号 00~75，编号唯一）
+   ├─ tables/              审计表（现行编号唯一；_legacy/ 为历史遗留表）
    ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
    │  ├─ (根)              fig_4_7 / 5_7 / 7_8 / 8_9 / 8_10 / 8_11
    │  ├─ eda/              05_tech_skill_top20
@@ -126,7 +126,8 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 5. 正式审计
 
-- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号 00~75，编号唯一）；
+- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号唯一）；
+  历史遗留表（旧流水线 05~12、Stage26.3~26.6 归档脚本产出）已归入 `outputs/tables/_legacy/`（见第 8.1 节）；
 - 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
   （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成（目录已建立）；
 - 专项审计：`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
@@ -213,6 +214,9 @@ Stage 00~11 不再保留 Notebook 双实现。
   `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
 - **硬编码路径收口**：`45/46/47/53/56/58/59/61/62` 等脚本中手写的 `outputs/results`、
   `data/processed/model_splits.parquet` 等改为经 `project_paths`（新增 `OUTPUTS_RESULTS_DIR` 常量）取得。
+- **数据层归档**：14 张仅被 `scripts/_rework_history/` 归档脚本引用的历史审计表已 `git mv` 至
+  `outputs/tables/_legacy/`（顶层只保留现行审计表）；`data/processed` 中的 stage26 试验产物仍被
+  现行 `26b` 引用，保持原位。
 - **元数据与产物分离**：出图脚本写出的 4 个 `*_registry.json` 由 `outputs/figures/` 迁至
   `outputs/registries/`（`project_paths.REGISTRIES_DIR`）；「补全任务」交付物由 `outputs/results/`
   迁至 `outputs/deliverables/`（`project_paths.DELIVERABLES_DIR`），使 `outputs/results/` 只保留实验数值。

@@ -166,8 +166,8 @@ def build_residual_sheet(predictions: pd.DataFrame, final_name: str) -> pd.DataF
     return pd.DataFrame(rows)
 
 
-def build_error_group_sheet(model_frame: pd.DataFrame, frame_test: pd.DataFrame,
-                            final_name: str) -> pd.DataFrame:
+def build_error_group_sheet(model_frame: pd.DataFrame,
+                            frame_test: pd.DataFrame) -> pd.DataFrame:
     """10_预测残差（分组误差诊断）：城市 / 岗位大类 / 学历 / 公司规模 / 薪资分位段。"""
     merged = frame_test.copy()
     merged = merged.merge(model_frame[[schema.ID_FIELD, '工作城市_规范', '学历要求', '公司规模',
@@ -778,7 +778,7 @@ def main() -> int:
                       '说明': '锁定配置后在 train+validation 上重拟合，test 仅评估一次'})
     test_sheet = pd.DataFrame(test_rows)
     residual_sheet = build_residual_sheet(predict_frame, f'FINAL（{final_model_key}）')
-    error_group_sheet = build_error_group_sheet(model_frame, final_frame, final_model_key)
+    error_group_sheet = build_error_group_sheet(model_frame, final_frame)
 
     audit_sheets = {
         '01_数据划分': split_sheet,

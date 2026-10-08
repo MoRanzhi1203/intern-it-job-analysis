@@ -95,7 +95,7 @@ def build_audit_tables(snapshot: pd.DataFrame, conflicts: pd.DataFrame,
     }
 
 
-def write_record(metrics: dict, snapshot: pd.DataFrame, conflicts: pd.DataFrame,
+def write_record(metrics: dict, snapshot: pd.DataFrame,
                  overall: pd.DataFrame, gate_table: pd.DataFrame | None) -> list:
     """构造 Stage 03 阶段记录。"""
     lines = [
@@ -354,7 +354,7 @@ def main() -> int:
                 f'{len(audit_tables)} 个 Sheet 已生成')
 
     record_path = project_paths.RECORDS_DIR / project_paths.RECORD_OBSERVATION_SNAPSHOT
-    record_args = (metrics, snapshot, conflicts, audit_tables['01_总体统计'])
+    record_args = (metrics, snapshot, audit_tables['01_总体统计'])
     io_utils.write_markdown(record_path, write_record(*record_args, gate_table=None))
     gate_table = quality.summarize_gates(gates.results, order=quality.STAGE_GATE_MAP[STAGE])
     io_utils.write_markdown(record_path, write_record(*record_args, gate_table=gate_table))

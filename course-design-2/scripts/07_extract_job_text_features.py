@@ -261,7 +261,7 @@ def build_dictionary_table(matcher: skill_extraction.SkillMatcher) -> pd.DataFra
     return pd.DataFrame(rows)
 
 
-def build_requirement_table(features: pd.DataFrame, latest: pd.DataFrame) -> pd.DataFrame:
+def build_requirement_table(features: pd.DataFrame) -> pd.DataFrame:
     """06_要求段落识别：范围分布 + 与分段状态交叉。"""
     scope = features[schema.SKILL_SCOPE_FIELD].value_counts()
     rows = [{'范围': name, '岗位数': int(scope.get(name, 0)),
@@ -366,8 +366,7 @@ def build_candidate_table(features: pd.DataFrame, latest: pd.DataFrame,
     return table[columns]
 
 
-def build_sample_table(features: pd.DataFrame, entity: pd.DataFrame,
-                       matcher: skill_extraction.SkillMatcher) -> pd.DataFrame:
+def build_sample_table(features: pd.DataFrame) -> pd.DataFrame:
     """10_人工抽样核验：分层抽样 100~200 个岗位（固定规则，可复现）。"""
     id_field = schema.ID_FIELD
     frame = features.copy()
@@ -493,11 +492,11 @@ def build_audit_sheets(features: pd.DataFrame, latest: pd.DataFrame, entity: pd.
         '03_技能频率': skill_table,
         '04_技能组频率': group_table,
         '05_岗位技能数分布': distribution,
-        '06_要求段落识别': build_requirement_table(features, latest),
+        '06_要求段落识别': build_requirement_table(features),
         '07_歧义词检查': build_ambiguity_table(matcher, samples),
         '08_低频技能': build_low_frequency_table(skill_table),
         '09_未识别候选技能': build_candidate_table(features, latest, matcher),
-        '10_人工抽样核验': build_sample_table(features, entity, matcher),
+        '10_人工抽样核验': build_sample_table(features),
         '11_技能特征覆盖统计': coverage_table,
         '12_岗位方向识别统计': direction_table,
         '13_岗位大类技能覆盖率': category_table,
