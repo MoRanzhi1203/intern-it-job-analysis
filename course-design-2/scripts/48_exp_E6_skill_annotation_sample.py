@@ -2,7 +2,7 @@
 """E6：技能抽取人工核验——分层抽样表与标注规范（未标注前不生成 Precision / Recall / F1）。
 
 输出：
-    data/skill_annotation_sample.xlsx   供人工填写的标注表（含抽样说明与字段字典）
+    data/interim/skill_annotation_sample.xlsx   供人工填写的标注表（含抽样说明与字段字典）
     docs/skill_annotation_guideline.md  标注规范
 
 原则：
@@ -31,7 +31,7 @@ from src import schema  # noqa: E402
 CORPUS = PROJECT / 'data' / 'interim' / 'job_text_version_corpus.parquet'
 MEMBERSHIP = PROJECT / 'data' / 'features' / 'job_skill_membership.parquet'
 CATEGORY = PROJECT / 'data' / 'processed' / 'job_category_membership.parquet'
-SAMPLE_OUT = PROJECT / 'data' / 'skill_annotation_sample.xlsx'
+SAMPLE_OUT = PROJECT / 'data' / 'interim' / 'skill_annotation_sample.xlsx'
 GUIDE_OUT = PROJECT / 'docs' / 'skill_annotation_guideline.md'
 SAMPLE_SIZE = 240
 MIN_PER_STRATUM = 5

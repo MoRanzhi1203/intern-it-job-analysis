@@ -35,8 +35,8 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_8_10_company_split_mae_distribution'
-REPEATS_CSV = PROJECT_ROOT / 'outputs' / 'results' / 'company_group_split_repeats.csv'
-SUMMARY_CSV = PROJECT_ROOT / 'outputs' / 'results' / 'company_group_split_summary.csv'
+REPEATS_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_repeats.csv'
+SUMMARY_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_summary.csv'
 METRICS_XLSX = project_paths.TABLES_DIR / '61_stage26_4_metrics_final.xlsx'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 8.2

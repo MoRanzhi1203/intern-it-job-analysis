@@ -47,8 +47,8 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 
 STEM = 'fig_8_9_lgbm_catboost_paired_difference'
-SUMMARY_CSV = PROJECT_ROOT / 'outputs' / 'results' / 'model_comparison_paired_bootstrap.csv'
-DRAWS_CSV = PROJECT_ROOT / 'outputs' / 'results' / 'model_comparison_paired_bootstrap_draws.csv'
+SUMMARY_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'model_comparison_paired_bootstrap.csv'
+DRAWS_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'model_comparison_paired_bootstrap_draws.csv'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 8.6
 CM = 1.0 / 2.54
@@ -102,7 +102,7 @@ def compute_draws() -> tuple[np.ndarray, dict]:
         ids, polish.project_paths.FEATURES_DIR / 'job_text_embeddings.npz',
         polish.project_paths.FEATURES_DIR / 'job_text_embedding_index.parquet')
     text_by_id = {job_id: position for position, job_id in enumerate(ids)}
-    splits = pd.read_parquet(PROJECT_ROOT / 'data' / 'processed' / 'model_splits.parquet')
+    splits = pd.read_parquet(project_paths.MODEL_SPLITS_PARQUET)
     labels = splits.set_index(schema.ID_FIELD)['split']
     split_series = labels.reindex(model_frame[schema.ID_FIELD]).to_numpy()
     is_test = split_series == 'test'

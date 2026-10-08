@@ -26,7 +26,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
-from src import model_training, plot_style, schema, skill_eda  # noqa: E402
+from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 
 BOOTSTRAP_ROUNDS = 2000
 PERMUTATION_ROUNDS = 200
@@ -35,8 +35,8 @@ SKILL_THRESHOLD = 100
 TEXT_DIM = 16
 BENEFIT_CLUSTER = ['免费健身设施', '就近租房补贴', '餐饮', '节日礼品', '弹性工作制']
 
-RESULTS = PROJECT / 'outputs' / 'results'
-FIGURES = PROJECT / 'outputs' / 'figures'
+RESULTS = project_paths.OUTPUTS_RESULTS_DIR
+FIGURES = project_paths.FIGURES_DIR
 
 
 def load_polish():

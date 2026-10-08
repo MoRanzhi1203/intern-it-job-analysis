@@ -38,7 +38,7 @@ from src import figure_finalize, plot_style, project_paths  # noqa: E402
 TABLES_DIR = project_paths.TABLES_DIR
 EDA_DIR = project_paths.EDA_FIGURES_DIR
 MODELING_DIR = project_paths.MODELING_FIGURES_DIR
-REGISTRY_PATH = project_paths.FIGURES_DIR / '_redraw_registry.json'
+REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_redraw_registry.json'
 
 TABLE_27 = '27_skill_eda_scope_audit.xlsx'
 TABLE_29 = '29_eda_statistical_analysis.xlsx'

@@ -37,7 +37,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_7_8_error_by_salary_quartile'
-CSV = PROJECT_ROOT / 'outputs' / 'results' / 'test_error_by_salary_quartile.csv'
+CSV = project_paths.OUTPUTS_RESULTS_DIR / 'test_error_by_salary_quartile.csv'
 FIGDIR = project_paths.FIGURES_DIR
 CAPTIONS = [('a', '绝对误差 MAE'), ('b', '相对误差 nMAE')]
 PRINT_WIDTH_CM = 15.5

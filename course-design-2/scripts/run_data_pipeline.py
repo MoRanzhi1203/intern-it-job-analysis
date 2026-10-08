@@ -407,13 +407,13 @@ def run_refinement_check(logger: PipelineLogger) -> tuple:
 
 def check_documentation(logger: PipelineLogger) -> tuple:
     """DOCUMENTATION_UPDATE：README 是否已更新为新阶段路线，阶段记录是否齐全。"""
-    readme = project_paths.PROMPTS_DIR / 'README.md'
+    readme = project_paths.PROJECT_ROOT / 'README.md'
     if not readme.exists():
         return False, 'README.md 不存在'
     text = readme.read_text(encoding='utf-8')
     required_tokens = ['Stage 00', 'Stage 01', 'Stage 02', 'Stage 03', 'Stage 04', 'Stage 05',
                        'Stage 06', 'Stage 07', 'Stage 08', 'Stage 09', 'Stage 10', 'Stage 11',
-                       'Python', 'Jupyter', 'scripts/']
+                       'Python', 'Notebook', 'scripts/']
     missing = [token for token in required_tokens if token not in text]
 
     record_paths = [

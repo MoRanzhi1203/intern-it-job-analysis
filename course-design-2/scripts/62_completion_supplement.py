@@ -2,7 +2,7 @@
 """补全任务：项目审计 + 技能人工验证说明 + 真实值-预测值图 + 主结果汇总表 + 面议对照表 + 技能词云。
 
 严格边界（与提示词一致）：
-    - 只读冻结数据与既有正式结果，所有输出写入 results/ 新目录，不覆盖任何已有文件；
+    - 只读冻结数据与既有正式结果，所有输出写入 outputs/deliverables/ 目录，不覆盖任何已有文件；
     - 不新增任何机器学习模型 / 交叉验证 / 消融组合；
     - 任务 2 只按 Stage26.4 正式口径复现已锁定的 LightGBM 最终模型（预处理器与估计器均在
       train + validation 上重拟合，测试集不参与任何拟合或选择），用于绘制真实值—预测值对照图，
@@ -26,13 +26,13 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
-from src import model_training, plot_style, schema, skill_eda  # noqa: E402
+from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 
 SEED = 42
 SKILL_THRESHOLD = 100
 TEXT_DIM = 16
 
-RESULTS = PROJECT / 'results'
+RESULTS = project_paths.DELIVERABLES_DIR
 TABLES = RESULTS / 'tables'
 FIGURES = RESULTS / 'figures'
 for _d in (RESULTS, TABLES, FIGURES):
@@ -65,7 +65,7 @@ def task2_actual_vs_predicted(polish):
         ids, polish.project_paths.FEATURES_DIR / 'job_text_embeddings.npz',
         polish.project_paths.FEATURES_DIR / 'job_text_embedding_index.parquet')
     text_by_id = {job_id: position for position, job_id in enumerate(ids)}
-    splits = pd.read_parquet(PROJECT / 'data' / 'processed' / 'model_splits.parquet')
+    splits = pd.read_parquet(project_paths.MODEL_SPLITS_PARQUET)
     labels = splits.set_index(schema.ID_FIELD)['split']
 
     split_series = labels.reindex(model_frame[schema.ID_FIELD]).to_numpy()
@@ -133,7 +133,7 @@ def task2_actual_vs_predicted(polish):
         fig.savefig(FIGURES / ('fig_7_actual_vs_predicted_salary.%s' % suffix),
                     dpi=plot_style.PNG_DPI, bbox_inches='tight', facecolor='white')
     plt.close(fig)
-    print('写出：results/figures/fig_7_actual_vs_predicted_salary.png / .pdf；'
+    print('写出：outputs/deliverables/figures/fig_7_actual_vs_predicted_salary.png / .pdf；'
           '网格最大计数 = %d' % max_count)
     return metrics, y_test, y_pred
 
@@ -143,7 +143,7 @@ def task2_actual_vs_predicted(polish):
 # =========================================================================== #
 def task4_negotiable_vs_public():
     print('\n' + '=' * 70 + '\n任务 4：面议 vs 公开薪资结构对照表\n' + '=' * 70)
-    src = PROJECT / 'outputs' / 'tables' / '52_stage26_2_negotiable_selection_bias.xlsx'
+    src = project_paths.TABLES_DIR / '52_stage26_2_negotiable_selection_bias.xlsx'
     single = pd.read_excel(src, sheet_name='01_结构对照_单值')
     chi_single = pd.read_excel(src, sheet_name='02_卡方检验_单值')
     multi = pd.read_excel(src, sheet_name='03_结构对照_多值')
@@ -208,22 +208,21 @@ def task4_negotiable_vs_public():
 # =========================================================================== #
 def task3_main_findings(pred_metrics):
     print('\n' + '=' * 70 + '\n任务 3：主要研究结果汇总表\n' + '=' * 70)
-    model_frame = pd.read_parquet(PROJECT / 'data' / 'processed' /
-                                  'job_salary_model_dataset.parquet')
+    model_frame = pd.read_parquet(project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
     salary = model_frame[schema.SALARY_MID_FIELD].to_numpy('float64')
     median = float(np.median(salary))
     iqr = float(np.percentile(salary, 75) - np.percentile(salary, 25))
 
-    eda = pd.read_excel(PROJECT / 'outputs' / 'tables' / '29_eda_statistical_analysis.xlsx',
+    eda = pd.read_excel(project_paths.TABLES_DIR / '29_eda_statistical_analysis.xlsx',
                         sheet_name='11_统计检验')
     kw = eda[eda['检验块'].astype(str).str.contains('Kruskal', na=False)]
     eps = dict(zip(kw['检验对象'].astype(str), kw['效应量'].astype(float)))
 
-    ranks = pd.read_excel(PROJECT / 'outputs' / 'tables' / '27_skill_eda_scope_audit.xlsx',
+    ranks = pd.read_excel(project_paths.TABLES_DIR / '27_skill_eda_scope_audit.xlsx',
                           sheet_name='02_主口径技能排名')
     rank_map = dict(zip(ranks['技能标准名'], ranks['岗位数']))
 
-    summary = pd.read_csv(PROJECT / 'outputs' / 'results' / 'company_group_split_summary.csv')
+    summary = pd.read_csv(project_paths.OUTPUTS_RESULTS_DIR / 'company_group_split_summary.csv')
     summary_map = dict(zip(summary['指标'], summary['取值']))
     random_test_mae = 35.996481
 
@@ -294,7 +293,8 @@ def task3_main_findings(pred_metrics):
                          % (r['analysis_module'], r['representative_result'],
                             r['metric'], r['interpretation']))
     print(frame.to_string())
-    print('写出：results/tables/table_9_main_findings.csv 与 results/table_9_main_findings.md')
+    print('写出：outputs/deliverables/tables/table_9_main_findings.csv 与 '
+          'outputs/deliverables/table_9_main_findings.md')
     return frame
 
 
@@ -307,7 +307,7 @@ def task5_skill_wordcloud():
     import matplotlib.pyplot as plt  # noqa: PLC0415
     from matplotlib import colors as mcolors  # noqa: PLC0415
 
-    ranks = pd.read_excel(PROJECT / 'outputs' / 'tables' / '27_skill_eda_scope_audit.xlsx',
+    ranks = pd.read_excel(project_paths.TABLES_DIR / '27_skill_eda_scope_audit.xlsx',
                           sheet_name='02_主口径技能排名')
     counts = {str(name): int(count) for name, count in
               zip(ranks['技能标准名'], ranks['岗位数']) if int(count) >= 20}
@@ -329,7 +329,7 @@ def task5_skill_wordcloud():
         fig.savefig(FIGURES / ('fig_6_skill_wordcloud.%s' % suffix),
                     dpi=plot_style.PNG_DPI, bbox_inches='tight', facecolor='white')
     plt.close(fig)
-    print('词条数 %d（岗位数 ≥ 20）；写出：results/figures/fig_6_skill_wordcloud.png / .pdf'
+    print('词条数 %d（岗位数 ≥ 20）；写出：outputs/deliverables/figures/fig_6_skill_wordcloud.png / .pdf'
           % len(counts))
 
 

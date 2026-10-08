@@ -6,33 +6,42 @@
 
 ## 1. 项目结构
 
-> 本节描述**磁盘上实际存在的结构**。本 README 其余章节提到的
-> `tests/`、`notebooks/`、`docs/methodology`、`docs/records`、`docs/prompts`、
-> `outputs/logs/` 当前**尚未建立**，属待补充项（见第 8 节「已知结构问题」）。
+> 本节描述**磁盘上实际存在的结构**。`tests/`、`notebooks/`、`docs/methodology`、
+> `docs/records`、`docs/prompts`、`outputs/logs/` 目录已建立（以 `.gitkeep` 占位），
+> 其中的阶段记录 / 方法论文档 / 门禁与指标 JSON 在流水线运行时生成。
 
 ```text
 course-design-2/
 ├─ config/                 配置唯一权威来源（结构化字段 / 技能词表 / 公司别名 / 停用词）
 ├─ data/
 │  ├─ raw/                 Stage 00 MySQL 只读导出（永久不可修改）
-│  ├─ interim/             Stage 01~06 中间层
+│  ├─ interim/             Stage 01~06 中间层（含 skill_annotation_sample.xlsx 人工标注表）
 │  ├─ processed/           Stage 04~11 正式产物
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
 ├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
-├─ scripts/                Stage 00~11 独立脚本 + Stage 12~17 专项脚本 + 流水线总执行器
+├─ scripts/                全部脚本（扁平；按职责分组的索引见 scripts/README.md）
 │  └─ _rework_history/     已归档的返工 / 被取代脚本（说明见该目录 README，不参与现行流程）
 ├─ docs/
-│  └─ paper/               论文终稿（.docx / .pdf，只读保护区）
+│  ├─ paper/               论文终稿（.docx / .pdf，只读保护区）
+│  ├─ methodology/         方法论文档目录（流水线运行时生成）
+│  ├─ records/             阶段记录目录（流水线运行时生成）
+│  └─ prompts/             提示词目录
+├─ notebooks/              EDA / 建模 / 论文出图 Notebook（待新增）
+├─ tests/                  静态检查与测试（待新增）
 └─ outputs/
-   ├─ tables/              审计表（全项目统一编号，含编号冲突，见第 8 节）
+   ├─ tables/              审计表（全项目统一编号 00~75，编号唯一）
    ├─ figures/             仅保留论文 docx 中出现的 26 张图（见第 5.1 节）
    │  ├─ (根)              fig_4_7 / 5_7 / 7_8 / 8_9 / 8_10 / 8_11
    │  ├─ eda/              05_tech_skill_top20
    │  ├─ supplementary/    图S09/S16/S44/S50/S55/S59/S60/S62/S63/S64/S66/S68/S69/S70/S71
    │  └─ time/             01 / 02 / 03
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
-   └─ results/             「补全任务」交付物（补充 CSV / 图件）
+   ├─ logs/                门禁 / 指标 JSON 与流水线日志（运行时生成）
+   ├─ registries/          图件登记元数据（*_registry.json，与图件本体分离）
+   ├─ results/             实验脚本数值产物（E1–E8 CSV / JSON）
+   └─ deliverables/        「补全任务」交付物（报告 / 派生表 / 派生图）
 ```
+
 
 ## 2. 正式执行命令
 
@@ -80,6 +89,7 @@ python -m compileall src scripts
 | --- | --- | --- |
 | `scripts/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `28_modeling_dataset_audit.xlsx` |
 | `scripts/13_run_eda.py` | 正式 EDA 与统计检验 | `29_eda_statistical_analysis.xlsx` |
+| `scripts/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `27_skill_eda_scope_audit.xlsx` |
 | `scripts/14_train_salary_model.py` | 模型对比与验证集选模 | `30_model_comparison.xlsx` |
 | `scripts/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `31_ablation_robustness_shap.xlsx` |
 | `scripts/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `32_company_field_semantic_audit.xlsx` |
@@ -116,9 +126,9 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 5. 正式审计
 
-- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号 00~74；存在重复编号，见第 8 节）；
+- `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（编号 00~75，编号唯一）；
 - 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
-  （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成，当前未随仓库保留（见第 8 节）；
+  （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成（目录已建立）；
 - 专项审计：`22_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
   含 MySQL↔raw 跨源证据）、`25_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
   `26_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
@@ -146,7 +156,7 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 | `figures/eda/` | `05_tech_skill_top20` |
 | `figures/supplementary/` | `图S09`/`S16`/`S44`/`S50`/`S55`/`S59`/`S60`/`S62`/`S63`/`S64`/`S66`/`S68`/`S69`/`S70`/`S71` |
 | `figures/time/` | `01` / `02` / `03`（发布时间队列与技能时间结构） |
-| `results/figures/` | `fig_7_actual_vs_predicted_salary` |
+| `outputs/deliverables/figures/` | `fig_7_actual_vs_predicted_salary` |
 
 **留存口径**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
 逐文件校验「SHA256 完全一致 或 32×32 灰度归一化互相关 NCC ≥ 0.95」；不满足者一律删除。
@@ -155,7 +165,7 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 ## 6. Notebook
 
-`notebooks/` 目录当前未建立（见第 8 节）。后续 EDA / 建模 / 论文出图 Notebook 按统一规范新增；
+`notebooks/` 目录已建立（暂空，以 `.gitkeep` 占位）。后续 EDA / 建模 / 论文出图 Notebook 按统一规范新增；
 Stage 00~11 不再保留 Notebook 双实现。
 
 ## 7. 运行约定
@@ -166,25 +176,43 @@ Stage 00~11 不再保留 Notebook 双实现。
 - 删除任何文件前必须做引用检查（代码 imports / README / docs / Notebook）；
 - 定时机制与运行环境由本机 conda 环境提供，命令见第 2 节。
 
-## 8. 已知结构问题（待后续处理）
+## 8. 结构治理记录
 
-以下问题本轮**只登记不改动**（均涉及被脚本引用的文件，改动需同步修改引用并回归验证）：
+以下登记项本轮已处理，改动均同步修改了脚本引用与 README：
 
-1. **审计表编号重复**：`outputs/tables/` 实际编号已延伸至 74，且存在同名编号冲突——
-   两组 `33_*`（`33_final_interpretation_audit.xlsx` 与 `33_business_time_dimension_analysis.xlsx`）、
-   两组 `34_*`（`34_stage25_factor_revision.xlsx` 与 `34_visual_evidence_registry.xlsx`），
-   与第 5 节「全项目统一编号」的约定冲突；两组编号均被脚本引用，需统一规划后再调整。
+1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
+   原 `33_business_time_dimension_analysis.xlsx` 与 `33_final_interpretation_audit.xlsx` 编号冲突，
+   前者已改为 `75_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
+   `49_redraw_time_cohort_figures` 同步更新，并收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
+   原 `34_visual_evidence_registry.xlsx` 为已删除证据阶段（见第 2 条）的陈旧产物、零现行引用，已删除，
+   `34_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
    （原 `35_*` 冲突已随 `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。）
 2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）与
    `outputs/figures/evidence/`（Stage27.0 组合图）两个目录、其生成脚本（`36`/`40`/`43`/`44`）
    及布局登记表 `35_visual_evidence_native_layout_registry.xlsx` 已按要求删除；
    归档脚本（`41`/`42`）中的 `evidence_native/*` 图片清单引用随之失效（仅存档留痕）。
    论文 `.docx` 内已嵌入这些截图，正文不受影响。
-3. **顶层 `results/` 与 `outputs/` 功能重叠**：`results/` 为「补全任务」交付物
-   （含 `补全任务_完成报告.md` 自述映射到论文段落），未纳入统一结构约定。
-4. **待补充目录**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
-   当前不存在；指向这些路径的失效引用已在本轮清理，相关叙述保留为待补充目标。
-5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于本轮删除。
+3. **顶层 `results/` 已归并**：原顶层 `results/` 已并入 `outputs/`，并按语义拆分为
+   `outputs/results/`（实验数值 CSV/JSON）与 `outputs/deliverables/`（「补全任务」报告 / 派生表 / 派生图）；
+   生成脚本 `62_completion_supplement.py` 与交付文档内的路径引用同步更新。
+4. **待补充目录已建立**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、`outputs/logs/`
+   已建立（`.gitkeep` 占位）并纳入 `project_paths.ensure_directories()` 的幂等创建列表；
+   其中的阶段记录 / 方法论 / 门禁与指标 JSON 仍由流水线运行时生成。
+5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于上一轮删除。
 6. **返工脚本已归档**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
    （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）
    已移至 `scripts/_rework_history/`，附索引说明；现行流程不依赖该目录。
+
+### 8.1 本轮附带的路径收口
+
+- **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅归档脚本 `18d` 生成）
+  与 `outputs/figures/supplementary/_stage26_5_map/`（仅归档脚本 `26i` 使用的地图缓存，可重新下载）。
+- **文件归位**：`data/skill_annotation_sample.xlsx` 从 `data/` 根移到 `data/interim/`，
+  生成脚本 `48_exp_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
+- **文档门禁路径修正**：`run_data_pipeline.py` 的 `check_documentation()` 由读取不存在的
+  `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
+- **硬编码路径收口**：`45/46/47/53/56/58/59/61/62` 等脚本中手写的 `outputs/results`、
+  `data/processed/model_splits.parquet` 等改为经 `project_paths`（新增 `OUTPUTS_RESULTS_DIR` 常量）取得。
+- **元数据与产物分离**：出图脚本写出的 4 个 `*_registry.json` 由 `outputs/figures/` 迁至
+  `outputs/registries/`（`project_paths.REGISTRIES_DIR`）；「补全任务」交付物由 `outputs/results/`
+  迁至 `outputs/deliverables/`（`project_paths.DELIVERABLES_DIR`），使 `outputs/results/` 只保留实验数值。

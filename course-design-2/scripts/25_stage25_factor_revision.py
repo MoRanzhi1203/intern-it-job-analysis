@@ -57,7 +57,7 @@ SUB_CATEGORY_FIELD = '岗位细分类集合'
 CITY_FIELD = '工作城市_规范'
 EDU_FIELD = '学历要求'
 
-EXCEL_PATH = project_paths.TABLES_DIR / '34_stage25_factor_revision.xlsx'
+EXCEL_PATH = project_paths.TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION
 METRICS_PATH = project_paths.METRICS_DIR / 'stage_25_revision.json'
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
 FIG_STEM = '图S17_薪资因素关联证据与多值类别对照'

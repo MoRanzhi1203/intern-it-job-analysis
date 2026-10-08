@@ -86,6 +86,12 @@ COMPANY_TEXT_EMBEDDING_INDEX_PARQUET = FEATURES_DIR / 'company_text_embedding_in
 OUTPUTS_DIR = PROJECT_ROOT / 'outputs'
 TABLES_DIR = OUTPUTS_DIR / 'tables'
 FIGURES_DIR = OUTPUTS_DIR / 'figures'
+# ---- 实验脚本结果目录（E1–E8 等 CSV / JSON 数值产物） ----
+OUTPUTS_RESULTS_DIR = OUTPUTS_DIR / 'results'
+# ---- 图件登记元数据目录（出图脚本写出的 *_registry.json，与图件本体分离） ----
+REGISTRIES_DIR = OUTPUTS_DIR / 'registries'
+# ---- 「补全任务」等交付物目录（报告 / 派生表 / 派生图，与实验数值产物分离） ----
+DELIVERABLES_DIR = OUTPUTS_DIR / 'deliverables'
 # ---- Stage 13 正式 EDA 图目录（图名规范 01_... / 02_...） ----
 EDA_FIGURES_DIR = FIGURES_DIR / 'eda'
 # ---- Stage 14 建模图表目录 ----
@@ -106,6 +112,8 @@ METHODOLOGY_PREPROCESSING_DOC = METHODOLOGY_DIR / 'data_preprocessing_pipeline.m
 
 # ---- 测试目录 ----
 TESTS_DIR = PROJECT_ROOT / 'tests'
+# ---- Notebook 目录（后续 EDA / 建模 / 论文出图） ----
+NOTEBOOKS_DIR = PROJECT_ROOT / 'notebooks'
 
 # ---- 归档目录（仅历史证据；已按用户要求移除，历史证据改由 git 历史承载） ----
 ARCHIVE_DIR = PROJECT_ROOT / 'archive'
@@ -165,6 +173,10 @@ TABLE_ABLATION_SHAP = '31_ablation_robustness_shap.xlsx'
 TABLE_COMPANY_FIELD_SEMANTIC = '32_company_field_semantic_audit.xlsx'
 # ---- Stage 17 最终解释审计（字段语义修正 + 技能 SHAP presence 口径） ----
 TABLE_FINAL_INTERPRETATION = '33_final_interpretation_audit.xlsx'
+# ---- Stage26.7 业务时间维度分析（原 33_* 与 33_final_interpretation_audit 编号冲突，统一改为 75） ----
+TABLE_BUSINESS_TIME_DIMENSION = '75_business_time_dimension_analysis.xlsx'
+# ---- Stage25 因素修订（原与 34_visual_evidence_registry 编号冲突，后者已删除，本表编号唯一化保留） ----
+TABLE_STAGE25_FACTOR_REVISION = '34_stage25_factor_revision.xlsx'
 MODEL_SPLITS_PARQUET = PROCESSED_DIR / 'model_splits.parquet'
 MODEL_PREDICTIONS_PARQUET = PROCESSED_DIR / 'model_predictions.parquet'
 SALARY_MODEL_DIR = MODELS_DIR / 'salary_model'
@@ -218,7 +230,8 @@ def ensure_directories() -> list[Path]:
         RAW_DIR, INTERIM_DIR, PROCESSED_DIR, FEATURES_DIR,
         TABLES_DIR, FIGURES_DIR, EDA_FIGURES_DIR, MODELING_FIGURES_DIR,
         MODELS_DIR, SALARY_MODEL_DIR, LOGS_DIR, GATES_DIR, METRICS_DIR,
-        RECORDS_DIR, METHODOLOGY_DIR,
+        OUTPUTS_RESULTS_DIR, REGISTRIES_DIR, DELIVERABLES_DIR,
+        RECORDS_DIR, METHODOLOGY_DIR, PROMPTS_DIR, TESTS_DIR, NOTEBOOKS_DIR,
     ]
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)

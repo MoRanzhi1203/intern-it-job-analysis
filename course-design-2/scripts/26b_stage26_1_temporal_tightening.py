@@ -82,7 +82,7 @@ SEGMENT_PATH = PROCESSED / 'job_candidate_segment_26_1.parquet'
 EPISODE_PATH = PROCESSED / 'job_strict_episode_26_1.parquet'
 PANEL_PATH = PROCESSED / 'job_strict_daily_panel_26_1.parquet'
 METRICS_PATH = project_paths.METRICS_DIR / 'stage_26_1_temporal_tightening.json'
-REGISTRY_PATH = SUPP_DIR / '_stage26_1_registry.json'
+REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_stage26_1_registry.json'
 
 TABLE_FILES = [
     '44_stage26_1_episode_rebuild_audit.xlsx',

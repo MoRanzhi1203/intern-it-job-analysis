@@ -6,7 +6,7 @@
 - 主时间轴 = 岗位发布时间（业务时间）；
 - 不使用爬取/观测时间、数据创建时间、数据更新时间；
 - 不重训模型、不改动任何已冻结正式结果；
-- 输出：outputs/tables/33_business_time_dimension_analysis.xlsx、
+- 输出：outputs/tables/75_business_time_dimension_analysis.xlsx、
         outputs/figures/time/01~03_*.png|pdf、
         outputs/logs/metrics/stage_26_7_time_and_audit.json。
 
@@ -45,7 +45,7 @@ SCOPE = '技能提取范围'
 
 sys.path.insert(0, str(ROOT))
 
-from src import figure_finalize  # noqa: E402
+from src import figure_finalize, project_paths  # noqa: E402
 
 # ------------------------------------------------------------------ 技术时间关键词
 TECH_TIME_KEYWORDS = [
@@ -307,7 +307,7 @@ def main() -> int:
         {'门禁项': key, '数值': value} for key, value in tech_gate.items()
         if not isinstance(value, list)
     ])
-    out = TABLES / '33_business_time_dimension_analysis.xlsx'
+    out = TABLES / project_paths.TABLE_BUSINESS_TIME_DIMENSION
     with pd.ExcelWriter(out, engine='openpyxl') as writer:
         audit.to_excel(writer, sheet_name='01_时间字段审计', index=False)
         monthly.reset_index().to_excel(writer, sheet_name='02_发布时间月度样本数', index=False)

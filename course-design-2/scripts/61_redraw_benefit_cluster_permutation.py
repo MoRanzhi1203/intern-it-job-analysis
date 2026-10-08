@@ -49,7 +49,7 @@ from matplotlib import pyplot as plt  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_8_11_benefit_cluster_permutation'
-PERM_CSV = PROJECT_ROOT / 'outputs' / 'results' / 'benefit_cluster_permutation.csv'
+PERM_CSV = project_paths.OUTPUTS_RESULTS_DIR / 'benefit_cluster_permutation.csv'
 PRINT_WIDTH_CM = 15.5
 PRINT_HEIGHT_CM = 7.6
 CM = 1.0 / 2.54

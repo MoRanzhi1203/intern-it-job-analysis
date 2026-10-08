@@ -37,7 +37,7 @@ from matplotlib.ticker import FixedLocator, FuncFormatter  # noqa: E402
 from src import figure_finalize, plot_style, project_paths  # noqa: E402
 
 STEM = 'fig_5_7_median_regression_cluster_bootstrap'
-CSV = project_paths.PROJECT_ROOT / 'outputs' / 'results' / 'quantile_regression_cluster_bootstrap.csv'
+CSV = project_paths.OUTPUTS_RESULTS_DIR / 'quantile_regression_cluster_bootstrap.csv'
 FIGDIR = project_paths.FIGURES_DIR
 PRINT_WIDTH_CM = 16.0
 PRINT_HEIGHT_CM = 16.5

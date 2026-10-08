@@ -4,7 +4,7 @@
 只做版式与可读性优化，不改动任何统计口径与数值：
 
 - 图「发布时间队列的薪资中位数及四分位区间」（``02_salary_by_publish_time``）：
-  数据源为冻结结果表 ``outputs/tables/33_business_time_dimension_analysis.xlsx`` 的
+  数据源为冻结结果表 ``outputs/tables/75_business_time_dimension_analysis.xlsx`` 的
   ``03_发布时间月度薪资分布`` 工作表，参考线取自 29 号表 ``02_薪资描述统计`` 的中位数；
 - 图「核心技能需求的发布时间队列变化」（``03_skill_or_category_time_structure``）：
   数据源为同表的 ``04_发布时间技能或岗位结构`` 工作表（命中率列），横轴沿用原图口径，
@@ -39,7 +39,7 @@ from src import figure_finalize, plot_style, project_paths  # noqa: E402
 TABLES = project_paths.TABLES_DIR
 FIGDIR = project_paths.FIGURES_DIR / 'time'
 METRICS = project_paths.METRICS_DIR
-TABLE33 = '33_business_time_dimension_analysis.xlsx'
+TABLE33 = project_paths.TABLE_BUSINESS_TIME_DIMENSION
 
 STEM_SALARY = '02_salary_by_publish_time'
 STEM_SKILL = '03_skill_or_category_time_structure'

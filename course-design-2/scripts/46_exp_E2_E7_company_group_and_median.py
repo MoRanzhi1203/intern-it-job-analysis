@@ -26,15 +26,15 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / 'scripts'))
 
-from src import eda_analysis, model_training, plot_style, schema, skill_eda  # noqa: E402
+from src import eda_analysis, model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 
 SEEDS = (42, 52, 62, 72, 82)
 BOOTSTRAP_ROUNDS = 1000
 SEED = 42
 SKILL_THRESHOLD = 100
 TEXT_DIM = 16
-RESULTS = PROJECT / 'outputs' / 'results'
-FIGURES = PROJECT / 'outputs' / 'figures'
+RESULTS = project_paths.OUTPUTS_RESULTS_DIR
+FIGURES = project_paths.FIGURES_DIR
 RANDOM_SPLIT_BASELINE = 35.996481  # 同协议随机划分测试集 MAE（Stage26.4 统一协议）
 
 

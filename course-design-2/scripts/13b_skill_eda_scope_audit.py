@@ -18,7 +18,7 @@
     组级统计一律按 intern_id 去重，禁止跨层级或同层简单相加
 
 用法：
-    python scripts/13_skill_eda_scope_audit.py
+    python scripts/13b_skill_eda_scope_audit.py
 """
 
 from __future__ import annotations

@@ -55,7 +55,7 @@ TABLES_DIR = project_paths.TABLES_DIR
 METRICS_DIR = project_paths.METRICS_DIR
 PROCESSED_DIR = project_paths.PROCESSED_DIR
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
-REGISTRY_PATH = project_paths.FIGURES_DIR / '_supplementary_registry.json'
+REGISTRY_PATH = project_paths.REGISTRIES_DIR / '_supplementary_registry.json'
 
 PALETTE = plot_style.PALETTE
 FS = plot_style.FONT_SIZES

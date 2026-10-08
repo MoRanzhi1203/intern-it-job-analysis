@@ -28,13 +28,13 @@ import pandas as pd
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from src import figure_finalize, plot_style, schema  # noqa: E402
+from src import figure_finalize, plot_style, project_paths, schema  # noqa: E402
 
 EPISODE = PROJECT / 'data' / 'processed' / 'job_strict_episode_26_1.parquet'
 DAILY_PANEL = PROJECT / 'data' / 'processed' / 'job_strict_daily_panel_26_1.parquet'
 CATEGORY = PROJECT / 'data' / 'processed' / 'job_category_membership.parquet'
-RESULTS = PROJECT / 'outputs' / 'results'
-FIGURES = PROJECT / 'outputs' / 'figures'
+RESULTS = project_paths.OUTPUTS_RESULTS_DIR
+FIGURES = project_paths.FIGURES_DIR
 TOP_CATEGORIES = 5
 
 

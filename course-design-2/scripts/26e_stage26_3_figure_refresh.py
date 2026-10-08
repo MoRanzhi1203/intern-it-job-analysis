@@ -264,9 +264,9 @@ def run_reused() -> None:
 
     # ---------------- 图 5-4（复用 25_stage25_factor_revision.figure_s17） ---------------- #
     f25 = _load('_s26e_25', 'scripts/25_stage25_factor_revision.py')
-    excl = pd.read_excel(TABLES_DIR / '34_stage25_factor_revision.xlsx',
+    excl = pd.read_excel(TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION,
                          sheet_name='01_岗位大类_二元检验')
-    sub = pd.read_excel(TABLES_DIR / '34_stage25_factor_revision.xlsx',
+    sub = pd.read_excel(TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION,
                         sheet_name='02_岗位细分类_二元检验')
     top_binary = pd.concat([
         excl.head(10)[['类别', 'present岗位数', 'q值_BHFDR', 'Cliff_delta']].assign(字段='岗位大类'),
