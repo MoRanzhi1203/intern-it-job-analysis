@@ -26,10 +26,9 @@ course-design-2/
 └─ outputs/
    ├─ tables/              审计表（全项目统一编号，含编号冲突，见第 8 节）
    ├─ figures/
-   │  ├─ sci/              SCI 投稿风图件
-   │  ├─ eda/              Stage 13 正式 EDA 图件
-   │  ├─ modeling/         Stage 14 建模图件
-   │  ├─ supplementary/    补充图件（含 *_display 展示版，供 Word 嵌图）
+   │  ├─ (根)             论文正文散图（fig_4_6/4_7/5_7/7_8/8_9/8_10/8_11）+ 3 个登记表
+   │  ├─ eda/              论文正文用图（仅留存 docx 中出现的 05_tech_skill_top20）
+   │  ├─ supplementary/    补充图件（含 *_display 展示版）——论文正文图表的主要来源
    │  └─ time/             时间维度分析图件（脚本 33 / 49）
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
    └─ results/             「补全任务」交付物（补充 CSV / 图件）
@@ -144,17 +143,18 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 
 | 目录 | 命名规范 | 用途（论文归属） | 生成脚本 | 状态 |
 | --- | --- | --- | --- | --- |
-| `figures/sci/` | `图NN_中文名` | 第 3 章：数据治理与岗位版本重构 | `18a`/`26e`/`26g` + `_figure_registry.json` | 现行 |
-| `figures/eda/` | `NN_英文名` | 第 4~6 章：正式 EDA（10 张） | `13_run_eda.py` | 现行 |
-| `figures/modeling/` | `NN_英文名` | 第 7~8 章：建模 / 消融 / SHAP（8 张） | `14`/`15` | 现行 |
-| `figures/supplementary/` | `图Sxx_中文名` | 附录补充图 | `18b` + `_stage26_*_registry.json` | 现行 |
+| `figures/`（根） | `fig_<章>_<序>_…` | 论文正文散图（已确认在 docx 中）+ 3 个登记表 | `45`/`46`/`47`/`49` 等 | 现行 |
+| `figures/eda/` | `NN_英文名` | 论文正文用图（仅 1 张 `05_tech_skill_top20` 出现在 docx 中） | `13_run_eda.py` | 部分留存 |
+| `figures/supplementary/` | `图Sxx_中文名` | **论文正文图表的主要来源** + 附录 | `18b`/`26e`/`26g` 等 | 现行 |
 | `figures/time/` | `NN_英文名` | 第 4 章：业务时间维度（3 张，独立主题） | `33` → `49` | 现行 |
-| `figures/`（根） | `fig_<章>_<序>_…` | 散图 + 3 个登记表 | `45`/`46`/`47` 等 | 现行 |
 | `results/figures/` | `fig_6` / `fig_7` | 「补全任务」交付物 | `62_completion_supplement.py` | 现行 |
 
-说明：目录按**论文章节 + 生成批次**划分，故数量较多。每张图的 PNG/PDF 与 `_display` 变体属正常配对，
-不是冗余。`figures/_compare_fig_8_1/`（图 8-1 的 A/B/C/D 选型候选）为临时产物，已于本轮删除，
-如需重出可运行 `scripts/57_fig8_1_variant_compare.py`。
+说明：每张图通常有 PNG/PDF 与 `*_display` 变体（含图内题注，供 Word 嵌图）。
+
+**图件留存口径（本轮确立）**：以论文 `docs/paper/*.docx` 内嵌图片为准，逐文件 SHA256 比对，
+只保留论文中实际出现的图。经比对，`figures/sci/`（73）、`figures/modeling/`（32）及 `figures/eda/`
+的其余 39 个文件均未出现在论文中，已全部删除（保留 `eda/05_tech_skill_top20.png`）；
+论文图表实际来自 `figures/supplementary/` 与 `figures/` 根目录。图件可由相应脚本重新生成。
 
 ## 6. Notebook
 
