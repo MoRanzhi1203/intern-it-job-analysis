@@ -20,6 +20,7 @@ course-design-2/
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
 ├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
 ├─ scripts/                Stage 00~11 独立脚本 + Stage 12~17 专项脚本 + 流水线总执行器
+│  └─ _rework_history/     已归档的返工 / 被取代脚本（说明见该目录 README，不参与现行流程）
 ├─ docs/
 │  └─ paper/               论文终稿（.docx / .pdf，只读保护区）
 └─ outputs/
@@ -173,3 +174,6 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 4. **README 声明与实际不符**：`tests/`、`notebooks/`、`docs/methodology|records|prompts`、
    `outputs/logs/` 当前不存在，相关叙述保留为待补充目标。
 5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于本轮删除。
+6. **返工脚本已归档**：13 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
+   （Stage23.1、Stage26.x 中途稿、Stage27.0 装配链、Word 一次性补丁等）已移至
+   `scripts/_rework_history/`，附索引说明；现行流程不依赖该目录。
