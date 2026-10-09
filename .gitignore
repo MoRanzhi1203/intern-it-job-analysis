@@ -26,3 +26,13 @@ course-design-2/data/**/*.parquet
 course-design-2/data/legacy/
 # 句向量矩阵（体积大，可由缓存模型 + 语料一键重建；保留 *_meta.json 复现记录）
 course-design-2/data/features/*.npz
+
+# 论文图件仅保留论文 docx 内嵌的 26 张（见 course-design-2/README.md §5.1）
+# 流水线重跑生成的辅助图件（EDA 底图 / 建模底图 / 补充图）不入库，可由脚本重新生成
+course-design-2/outputs/figures/eda/
+course-design-2/outputs/figures/modeling/
+course-design-2/outputs/figures/supplementary/
+
+# 流水线运行期生成的门禁 / 指标 JSON 不入库（目录以 .gitkeep 占位）
+course-design-2/outputs/logs/gates/*.json
+course-design-2/outputs/logs/metrics/*.json
