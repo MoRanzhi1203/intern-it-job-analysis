@@ -33,11 +33,13 @@ SKILL_THRESHOLD = 100
 TEXT_DIM = 16
 
 RESULTS = project_paths.DELIVERABLES_DIR
-TABLES = RESULTS / 'tables'
 FIGURES = RESULTS / 'figures'
-# 图 7（真实值—预测值对照）为第 7 章图件，按章节目录归档到 outputs/figures/ch7/
+# 图 7 与各交付表按“章节目录”归档（与 outputs/figures/chN、outputs/tables/chN 一致）
 FIGURES_CH7 = project_paths.FIGURES_DIR / 'ch7'
-for _d in (RESULTS, TABLES, FIGURES, FIGURES_CH7):
+TABLES_CH5 = project_paths.TABLES_DIR / 'ch5'
+TABLES_CH7 = project_paths.TABLES_DIR / 'ch7'
+TABLES_CH9 = project_paths.TABLES_DIR / 'ch9'
+for _d in (RESULTS, FIGURES, FIGURES_CH7, TABLES_CH5, TABLES_CH7, TABLES_CH9):
     _d.mkdir(parents=True, exist_ok=True)
 
 
@@ -84,7 +86,7 @@ def task2_actual_vs_predicted(polish):
     pred_frame = pd.DataFrame({
         'intern_id': test_frame[schema.ID_FIELD].to_numpy(),
         'y_true': y_test, 'y_pred': y_pred, 'residual': y_test - y_pred})
-    pred_frame.to_csv(TABLES / 'final_model_test_predictions.csv', index=False,
+    pred_frame.to_csv(TABLES_CH7 / 'final_model_test_predictions.csv', index=False,
                       encoding='utf-8-sig')
 
     import matplotlib.pyplot as plt  # noqa: PLC0415
@@ -159,7 +161,7 @@ def task4_negotiable_vs_public():
                      'p_value': float(row['p 值']),
                      'q_value_bhfdr': float(row['q 值（BH-FDR）'])})
     full_frame = pd.DataFrame(full)
-    full_frame.to_csv(TABLES / 'table_5_negotiable_vs_public_salary_full.csv',
+    full_frame.to_csv(TABLES_CH5 / 'table_5_negotiable_vs_public_salary_full.csv',
                       index=False, encoding='utf-8-sig')
 
     # 正文精简表：只保留代表性结果
@@ -184,7 +186,7 @@ def task4_negotiable_vs_public():
                 'public_salary_ratio': float(row['公开薪资占比']),
                 'chi_square': float(row['卡方统计量']), 'p_value': float(row['p 值'])})
     compact = pd.DataFrame(compact_rows)
-    compact.to_csv(TABLES / 'table_5_negotiable_vs_public_salary.csv',
+    compact.to_csv(TABLES_CH5 / 'table_5_negotiable_vs_public_salary.csv',
                    index=False, encoding='utf-8-sig')
     print('正文表行数 %d；完整表行数 %d' % (len(compact), len(full_frame)))
     print(concl.to_string())
@@ -270,7 +272,7 @@ def task3_main_findings(pred_metrics):
                            '可迁移的岗位与地域特征。'},
     ]
     frame = pd.DataFrame(rows)
-    frame.to_csv(TABLES / 'table_9_main_findings.csv', index=False, encoding='utf-8-sig')
+    frame.to_csv(TABLES_CH9 / 'table_9_main_findings.csv', index=False, encoding='utf-8-sig')
     with (RESULTS / 'table_9_main_findings.md').open('w', encoding='utf-8') as handle:
         handle.write('| 分析模块 | 代表性结果 | 指标 | 说明 |\n')
         handle.write('| --- | --- | --- | --- |\n')
@@ -279,7 +281,7 @@ def task3_main_findings(pred_metrics):
                          % (r['analysis_module'], r['representative_result'],
                             r['metric'], r['interpretation']))
     print(frame.to_string())
-    print('写出：outputs/deliverables/tables/table_9_main_findings.csv 与 '
+    print('写出：outputs/tables/ch9/table_9_main_findings.csv 与 '
           'outputs/deliverables/table_9_main_findings.md')
     return frame
 
