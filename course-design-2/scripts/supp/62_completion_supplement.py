@@ -35,7 +35,9 @@ TEXT_DIM = 16
 RESULTS = project_paths.DELIVERABLES_DIR
 TABLES = RESULTS / 'tables'
 FIGURES = RESULTS / 'figures'
-for _d in (RESULTS, TABLES, FIGURES):
+# 图 7（真实值—预测值对照）为第 7 章图件，按章节目录归档到 outputs/figures/ch7/
+FIGURES_CH7 = project_paths.FIGURES_DIR / 'ch7'
+for _d in (RESULTS, TABLES, FIGURES, FIGURES_CH7):
     _d.mkdir(parents=True, exist_ok=True)
 
 
@@ -119,10 +121,10 @@ def task2_actual_vs_predicted(polish):
     plot_style.add_bottom_caption(
         fig, '最终主模型在测试集上的真实薪资中点与预测薪资中点对照')
     for suffix in ('png', 'pdf'):
-        fig.savefig(FIGURES / ('fig_7_actual_vs_predicted_salary.%s' % suffix),
+        fig.savefig(FIGURES_CH7 / ('fig_7_actual_vs_predicted_salary.%s' % suffix),
                     dpi=plot_style.PNG_DPI, bbox_inches='tight', facecolor='white')
     plt.close(fig)
-    print('写出：outputs/deliverables/figures/fig_7_actual_vs_predicted_salary.png / .pdf；'
+    print('写出：outputs/figures/ch7/fig_7_actual_vs_predicted_salary.png / .pdf；'
           '网格最大计数 = %d' % max_count)
     return metrics, y_test, y_pred
 
@@ -324,8 +326,9 @@ def main() -> int:
     task5_skill_wordcloud()
 
     from PIL import Image  # noqa: PLC0415
-    for name in ('fig_7_actual_vs_predicted_salary.png', 'fig_6_skill_wordcloud.png'):
-        with Image.open(FIGURES / name) as image:
+    for name, folder in (('fig_7_actual_vs_predicted_salary.png', FIGURES_CH7),
+                         ('fig_6_skill_wordcloud.png', FIGURES)):
+        with Image.open(folder / name) as image:
             print('校验 %s：尺寸 %s，dpi %s' % (name, image.size, image.info.get('dpi')))
     print('\n全部可执行任务完成。')
     return 0
