@@ -273,16 +273,8 @@ def task3_main_findings(pred_metrics):
     ]
     frame = pd.DataFrame(rows)
     frame.to_csv(TABLES_CH9 / 'table_9_main_findings.csv', index=False, encoding='utf-8-sig')
-    with (RESULTS / 'table_9_main_findings.md').open('w', encoding='utf-8') as handle:
-        handle.write('| 分析模块 | 代表性结果 | 指标 | 说明 |\n')
-        handle.write('| --- | --- | --- | --- |\n')
-        for _, r in frame.iterrows():
-            handle.write('| %s | %s | %s | %s |\n'
-                         % (r['analysis_module'], r['representative_result'],
-                            r['metric'], r['interpretation']))
     print(frame.to_string())
-    print('写出：outputs/tables/ch9/table_9_main_findings.csv 与 '
-          'outputs/deliverables/table_9_main_findings.md')
+    print('写出：outputs/tables/ch9/table_9_main_findings.csv')
     return frame
 
 

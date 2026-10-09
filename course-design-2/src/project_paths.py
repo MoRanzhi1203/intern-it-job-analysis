@@ -106,6 +106,8 @@ METRICS_DIR = LOGS_DIR / 'metrics'
 # ---- 文档目录 ----
 DOCS_DIR = PROJECT_ROOT / 'docs'
 RECORDS_DIR = DOCS_DIR / 'records'
+# 阶段记录 md 已从项目移除：置 False 时 io_utils 的 Markdown 写函数跳过 docs/records/ 下的文件
+WRITE_STAGE_RECORDS = False
 # ---- 方法论文档目录（论文「数据预处理」章节的唯一技术来源） ----
 METHODOLOGY_DIR = DOCS_DIR / 'methodology'
 METHODOLOGY_PREPROCESSING_DOC = METHODOLOGY_DIR / 'data_preprocessing_pipeline.md'

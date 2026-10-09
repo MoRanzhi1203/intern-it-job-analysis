@@ -394,15 +394,13 @@ def run_refinement_check(logger: PipelineLogger) -> tuple:
     """REFINEMENT_REGRESSION_CHECK：生成 20 号总修复审计表与 13 号封版记录。"""
     result = refinement.write_refinement_outputs()
     audit_path = project_paths.TABLES_DIR / project_paths.TABLE_TEXT_SEMANTIC_REFINEMENT
-    record_path = project_paths.RECORDS_DIR / project_paths.RECORD_TEXT_SEMANTIC_REFINEMENT
     logger.write(f'总修复审计表: {result["audit_path"]}（{result["sheet_count"]} 张子表）')
-    logger.write(f'封版记录: {result["record_path"]}')
-    ok = audit_path.exists() and record_path.exists() and result['sheet_count'] >= 12
+    ok = audit_path.exists() and result['sheet_count'] >= 12
     return ok, f'{result["sheet_count"]} 张子表已写出，新旧结果逐项留痕（不把新值 != 旧值判为 FAIL）'
 
 
 def check_documentation(logger: PipelineLogger) -> tuple:
-    """DOCUMENTATION_UPDATE：README 是否已更新为新阶段路线，阶段记录是否齐全。"""
+    """DOCUMENTATION_UPDATE：README 是否已更新为新阶段路线（阶段记录 md 已移除，不再校验）。"""
     readme = project_paths.PROJECT_ROOT / 'README.md'
     if not readme.exists():
         return False, 'README.md 不存在'
@@ -412,32 +410,9 @@ def check_documentation(logger: PipelineLogger) -> tuple:
                        'Python', 'Notebook', 'scripts/']
     missing = [token for token in required_tokens if token not in text]
 
-    record_paths = [
-        project_paths.RECORDS_DIR / project_paths.RECORD_OBSERVATION_SNAPSHOT,
-        project_paths.RECORDS_DIR / project_paths.RECORD_JOB_VERSION,
-        project_paths.RECORDS_DIR / project_paths.RECORD_FINAL_ENTITY,
-        project_paths.RECORDS_DIR / project_paths.RECORD_TEXT_PREPROCESSING,
-        project_paths.RECORDS_DIR / project_paths.RECORD_JOB_TEXT_SEMANTIC,
-        project_paths.RECORDS_DIR / project_paths.RECORD_COMPANY_IDENTITY,
-        project_paths.RECORDS_DIR / project_paths.RECORD_COMPANY_TEXT_SEMANTIC,
-        project_paths.RECORDS_DIR / project_paths.RECORD_TEXT_SEMANTIC_REFINEMENT,
-        project_paths.RECORDS_DIR / project_paths.RECORD_SALARY_TARGET,
-        project_paths.RECORDS_DIR / project_paths.RECORD_COMPANY_ATTRIBUTE_ANOMALY,
-        project_paths.RECORDS_DIR / project_paths.RECORD_PREPROCESSING_CLEANUP,
-        project_paths.RECORDS_DIR / project_paths.RECORD_JOB_SKILL_EXTRACTION,
-        project_paths.RECORDS_DIR / project_paths.RECORD_SKILL_EDA_SCOPE,
-        project_paths.RECORDS_DIR / project_paths.RECORD_MODELING_DATASET,
-        project_paths.RECORDS_DIR / project_paths.RECORD_FORMAL_EDA,
-        project_paths.RECORDS_DIR / project_paths.RECORD_SALARY_MODEL,
-        project_paths.METHODOLOGY_PREPROCESSING_DOC,
-    ]
-    missing_records = [path.name for path in record_paths
-                       if not path.exists() or path.stat().st_size == 0]
-    logger.write(f'文档同步检查：缺失标记 {missing if missing else "无"}；'
-                 f'缺失阶段记录 {missing_records if missing_records else "无"}')
-    note = (f'README 含 {len(required_tokens) - len(missing)}/{len(required_tokens)} 个必要标记，'
-            f'阶段记录/方法论文档 {len(record_paths) - len(missing_records)}/{len(record_paths)} 个')
-    return (not missing and not missing_records), note
+    logger.write(f'文档同步检查：缺失标记 {missing if missing else "无"}')
+    note = f'README 含 {len(required_tokens) - len(missing)}/{len(required_tokens)} 个必要标记'
+    return (not missing), note
 
 
 def main() -> int:
@@ -462,7 +437,7 @@ def main() -> int:
     ok, note = check_archive(logger)
     gates.check('ARCHIVE_PRE_REFACTOR', ok, note)
 
-    baseline_path = project_paths.RECORDS_DIR / project_paths.RECORD_REFACTOR_BASELINE
+    baseline_path = project_paths.REFINEMENT_BASELINE_JSON
     gates.check('BASELINE_RECORD',
                 baseline_path.exists() and baseline_path.stat().st_size > 0,
                 project_paths.relative_to_root(baseline_path))

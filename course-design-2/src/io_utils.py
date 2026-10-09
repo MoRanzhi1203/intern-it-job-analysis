@@ -129,9 +129,22 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
+def _skip_stage_record(path: Path) -> bool:
+    """阶段记录 md 已从项目移除：命中 docs/records/ 且开关关闭时跳过实际写出。"""
+    try:
+        from . import project_paths
+        if project_paths.WRITE_STAGE_RECORDS:
+            return False
+        return project_paths.RECORDS_DIR.resolve() in Path(path).resolve().parents
+    except Exception:
+        return False
+
+
 def write_markdown(path: Path, lines) -> Path:
     """写出 Markdown（UTF-8）；lines 可以是字符串列表或单个字符串。"""
     path = Path(path)
+    if _skip_stage_record(path):
+        return path
     path.parent.mkdir(parents=True, exist_ok=True)
     text = lines if isinstance(lines, str) else '\n'.join(str(line) for line in lines)
     path.write_text(text + ('' if text.endswith('\n') else '\n'), encoding='utf-8')
@@ -142,6 +155,8 @@ def write_markdown(path: Path, lines) -> Path:
 def write_markdown_section(path: Path, marker: str, lines) -> Path:
     """幂等追加 Markdown 章节：截断到 marker 之前再追加，重复运行不会累积。"""
     path = Path(path)
+    if _skip_stage_record(path):
+        return path
     path.parent.mkdir(parents=True, exist_ok=True)
     existing = path.read_text(encoding='utf-8') if path.exists() else ''
     if marker in existing:
