@@ -17,7 +17,7 @@ course-design-2/
 │  ├─ processed/           Stage 04~11 正式产物
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
 ├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
-├─ scripts/                全部脚本（按论文章节分目录，索引见 scripts/README.md）
+├─ scripts/                全部脚本（按论文章节分目录）
 │  ├─ ch3_data/            Stage 00~12 数据获取与预处理（14）
 │  ├─ ch4_lifecycle/       第 4 章 岗位特征与招聘生命周期（11）
 │  ├─ ch5_factors/         第 5 章 薪资影响因素（8）
