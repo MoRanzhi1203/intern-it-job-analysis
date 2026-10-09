@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""重绘图 S44「岗位细分类技能命中率热力图」：移除图内「主口径」字样。
+"""重绘图 S44「岗位细分类技能命中率热力图」：移除图内「主统计范围」字样。
 
 S44 由 ``scripts/ch4_lifecycle/26e_stage26_3_figure_refresh.py`` 在 2026-09-19 生成，其 x 轴标题写作
-「具体技术技能（主口径命中率前 20）」；其后 ``scripts/figures_base/18a_redraw_eda_modeling_figures.py``
-的 x 轴标题已改为「具体技术技能（命中率前 20）」，但 S44 未随之重绘，因此图内残留「主口径」。
+「具体技术技能（主统计范围命中率前 20）」；其后 ``scripts/figures_base/18a_redraw_eda_modeling_figures.py``
+的 x 轴标题已改为「具体技术技能（命中率前 20）」，但 S44 未随之重绘，因此图内残留「主统计范围」。
 
 本脚本复用 26e 的版式重映射（``_apply_mode`` / ``save``）与 18a 的绘图函数，按**与 S44 完全
 相同的版式参数**（single，打印宽 15.5 cm，面板高 5.2，left 0.36 / right 0.98 / bottom 0.30 /
@@ -126,7 +126,7 @@ def main() -> int:
         '色标': '名称「%s」（去掉原「（比例）」后缀）；刻度为百分号刻度 %s；'
                 '色条高度与热力图坐标区齐平（%s）'
                 % (colorbar_info['色条名'], '、'.join(colorbar_info['色标刻度']), colorbar_box),
-        '用途': '第6章 图 6-2 放大版（版式同前，仅移除图内「主口径」字样后重绘）'})
+        '用途': '第6章 图 6-2 放大版（版式同前，仅移除图内「主统计范围」字样后重绘）'})
     print('PNG:', diagnostics['png_path'])
     print('PDF:', diagnostics['pdf_path'])
     return 0

@@ -132,9 +132,9 @@ def final_test_metrics(predictions: pd.DataFrame) -> dict:
 
 
 def build_01_sample_structure(layout: dict):
-    """图 4-1 正式分析样本与技能提取口径结构。"""
+    """图 4-1 正式分析样本与技能提取统计范围结构。"""
     overview = table(TABLE_29, '01_样本概况').set_index('指标')['数值']
-    scope = table(TABLE_27, '01_样本口径').set_index('口径')
+    scope = table(TABLE_27, '01_样本统计范围').set_index('统计范围')
     full_jobs = int(overview['全量岗位数（EDA 分析单元）'])
     salary_n = int(overview['正式薪资分析样本'])
     anomaly = int(overview['薪资逻辑异常岗位数'])
@@ -158,7 +158,7 @@ def build_01_sample_structure(layout: dict):
                 fontsize=plot_style.FONT_SIZES['annotation'])
     ax.set_xlim(0, span * 1.58)
     ax.set_xlabel('岗位数（个）')
-    ax.set_ylabel('样本口径层级')
+    ax.set_ylabel('样本统计范围层级')
     ax.text(0.98, 0.10, f'未进入正式薪资样本：\n薪资面议 {negotiable:,} 个\n逻辑异常 {anomaly} 个',
             transform=ax.transAxes, ha='right', va='bottom',
             fontsize=plot_style.FONT_SIZES['annotation'], linespacing=1.6)
@@ -166,7 +166,7 @@ def build_01_sample_structure(layout: dict):
     plot_style.format_integer_axis(ax, axis='x')
 
     ax2 = axes[1]
-    labels2 = ['主口径：明确要求段落', '扩展口径：全文回退', '无可用技能文本']
+    labels2 = ['主统计范围：明确要求段落', '扩展统计范围：全文回退', '无可用技能文本']
     positions2 = np.arange(len(labels2))[::-1]
     ax2.barh(positions2, layer_values, height=0.56, color=plot_style.ACCENT_COLOR,
              edgecolor='black', linewidth=0.5)
@@ -178,16 +178,16 @@ def build_01_sample_structure(layout: dict):
                  fontsize=plot_style.FONT_SIZES['annotation'])
     ax2.set_xlim(0, span2 * 1.32)
     ax2.set_xlabel('岗位数（个）')
-    ax2.set_ylabel('技能提取口径')
+    ax2.set_ylabel('技能提取统计范围')
     plot_style.apply_sci_axis(ax2, grid_axis='x')
     plot_style.format_integer_axis(ax2, axis='x')
 
-    plot_style.add_subfigure_caption(ax, 'a', '样本口径层级（单位：岗位）')
-    plot_style.add_subfigure_caption(ax2, 'b', '技能提取三类口径（单位：岗位）')
+    plot_style.add_subfigure_caption(ax, 'a', '样本统计范围层级（单位：岗位）')
+    plot_style.add_subfigure_caption(ax2, 'b', '技能提取三类统计范围（单位：岗位）')
     _adjust(fig, layout, left=0.16, wspace=0.62, bottom=0.32)
-    return fig, [('a', '样本口径层级（单位：岗位）', ax),
-                 ('b', '技能提取三类口径（单位：岗位）', ax2)], {
-        '图表类型': '横向柱状图（双面板）', '数据来源': '29 号表 01_样本概况；27 号表 01_样本口径'}
+    return fig, [('a', '样本统计范围层级（单位：岗位）', ax),
+                 ('b', '技能提取三类统计范围（单位：岗位）', ax2)], {
+        '图表类型': '横向柱状图（双面板）', '数据来源': '29 号表 01_样本概况；27 号表 01_样本统计范围'}
 
 
 def build_02_salary_distribution(layout: dict):
@@ -293,7 +293,7 @@ def build_04_structured_factor_salary(layout: dict):
 
 
 def build_fig_6_1_tech_skill_top20(layout: dict):
-    """图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）。"""
+    """图 6-1 核心技术技能需求 Top20（技能主统计范围，分母 8,822）。"""
     demand = table(TABLE_29, '07_技能需求')
     frame = demand[demand['榜单'].str.startswith('核心技术技能')].head(20)
     series = frame.set_index('技能标准名')['岗位数']
@@ -320,7 +320,7 @@ def build_06_skill_layer_structure(layout: dict):
         frame = demand[demand['榜单'].str.startswith(prefix)].head(top_n)
         series = frame.set_index('技能标准名')['岗位数']
         plot_style.barh_ranked(ax, series, color=plot_style.ACCENT_COLOR,
-                               xlabel='岗位数（个，主口径）', ylabel=factor)
+                               xlabel='岗位数（个，主统计范围）', ylabel=factor)
         ax.set_xlim(0, float(series.max()) * 1.28)
         plot_style.apply_sci_axis(ax, grid_axis='x')
         plot_style.format_integer_axis(ax, axis='x')
@@ -449,8 +449,8 @@ def build_09_skill_salary(layout: dict):
 
 
 def build_10_scope_robustness(layout: dict):
-    """附图 A-2 技能提取双口径稳健性。"""
-    summary_27 = table(TABLE_27, '11_双口径稳健性')
+    """附图 A-2 技能提取两种统计范围稳健性。"""
+    summary_27 = table(TABLE_27, '11_两种统计范围稳健性')
     summary_27 = summary_27[summary_27['分析块'].eq('稳健性汇总')].set_index('技能标准名或指标')['数值']
     summary_29 = table(TABLE_29, '12_稳健性')
     summary_29 = summary_29[summary_29['项目'].isin(
@@ -466,27 +466,27 @@ def build_10_scope_robustness(layout: dict):
     cross_check = (abs(float(summary_29['Top10 overlap 比例']) - top10) < 1e-9
                    and abs(float(summary_29['Top20 overlap 比例']) - top20) < 1e-9
                    and abs(float(summary_29['Spearman 排名相关']) - spearman) < 1e-9)
-    print(f"[交叉核对] 附图 A-2 双口径稳健性：29 号表 12_稳健性 与 27 号表 11_双口径稳健性 "
+    print(f"[交叉核对] 附图 A-2 两种统计范围稳健性：29 号表 12_稳健性 与 27 号表 11_两种统计范围稳健性 "
           f"汇总值一致 = {cross_check}（Top10 {top10:.2f} / Top20 {top20:.2f} / "
           f"Spearman {spearman:.6f} / 共有技能 {shared_skills}）")
 
     fig, axes = plt.subplots(1, 2, figsize=_size(layout, 10.4, 4.4))
     ax = axes[0]
-    xs = detail['主口径排名'].to_numpy(dtype='float64')
-    ys = detail['扩展口径排名'].to_numpy(dtype='float64')
+    xs = detail['主统计范围排名'].to_numpy(dtype='float64')
+    ys = detail['扩展统计范围排名'].to_numpy(dtype='float64')
     ax.scatter(xs, ys, s=14, color=plot_style.MAIN_COLOR, alpha=0.75, edgecolor='none')
     limit = float(max(xs.max(), ys.max())) * 1.05
     ax.plot([0, limit], [0, limit], color=plot_style.MUTED_COLOR, linestyle='--', linewidth=0.9)
     ax.set_xlim(0, limit)
     ax.set_ylim(0, limit)
-    ax.set_xlabel('主口径排名（明确要求段落）')
-    ax.set_ylabel('扩展口径排名（全文回退口径）')
+    ax.set_xlabel('主统计范围排名（明确要求段落）')
+    ax.set_ylabel('扩展统计范围排名（全文回退统计范围）')
     ax.text(0.97, 0.06, f'Spearman ρ = {spearman:.3f}\n共有技能 {shared_skills} 个',
             transform=ax.transAxes, ha='right', va='bottom',
             fontsize=plot_style.FONT_SIZES['annotation'], linespacing=1.5)
     plot_style.apply_sci_axis(ax)
     plot_style.format_integer_axis(ax)
-    plot_style.add_subfigure_caption(ax, 'a', '双口径技能排名对照（Top50）')
+    plot_style.add_subfigure_caption(ax, 'a', '两种统计范围技能排名对照（Top50）')
 
     ax2 = axes[1]
     labels = ['Top10 重合率', 'Top20 重合率']
@@ -509,10 +509,10 @@ def build_10_scope_robustness(layout: dict):
     plot_style.format_percent_axis(ax2, axis='y')
     plot_style.add_subfigure_caption(ax2, 'b', 'Top-K 重合率与排名相关')
     _adjust(fig, layout, left=0.10, wspace=0.34, bottom=0.30)
-    return fig, [('a', '双口径技能排名对照（Top50）', ax),
+    return fig, [('a', '两种统计范围技能排名对照（Top50）', ax),
                  ('b', 'Top-K 重合率与排名相关', ax2)], {
         '图表类型': '散点图 + 柱状图',
-        '数据来源': f'{TABLE_29} / 12_稳健性；{TABLE_27} / 11_双口径稳健性'}
+        '数据来源': f'{TABLE_29} / 12_稳健性；{TABLE_27} / 11_两种统计范围稳健性'}
 
 
 def build_11_model_comparison(layout: dict):
@@ -801,15 +801,15 @@ def build_17_skill_shap_top20(layout: dict):
 
 # （组别, 文件名, Stage23 正式图题（展示版底部图题）, 绘图函数, 回答的问题, 正文去向）
 figure_specs = [
-    ('eda', '01_sample_structure', '图 4-1 正式分析样本与技能提取口径结构',
-     build_01_sample_structure, '正式分析样本与技能提取口径的结构', '正文 图 4-1（4.1 节）'),
+    ('eda', '01_sample_structure', '图 4-1 正式分析样本与技能提取统计范围结构',
+     build_01_sample_structure, '正式分析样本与技能提取统计范围的结构', '正文 图 4-1（4.1 节）'),
     ('eda', '02_salary_distribution', '图 4-3 薪资中点分布与经验累积分布（n = 14,883）',
      build_02_salary_distribution, '薪资中点分布形态与累积结构', '正文 图 4-3（4.4 节）'),
     ('eda', '03_category_salary', '图 4-2 主要岗位细分类薪资中点中位数（误差线为 IQR/2）',
      build_03_category_salary, '主要岗位细分类的薪资中点中位数', '正文 图 4-2（4.2 节）'),
     ('eda', '04_structured_factor_salary', '图 5-1 城市、学历与公司规模的薪资中点中位数',
      build_04_structured_factor_salary, '结构化因素的薪资中点中位数差异', '正文 图 5-1（5.3 节）'),
-    ('eda', 'fig_6_1_tech_skill_top20', '图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）',
+    ('eda', 'fig_6_1_tech_skill_top20', '图 6-1 核心技术技能需求 Top20（技能主统计范围，分母 8,822）',
      build_fig_6_1_tech_skill_top20, '企业明确要求的核心技术技能', '正文 图 6-1（6.2 节）'),
     ('eda', '06_skill_layer_structure', '附图 A-1 技能需求的分层结构',
      build_06_skill_layer_structure, '技术领域 / 业务能力 / 办公工具的分层需求', '附录'),
@@ -819,8 +819,8 @@ figure_specs = [
      build_08_skill_cooccurrence, '具体技术技能的共现结构', '正文 图 6-3（6.4 节）'),
     ('eda', '09_skill_salary', '附图 A-6 技能与薪资的描述性关联（未控制岗位类别）',
      build_09_skill_salary, '技能与薪资的描述性关联强度', '附录（已从正文移入附录）'),
-    ('eda', '10_scope_robustness', '附图 A-2 技能提取双口径稳健性',
-     build_10_scope_robustness, '技能结论对文本提取口径是否稳健', '附录'),
+    ('eda', '10_scope_robustness', '附图 A-2 技能提取两种统计范围稳健性',
+     build_10_scope_robustness, '技能结论对文本提取统计范围是否稳健', '附录'),
     ('modeling', '01_model_comparison', '图 7-1 模型验证集 MAE / RMSE 比较',
      build_11_model_comparison, '模型验证集与测试集的误差比较', '正文 图 7-1（7.4 节）'),
     ('modeling', '02_prediction_scatter', '附图 A-3 正式主模型 test 预测值 vs 真实值',
@@ -911,7 +911,7 @@ def main() -> int:
 
     print('=' * 96)
     print('说明：图 4-2 按任务规定取「样本数最多的前 12 个岗位细分类」；'
-          '其余图的数值口径与原冻结图件一致（只改版式与图内图题）。')
+          '其余图的数值统计范围与原冻结图件一致（只改版式与图内图题）。')
     print('=' * 96)
     records, final_diagnostics = [], []
     for spec in figure_specs:

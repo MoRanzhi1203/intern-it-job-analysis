@@ -1,0 +1,69 @@
+{
+  "stage": "stage_07",
+  "gates": {
+    "SKILL_CONFIG_SCHEMA": {
+      "status": "PASS",
+      "note": "词典结构完整：145 标准名 / 549 别名 / 5 一级类型 / 17 技能组"
+    },
+    "SKILL_ALIAS_UNIQUENESS": {
+      "status": "PASS",
+      "note": "别名一对一校验通过（同一别名指向多个标准名时配置加载直接报错）：549 个别名，冲突 0"
+    },
+    "SKILL_CATEGORY_HIERARCHY": {
+      "status": "PASS",
+      "note": "三级结构完整：每个技能标准名都归属唯一技能组，技能组唯一归属一级类型（145 / 17 / 5）"
+    },
+    "SKILL_FINAL_VERSION_SELECTION": {
+      "status": "PASS",
+      "note": "技能画像只取最终核心版本：17144/17144 个岗位，未使用历史版本 union"
+    },
+    "SKILL_MODEL_SAFE_TEXT": {
+      "status": "PASS",
+      "note": "技能提取输入为「岗位描述_模型安全版」（模型安全版），官方泄漏检测残留 0，严格薪资样式残留 0（规则源与 Stage 06 清洗、Stage 06 门禁、tests 完全一致）"
+    },
+    "SKILL_REQUIREMENT_SECTION": {
+      "status": "PASS",
+      "note": "要求段落识别 8822 个岗位；全文 fallback 7556 个；空文本 766 个（fallback 岗位不丢弃）"
+    },
+    "SKILL_EXTRACTION": {
+      "status": "PASS",
+      "note": "11652 个岗位提取到技能，覆盖 145/145 个标准名，零技能岗位 5492 个"
+    },
+    "SKILL_ALIAS_NORMALIZE": {
+      "status": "PASS",
+      "note": "技能集合中全部为标准名（未标准化别名 []）"
+    },
+    "SKILL_FAMILY_MAPPING": {
+      "status": "PASS",
+      "note": "145 个技能标准名全部映射到 feature_family → group"
+    },
+    "SKILL_AMBIGUOUS_TERM_GUARD": {
+      "status": "PASS",
+      "note": "7 条歧义上下文规则生效（Agent / Word / C / R / Go / Spring / React），本轮排除 1150 次命中"
+    },
+    "SKILL_JOB_LEVEL_BUILD": {
+      "status": "PASS",
+      "note": "long-format 37442 行，(intern_id, canonical_skill) 重复 0 行；岗位技能画像 17144 行（一岗一行，未展开技能布尔列）"
+    },
+    "TEXT_FEATURE_BUILD": {
+      "status": "PASS",
+      "note": "特征表 17144 行与实体数一致，字段齐全（69 列）"
+    },
+    "TEXT_FEATURE_COVERAGE": {
+      "status": "PASS",
+      "note": "实体覆盖率 17144/17144，缺失 0 个"
+    },
+    "CATEGORY_SKILL_COVERAGE_BUILD": {
+      "status": "PASS",
+      "note": "12 个岗位大类的技能覆盖率已统计"
+    },
+    "SKILL_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "14 张技能审计子表已写出，人工抽样 150 个岗位"
+    },
+    "TEXT_FEATURE_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "特征表 + long-format + 16/26 号审计表已写出（技能需求类子表统一归口 26 号，16 号表移除历史重复子表 0 张）"
+    }
+  }
+}

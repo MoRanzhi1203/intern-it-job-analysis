@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Stage 13：技能需求 EDA 口径审计（双口径 + 分层榜单 + 稳健性）。
+"""Stage 13：技能需求 EDA 统计范围审计（两种统计范围 + 分层榜单 + 稳健性）。
 
 输入（全部来自已封版产物，不重跑 Stage 00~11）：
-    data/processed/job_text_features.parquet      技能提取范围（match_scope 口径）
+    data/processed/job_text_features.parquet      技能提取范围（match_scope 统计范围）
     data/features/job_skill_membership.parquet    岗位 × 规范技能 long-format
     data/processed/job_category_membership.parquet 岗位细分类
     data/processed/job_salary_targets.parquet     薪资目标（主目标 = 薪资中点）
 
 输出：
-    outputs/tables/ch6/19_skill_eda_scope_audit.xlsx  11 张子表（口径/榜单/结构/共现/薪资/稳健性）
+    outputs/tables/ch6/19_skill_eda_scope_audit.xlsx  11 张子表（统计范围/榜单/结构/共现/薪资/稳健性）
     outputs/logs/metrics/stage_13_skill_eda.json
 
-口径（封版，禁止混用）：
-    主口径 = REQUIREMENT_SECTION（企业明确要求段落）
-    扩展口径 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（排除 EMPTY_TEXT）
+统计范围（封版，禁止混用）：
+    主统计范围 = REQUIREMENT_SECTION（企业明确要求段落）
+    扩展统计范围 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（排除 EMPTY_TEXT）
     榜单层级 = 具体技术技能 / 技术领域 / 业务能力 / 办公工具（复用 feature_family / group）
     组级统计一律按 intern_id 去重，禁止跨层级或同层简单相加
 
@@ -36,7 +36,7 @@ from src import (io_utils, project_paths, quality, schema, skill_eda,  # noqa: E
                  skill_extraction)
 
 STAGE = 'stage_13_skill_eda'
-TITLE = 'Stage 13 技能需求 EDA 口径审计（双口径 + 分层榜单 + 稳健性）'
+TITLE = 'Stage 13 技能需求 EDA 统计范围审计（两种统计范围 + 分层榜单 + 稳健性）'
 
 SALARY_FOCUS_SKILLS = ['Python', 'Java', 'SQL', 'MySQL', 'Excel', '大模型', 'Agent', '机器学习']
 # 技能数量档位：0 / 1 / 2 / 3 / 4 / 5+（6 档对应 7 个分箱边界）
@@ -46,15 +46,15 @@ DEFAULT_NO_CAUSAL_NOTE = '本表为描述性关联，禁止解读为因果；技
 
 def build_scope_table(features: pd.DataFrame, membership: pd.DataFrame,
                       universe: dict) -> pd.DataFrame:
-    """01_样本口径：三种口径岗位数与覆盖率。"""
+    """01_样本统计范围：三种统计范围岗位数与覆盖率。"""
     total = len(features)
     rows = []
     for name, scope, note in [
-        (skill_eda.SCOPE_MAIN, skill_eda.SCOPE_MAIN, '论文正文主口径：企业明确提出的任职要求段落'),
+        (skill_eda.SCOPE_MAIN, skill_eda.SCOPE_MAIN, '论文正文主统计范围：企业明确提出的任职要求段落'),
         (skill_eda.SCOPE_FALLBACK, skill_eda.SCOPE_FALLBACK,
-         '扩展口径：未识别要求段落时使用模型安全 JD 全文，不丢弃岗位'),
+         '扩展统计范围：未识别要求段落时使用模型安全 JD 全文，不丢弃岗位'),
         (skill_eda.SCOPE_EMPTY, skill_eda.SCOPE_EMPTY,
-         '独立缺失口径：无可用技能文本，禁止解释为「企业没有技能要求」'),
+         '独立缺失统计范围：无可用技能文本，禁止解释为「企业没有技能要求」'),
         ('ALL_USABLE', 'ALL_USABLE', '扩展分析分母 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK'),
     ]:
         ids = universe[scope]
@@ -63,11 +63,11 @@ def build_scope_table(features: pd.DataFrame, membership: pd.DataFrame,
         frame = frame[frame[schema.SKILL_MEMBERSHIP_ID_FIELD].isin(ids)]
         jobs_with_skill = frame[schema.SKILL_MEMBERSHIP_ID_FIELD].nunique()
         rows.append({
-            '口径': name,
+            '统计范围': name,
             '岗位数': len(ids),
             '占全部岗位比例': round(len(ids) / total, 6),
             '其中至少命中 1 项技能的岗位数': int(jobs_with_skill),
-            '口径内技能覆盖率': round(jobs_with_skill / len(ids), 6) if ids else 0.0,
+            '统计范围内技能覆盖率': round(jobs_with_skill / len(ids), 6) if ids else 0.0,
             '说明': note,
         })
     table = pd.DataFrame(rows)
@@ -92,7 +92,7 @@ def build_layer_tables(main_rank: pd.DataFrame, layers: dict) -> dict:
         table = skill_eda.layer_rank(main_rank, layer, top_n)
         table.insert(0, '榜单', title)
         table['层级技能总数'] = len(layers.get(layer, ()))
-        table['统计口径'] = 'REQUIREMENT_SECTION（分母 = 主口径岗位数）'
+        table['统计范围'] = 'REQUIREMENT_SECTION（分母 = 主统计范围岗位数）'
         tables[sheet] = table
     return tables
 
@@ -103,12 +103,12 @@ def build_office_dedup_table(membership: pd.DataFrame, universe: dict, config) -
         membership, universe[skill_eda.SCOPE_MAIN], skill_eda.LAYER_OFFICE, config)
     rows = [{
         '校验项': '办公工具组岗位数（按 intern_id 去重）', '数值': unique_jobs,
-        '说明': 'group = 办公工具，对 intern_id 去重后的岗位数（正式口径）',
+        '说明': 'group = 办公工具，对 intern_id 去重后的岗位数（正式统计范围）',
     }, {
         '校验项': '组内技能项次（岗位 × 技能 行数）', '数值': item_total,
         '说明': '同一岗位可命中多个办公工具技能',
     }, {
-        '校验项': '组内技能岗位数简单相加（错误口径）', '数值': naive_sum,
+        '校验项': '组内技能岗位数简单相加（错误统计范围）', '数值': naive_sum,
         '说明': '禁止把 Excel + PPT + Word + 办公软件 相加当作办公工具岗位数',
     }, {
         '校验项': '重复计数差额（相加 − 去重）', '数值': naive_sum - unique_jobs,
@@ -147,52 +147,52 @@ def build_skill_count_salary_table(membership: pd.DataFrame, salary: pd.DataFram
 
 def build_salary_sheet(membership: pd.DataFrame, salary: pd.DataFrame, categories: pd.DataFrame,
                        universe: dict, main_rank: pd.DataFrame) -> pd.DataFrame:
-    """10_技能薪资关联：主口径逐技能 + 扩展口径逐技能 + 控制细分类 + 技能数量档。"""
+    """10_技能薪资关联：主统计范围逐技能 + 扩展统计范围逐技能 + 控制细分类 + 技能数量档。"""
     tech_skills = (main_rank[main_rank['层级'] == skill_eda.LAYER_TECHNICAL]
                    .head(20)['技能标准名'].tolist())
     focus = sorted(set(tech_skills) | set(SALARY_FOCUS_SKILLS))
     main_table = skill_eda.salary_association(
         membership, salary, universe[skill_eda.SCOPE_MAIN], focus, scopes=skill_eda.SCOPE_MAIN)
-    main_table.insert(0, '分析块', '主口径 REQUIREMENT_SECTION：逐技能有/无对比')
+    main_table.insert(0, '分析块', '主统计范围 REQUIREMENT_SECTION：逐技能有/无对比')
     ext_table = skill_eda.salary_association(
         membership, salary, universe['ALL_USABLE'], focus, scopes=skill_eda.ALL_USABLE_SCOPES)
-    ext_table.insert(0, '分析块', '扩展口径 ALL_USABLE：逐技能有/无对比（稳健性）')
+    ext_table.insert(0, '分析块', '扩展统计范围 ALL_USABLE：逐技能有/无对比（稳健性）')
     within = skill_eda.salary_association_within_category(
         membership, salary, categories, universe[skill_eda.SCOPE_MAIN], SALARY_FOCUS_SKILLS,
         scopes=skill_eda.SCOPE_MAIN)
     if not within.empty:
-        within.insert(0, '分析块', '主口径 + 控制岗位细分类：细分类内部中位数差 Top5')
+        within.insert(0, '分析块', '主统计范围 + 控制岗位细分类：细分类内部中位数差 Top5')
         within['说明'] = '控制岗位类别结构差异后的描述性比较'
     count_table = build_skill_count_salary_table(membership, salary, universe,
                                                 skill_eda.ALL_USABLE_SCOPES)
-    count_table['分析块'] = '扩展口径：技能数量档 × 薪资中点'
+    count_table['分析块'] = '扩展统计范围：技能数量档 × 薪资中点'
     for table in (main_table, ext_table, within, count_table):
         if not table.empty:
-            table['口径与措辞'] = DEFAULT_NO_CAUSAL_NOTE
+            table['统计范围与措辞'] = DEFAULT_NO_CAUSAL_NOTE
     blocks = [table for table in (main_table, ext_table, within, count_table)
               if not table.empty]
     return pd.concat(blocks, ignore_index=True, sort=False) if blocks else pd.DataFrame()
 
 
 def build_robustness_sheet(summary: dict, detail: pd.DataFrame) -> pd.DataFrame:
-    """11_双口径稳健性：Top10 / Top20 overlap + Spearman + 排名差明细。"""
+    """11_两种统计范围稳健性：Top10 / Top20 overlap + Spearman + 排名差明细。"""
     summary_rows = [{
         '分析块': '稳健性汇总',
         '技能标准名或指标': key,
         '数值': value,
-        '说明': ('主口径 = REQUIREMENT_SECTION；扩展口径 = REQUIREMENT_SECTION + '
+        '说明': ('主统计范围 = REQUIREMENT_SECTION；扩展统计范围 = REQUIREMENT_SECTION + '
                 'FULL_TEXT_FALLBACK；排名一致说明结论对文本结构识别方式稳健'),
     } for key, value in summary.items()]
     detail_rows = [{
         '分析块': 'Top50 技能排名对照',
         '技能标准名或指标': row['技能标准名'],
         '数值': None,
-        '主口径排名': row['主口径排名'],
-        '扩展口径排名': row['扩展口径排名'],
+        '主统计范围排名': row['主统计范围排名'],
+        '扩展统计范围排名': row['扩展统计范围排名'],
         '排名差': row['排名差'],
-        '说明': '排名差 = 扩展口径排名 − 主口径排名（负值表示扩展口径中更靠前）',
+        '说明': '排名差 = 扩展统计范围排名 − 主统计范围排名（负值表示扩展统计范围中更靠前）',
     } for row in detail.to_dict('records')]
-    columns = ['分析块', '技能标准名或指标', '数值', '主口径排名', '扩展口径排名', '排名差', '说明']
+    columns = ['分析块', '技能标准名或指标', '数值', '主统计范围排名', '扩展统计范围排名', '排名差', '说明']
     return pd.DataFrame(summary_rows + detail_rows, columns=columns)
 
 
@@ -220,10 +220,10 @@ def main() -> int:
                 sum(scope_counts.values()) == len(features)
                 and scope_counts[skill_eda.SCOPE_MAIN] > 0
                 and set(features[schema.SKILL_SCOPE_FIELD]) <= set(schema.SKILL_MATCH_SCOPE_VALUES),
-                f'三种口径岗位数合计 {sum(scope_counts.values())} = 全部岗位 {len(features)}；'
-                f'主口径 {scope_counts[skill_eda.SCOPE_MAIN]} / fallback '
+                f'三种统计范围岗位数合计 {sum(scope_counts.values())} = 全部岗位 {len(features)}；'
+                f'主统计范围 {scope_counts[skill_eda.SCOPE_MAIN]} / fallback '
                 f'{scope_counts[skill_eda.SCOPE_FALLBACK]} / 空文本 {scope_counts[skill_eda.SCOPE_EMPTY]}；'
-                f'扩展口径（可用文本）{len(universe["ALL_USABLE"])}')
+                f'扩展统计范围（可用文本）{len(universe["ALL_USABLE"])}')
 
     layers = skill_extraction.resolve_rank_layers(config)
     layer_map = skill_extraction.skill_layer_map(config)
@@ -243,7 +243,7 @@ def main() -> int:
     office_dedup = build_office_dedup_table(membership, universe, config)
     dedup_row = office_dedup.set_index('校验项')
     unique_jobs = int(dedup_row.loc['办公工具组岗位数（按 intern_id 去重）', '数值'])
-    naive_sum = int(dedup_row.loc['组内技能岗位数简单相加（错误口径）', '数值'])
+    naive_sum = int(dedup_row.loc['组内技能岗位数简单相加（错误统计范围）', '数值'])
     gates.check('SKILL_EDA_GROUP_DEDUP',
                 unique_jobs > 0 and naive_sum > unique_jobs,
                 f'办公工具组岗位数（intern_id 去重）{unique_jobs} < 组内技能岗位数简单相加 '
@@ -277,26 +277,26 @@ def main() -> int:
                 and not salary_sheet.empty and testable > 0,
                 f'正式薪资样本 {len(valid_salary)} = 解析成功 {parsed} − 逻辑异常 {anomaly}'
                 f'（非面议 + 解析成功 + 中点有效 + 无逻辑异常）；'
-                f'主口径检验达标技能 {testable} 个，已输出 Mann–Whitney U / Cliff\'s delta / BH-FDR；'
+                f'主统计范围检验达标技能 {testable} 个，已输出 Mann–Whitney U / Cliff\'s delta / BH-FDR；'
                 '全部为描述性关联，禁止因果解读')
 
     sheets = {
-        '01_样本口径': scope_table,
-        '02_主口径技能排名': main_rank,
-        '03_扩展口径技能排名': ext_rank,
+        '01_样本统计范围': scope_table,
+        '02_主统计范围技能排名': main_rank,
+        '03_扩展统计范围技能排名': ext_rank,
         **layer_tables,
         '08_岗位类别技能画像': matrix,
         '09_技能共现': cooc,
         '10_技能薪资关联': salary_sheet,
-        '11_双口径稳健性': build_robustness_sheet(summary, detail),
+        '11_两种统计范围稳健性': build_robustness_sheet(summary, detail),
         '12_办公工具去重校验': office_dedup,
     }
     audit_path = io_utils.write_excel(
         project_paths.TABLES_DIR / project_paths.TABLE_SKILL_EDA_SCOPE, sheets)
     gates.check('SKILL_EDA_AUDIT_EXPORT',
                 audit_path.exists() and len(sheets) >= 11
-                and {'02_主口径技能排名', '03_扩展口径技能排名', '11_双口径稳健性'} <= set(sheets),
-                f'{len(sheets)} 张技能 EDA 子表已写出（双口径 + 四层榜单 + 共现 + 薪资 + 稳健性）')
+                and {'02_主统计范围技能排名', '03_扩展统计范围技能排名', '11_两种统计范围稳健性'} <= set(sheets),
+                f'{len(sheets)} 张技能 EDA 子表已写出（两种统计范围 + 四层榜单 + 共现 + 薪资 + 稳健性）')
 
     metrics = {
         'scope_counts': scope_counts,

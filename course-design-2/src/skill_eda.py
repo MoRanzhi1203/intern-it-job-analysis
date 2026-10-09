@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""技能需求 EDA 的计算层（Stage 13 口径封版，唯一实现）。
+"""技能需求 EDA 的计算层（Stage 13 统计范围封版，唯一实现）。
 
-## 三种文本口径（match_scope，来自 Stage 07）
+## 三种文本统计范围（match_scope，来自 Stage 07）
 
-| 口径 | 岗位数（当前） | 用途 |
+| 统计范围 | 岗位数（当前） | 用途 |
 | --- | --- | --- |
-| REQUIREMENT_SECTION | 8,822 | **论文正文主口径**：企业明确提出的任职要求段落 |
+| REQUIREMENT_SECTION | 8,822 | **论文正文主统计范围**：企业明确提出的任职要求段落 |
 | FULL_TEXT_FALLBACK | 7,556 | 扩展技能画像 / 建模特征 / 稳健性分析（模型安全 JD 全文） |
-| EMPTY_TEXT | 766 | 独立缺失口径：无可用技能文本，**不得解释为「企业没有技能要求」** |
+| EMPTY_TEXT | 766 | 独立缺失统计范围：无可用技能文本，**不得解释为「企业没有技能要求」** |
 
-主口径 = REQUIREMENT_SECTION；扩展口径 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（排除 EMPTY_TEXT）。
+主统计范围 = REQUIREMENT_SECTION；扩展统计范围 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（排除 EMPTY_TEXT）。
 
 ## 榜单层级（复用 feature_family / group，见 config/skills.yml → rank_layers）
 
@@ -17,9 +17,9 @@ A 具体技术技能 / B 技术领域 / C 业务能力 / D 办公工具；
 层级内统计一律按 intern_id 去重，**禁止跨层级或同层内简单相加**
 （Excel + PPT + Word + 办公软件 ≠ 办公工具岗位数）。
 
-## 统计口径
+## 统计范围
 
-- 分母：主口径 = REQUIREMENT_SECTION 岗位数；扩展口径 = 有可用文本岗位数；
+- 分母：主统计范围 = REQUIREMENT_SECTION 岗位数；扩展统计范围 = 有可用文本岗位数；
 - 技能与薪资：非面议 + 解析成功 + 薪资中点有效 + 无逻辑异常；
   Mann–Whitney U + Cliff's delta + Benjamini–Hochberg FDR；
 - 一律为描述性关联，禁止因果表述。
@@ -32,7 +32,7 @@ import pandas as pd
 
 from src import schema, skill_extraction
 
-# ---- 口径定义 ----
+# ---- 统计范围定义 ----
 SCOPE_MAIN = 'REQUIREMENT_SECTION'
 SCOPE_FALLBACK = 'FULL_TEXT_FALLBACK'
 SCOPE_EMPTY = 'EMPTY_TEXT'
@@ -52,7 +52,7 @@ FDR_ALPHA = 0.05
 
 
 def load_scope_universe(features: pd.DataFrame) -> dict:
-    """返回各口径的岗位 ID 集合与样本规模（分母来自 Stage 07 的技能提取范围）。"""
+    """返回各统计范围的岗位 ID 集合与样本规模（分母来自 Stage 07 的技能提取范围）。"""
     scope_series = features[schema.SKILL_SCOPE_FIELD]
     job_ids = features[schema.ID_FIELD]
     main = set(job_ids[scope_series.eq(SCOPE_MAIN)])
@@ -74,7 +74,7 @@ def filter_membership(membership: pd.DataFrame, scopes) -> pd.DataFrame:
 
 def rank_skills(membership: pd.DataFrame, universe_ids: set, config,
                 scopes=None) -> pd.DataFrame:
-    """技能排名：岗位数按 intern_id 去重，占比分母为指定口径的岗位数。"""
+    """技能排名：岗位数按 intern_id 去重，占比分母为指定统计范围的岗位数。"""
     frame = membership if scopes is None else filter_membership(membership, scopes)
     frame = frame[frame[schema.SKILL_MEMBERSHIP_ID_FIELD].isin(universe_ids)]
     denominator = len(universe_ids)
@@ -313,7 +313,7 @@ def salary_association_within_category(membership: pd.DataFrame, salary: pd.Data
 
 
 def rank_robustness(main_rank: pd.DataFrame, extended_rank: pd.DataFrame) -> tuple:
-    """双口径稳健性：Top10 / Top20 overlap 与 Spearman 排名相关。"""
+    """两种统计范围稳健性：Top10 / Top20 overlap 与 Spearman 排名相关。"""
     from scipy import stats  # noqa: PLC0415 - 仅在需要统计检验时导入
 
     main_order = main_rank['技能标准名'].tolist()
@@ -338,7 +338,7 @@ def rank_robustness(main_rank: pd.DataFrame, extended_rank: pd.DataFrame) -> tup
         'Spearman p值': None if np.isnan(p_value) else float(p_value),
     }
     detail = pd.DataFrame([
-        {'技能标准名': skill, '主口径排名': main_rank_map[skill],
-         '扩展口径排名': ext_rank_map.get(skill), '排名差': ext_rank_map.get(skill, np.nan) - main_rank_map[skill]}
+        {'技能标准名': skill, '主统计范围排名': main_rank_map[skill],
+         '扩展统计范围排名': ext_rank_map.get(skill), '排名差': ext_rank_map.get(skill, np.nan) - main_rank_map[skill]}
         for skill in main_order[:50]])
     return summary, detail

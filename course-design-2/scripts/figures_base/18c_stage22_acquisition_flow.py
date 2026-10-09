@@ -139,7 +139,7 @@ def main() -> int:
         return 2
 
     rows = raw_row_count()
-    assert rows == EXPECTED_RAW_ROWS, f'原始观测行数与正式口径不一致：{rows}'
+    assert rows == EXPECTED_RAW_ROWS, f'原始观测行数与正式统计范围不一致：{rows}'
 
     fig = build_figure(f'{rows:,}')
     paper = figure_finalize.save_paper_figure(

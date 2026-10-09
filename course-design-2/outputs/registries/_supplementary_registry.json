@@ -23,105 +23,105 @@
       "锚点": "原始岗位观测",
       "期望值": 172063,
       "实际读取值": 172063,
-      "来源": "13_observation_snapshot_audit.xlsx / 01_总体统计",
+      "来源": "ch3/07_observation_snapshot_audit.xlsx / 01_总体统计",
       "通过": true
     },
     {
       "锚点": "唯一岗位实体",
       "期望值": 17144,
       "实际读取值": 17144,
-      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 01_样本概况",
       "通过": true
     },
     {
       "锚点": "明确薪资可解析",
       "期望值": 14899,
       "实际读取值": 14899,
-      "来源": "21_structured_field_salary_audit.xlsx / 02_薪资解析状态",
+      "来源": "ch3/15_structured_field_salary_audit.xlsx / 02_薪资解析状态",
       "通过": true
     },
     {
       "锚点": "薪资逻辑异常",
       "期望值": 16,
       "实际读取值": 16,
-      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 01_样本概况",
       "通过": true
     },
     {
       "锚点": "正式薪资样本",
       "期望值": 14883,
       "实际读取值": 14883,
-      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 01_样本概况",
       "通过": true
     },
     {
       "锚点": "薪资面议岗位",
       "期望值": 2245,
       "实际读取值": 2245,
-      "来源": "29_eda_statistical_analysis.xlsx / 01_样本概况",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 01_样本概况",
       "通过": true
     },
     {
       "锚点": "薪资中点中位数",
       "期望值": 175.0,
       "实际读取值": 175.0,
-      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 02_薪资描述统计",
       "通过": true
     },
     {
       "锚点": "薪资中点均值",
       "期望值": 192.87,
       "实际读取值": 192.8664,
-      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 02_薪资描述统计",
       "通过": true
     },
     {
       "锚点": "薪资中点 IQR",
       "期望值": 90.0,
       "实际读取值": 90.0,
-      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 02_薪资描述统计",
       "通过": true
     },
     {
       "锚点": "薪资中点 P10",
       "期望值": 110.0,
       "实际读取值": 110.0,
-      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 02_薪资描述统计",
       "通过": true
     },
     {
       "锚点": "薪资中点 P90",
       "期望值": 300.0,
       "实际读取值": 300.0,
-      "来源": "29_eda_statistical_analysis.xlsx / 02_薪资描述统计",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 02_薪资描述统计",
       "通过": true
     },
     {
       "锚点": "公司认证 ε²",
       "期望值": 0.197545,
       "实际读取值": 0.197545,
-      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（公司认证 KW）",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（公司认证 KW）",
       "通过": true
     },
     {
       "锚点": "福利标签原子标签数",
       "期望值": 4328,
       "实际读取值": 4328,
-      "来源": "32_company_field_semantic_audit.xlsx / 02_宽表字段统计",
+      "来源": "ch5/24_company_field_semantic_audit.xlsx / 02_宽表字段统计",
       "通过": true
     },
     {
       "锚点": "福利标签进入二元比较",
       "期望值": 183,
       "实际读取值": 183,
-      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
       "通过": true
     },
     {
       "锚点": "福利标签 BH-FDR 显著",
       "期望值": 114,
       "实际读取值": 114,
-      "来源": "29_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
+      "来源": "ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（单标签二元比较）",
       "通过": true
     },
     {
@@ -148,23 +148,23 @@
     {
       "锚点": "主模型 test MAE",
       "期望值": 35.335506,
-      "实际读取值": 35.335506,
-      "来源": "30_model_comparison.xlsx / 09_Test最终结果",
-      "通过": true
+      "实际读取值": 35.651021,
+      "来源": "ch7/22_model_comparison.xlsx / 09_Test最终结果",
+      "通过": false
     },
     {
       "锚点": "消融 Full test MAE",
       "期望值": 36.074723,
-      "实际读取值": 36.074723,
-      "来源": "31_ablation_robustness_shap.xlsx / 01_消融结果",
-      "通过": true
+      "实际读取值": 36.099666,
+      "来源": "ch8/23_ablation_robustness_shap.xlsx / 01_消融结果",
+      "通过": false
     },
     {
       "锚点": "按公司分组划分 test MAE",
       "期望值": 52.049937,
-      "实际读取值": 52.049937,
-      "来源": "31_ablation_robustness_shap.xlsx / 04_Random_vs_GroupSplit",
-      "通过": true
+      "实际读取值": 52.074078,
+      "来源": "ch8/23_ablation_robustness_shap.xlsx / 04_Random_vs_GroupSplit",
+      "通过": false
     }
   ],
   "anchor_log": [
@@ -323,25 +323,25 @@
       "来源": "stage_13_eda.json:top_cliff_overlap.两两最大Jaccard"
     },
     {
-      "锚点": "技能主口径",
+      "锚点": "技能主统计范围",
       "读取值": 8822,
       "校验值": 8822,
       "一致": true,
-      "来源": "27_skill_eda_scope_audit/01_样本口径"
+      "来源": "27_skill_eda_scope_audit/01_样本统计范围"
     },
     {
-      "锚点": "技能扩展口径",
+      "锚点": "技能扩展统计范围",
       "读取值": 16378,
       "校验值": 16378,
       "一致": true,
-      "来源": "27_skill_eda_scope_audit/01_样本口径"
+      "来源": "27_skill_eda_scope_audit/01_样本统计范围"
     },
     {
-      "锚点": "技能仅模板口径",
+      "锚点": "技能仅模板统计范围",
       "读取值": 766,
       "校验值": 766,
       "一致": true,
-      "来源": "27_skill_eda_scope_audit/01_样本口径"
+      "来源": "27_skill_eda_scope_audit/01_样本统计范围"
     },
     {
       "锚点": "技能列数",
@@ -394,30 +394,30 @@
     },
     {
       "锚点": "主模型 test MAE",
-      "读取值": 35.335506,
+      "读取值": 35.651021,
       "校验值": 35.335506,
-      "一致": true,
+      "一致": false,
       "来源": "30_model_comparison/09_Test最终结果"
     },
     {
       "锚点": "主模型 test RMSE",
-      "读取值": 64.623479,
+      "读取值": 65.020978,
       "校验值": 64.623479,
-      "一致": true,
+      "一致": false,
       "来源": "30_model_comparison/09_Test最终结果"
     },
     {
       "锚点": "主模型 test R²",
-      "读取值": 0.584606,
+      "读取值": 0.57948,
       "校验值": 0.584606,
-      "一致": true,
+      "一致": false,
       "来源": "30_model_comparison/09_Test最终结果"
     },
     {
       "锚点": "按公司分组划分 test MAE",
-      "读取值": 52.049937,
+      "读取值": 52.074078,
       "校验值": 52.049937,
-      "一致": true,
+      "一致": false,
       "来源": "31_ablation_robustness_shap/04_Random_vs_GroupSplit"
     },
     {
@@ -478,18 +478,18 @@
     },
     {
       "锚点": "消融 Full 配置 test MAE",
-      "读取值": 36.074723,
+      "读取值": 36.099666,
       "校验值": 36.074723,
-      "一致": true,
+      "一致": false,
       "来源": "31_ablation_robustness_shap/01_消融结果"
     }
   ],
   "figures": [
     {
-      "figure_id": "图S01",
-      "stem": "图S01_样本筛选与口径流转_display",
-      "caption": "附图 A-7 正式薪资样本的筛选与口径流转",
-      "图内图题": "附图 A-7 正式薪资样本的筛选与口径流转",
+      "figure_id": "fig",
+      "stem": "fig_s01_sample_screening_scope_flow_display",
+      "caption": "附图 A-7 正式薪资样本的筛选与统计范围流转",
+      "图内图题": "附图 A-7 正式薪资样本的筛选与统计范围流转",
       "图型": "supplementary",
       "variant": "display",
       "caption_structure_ok": true,
@@ -511,12 +511,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s01_sample_screening_scope_flow_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s01_sample_screening_scope_flow_display.pdf"
     },
     {
-      "figure_id": "图S02",
-      "stem": "图S02_公司属性语义槽位异常修复构成_display",
+      "figure_id": "fig",
+      "stem": "fig_s02_company_attribute_slot_repair_composition_display",
       "caption": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
       "图内图题": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
       "图型": "supplementary",
@@ -553,12 +553,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s02_company_attribute_slot_repair_composition_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s02_company_attribute_slot_repair_composition_display.pdf"
     },
     {
-      "figure_id": "图S03",
-      "stem": "图S03_数据划分与三子集薪资分布_display",
+      "figure_id": "fig",
+      "stem": "fig_s03_data_split_subsets_salary_distribution_display",
       "caption": "附图 A-9 数据划分与三个子集的薪资分布对照",
       "图内图题": "附图 A-9 数据划分与三个子集的薪资分布对照",
       "图型": "supplementary",
@@ -595,12 +595,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s03_data_split_subsets_salary_distribution_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s03_data_split_subsets_salary_distribution_display.pdf"
     },
     {
-      "figure_id": "图S04",
-      "stem": "图S04_公司认证四类薪资分布与组间比较_display",
+      "figure_id": "fig",
+      "stem": "fig_s04_company_certification_four_class_salary_display",
       "caption": "图 5-2 公司认证状态的薪资分布与组间比较",
       "图内图题": "图 5-2 公司认证状态的薪资分布与组间比较",
       "图型": "supplementary",
@@ -637,12 +637,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s04_company_certification_four_class_salary_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s04_company_certification_four_class_salary_display.pdf"
     },
     {
-      "figure_id": "图S05",
-      "stem": "图S05_公司福利标签效应量与显著性总览_display",
+      "figure_id": "fig",
+      "stem": "fig_s05_company_benefit_label_effect_overview_display",
       "caption": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
       "图内图题": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
       "图型": "supplementary",
@@ -666,12 +666,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s05_company_benefit_label_effect_overview_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s05_company_benefit_label_effect_overview_display.pdf"
     },
     {
-      "figure_id": "图S06",
-      "stem": "图S06_高效应福利标签共现簇_display",
+      "figure_id": "fig",
+      "stem": "fig_s06_high_effect_benefit_label_cluster_display",
       "caption": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
       "图内图题": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
       "图型": "supplementary",
@@ -708,8 +708,8 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s06_high_effect_benefit_label_cluster_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s06_high_effect_benefit_label_cluster_display.pdf"
     },
     {
       "figure_id": "图S05S06",
@@ -754,8 +754,8 @@
       "pdf_path": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现_display.pdf"
     },
     {
-      "figure_id": "图S07",
-      "stem": "图S07_结构化因素效应量排序_display",
+      "figure_id": "fig",
+      "stem": "fig_s07_structured_factor_effect_ranking_display",
       "caption": "图 5-4 结构化因素的效应量排序",
       "图内图题": "图 5-4 结构化因素的效应量排序",
       "图型": "supplementary",
@@ -779,12 +779,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s07_structured_factor_effect_ranking_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s07_structured_factor_effect_ranking_display.pdf"
     },
     {
-      "figure_id": "图S08",
-      "stem": "图S08_技能数量档与薪资_display",
+      "figure_id": "fig",
+      "stem": "fig_s08_skill_count_tier_salary_display",
       "caption": "附图 A-10 技能数量档与薪资的关系",
       "图内图题": "附图 A-10 技能数量档与薪资的关系",
       "图型": "supplementary",
@@ -821,12 +821,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s08_skill_count_tier_salary_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s08_skill_count_tier_salary_display.pdf"
     },
     {
-      "figure_id": "图S09",
-      "stem": "图S09_控制细分类前后技能薪资差异_display",
+      "figure_id": "fig",
+      "stem": "fig_6_4_skill_salary_control_dumbbell_display",
       "caption": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
       "图内图题": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
       "图型": "supplementary",
@@ -850,12 +850,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.pdf"
+      "png_path": "outputs\\figures\\ch6\\fig_6_4_skill_salary_control_dumbbell_display.png",
+      "pdf_path": "outputs\\figures\\ch6\\fig_6_4_skill_salary_control_dumbbell_display.pdf"
     },
     {
-      "figure_id": "图S10",
-      "stem": "图S10_稳健性检查对照_display",
+      "figure_id": "fig",
+      "stem": "fig_s10_robustness_check_comparison_display",
       "caption": "图 8-5 稳健性检查对照",
       "图内图题": "图 8-5 稳健性检查对照",
       "图型": "supplementary",
@@ -892,12 +892,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s10_robustness_check_comparison_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s10_robustness_check_comparison_display.pdf"
     },
     {
-      "figure_id": "图S11",
-      "stem": "图S11_特征组增量bootstrap置信区间_display",
+      "figure_id": "fig",
+      "stem": "fig_s11_feature_group_incremental_bootstrap_ci_display",
       "caption": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
       "图内图题": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
       "图型": "supplementary",
@@ -921,12 +921,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s11_feature_group_incremental_bootstrap_ci_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s11_feature_group_incremental_bootstrap_ci_display.pdf"
     },
     {
-      "figure_id": "图S12",
-      "stem": "图S12_SHAP解释稳定性_display",
+      "figure_id": "fig",
+      "stem": "fig_s12_shap_interpretation_stability_display",
       "caption": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
       "图内图题": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
       "图型": "supplementary",
@@ -950,12 +950,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s12_shap_interpretation_stability_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s12_shap_interpretation_stability_display.pdf"
     },
     {
-      "figure_id": "图S13",
-      "stem": "图S13_技能阈值与文本维度选择_display",
+      "figure_id": "fig",
+      "stem": "fig_s13_skill_threshold_text_dimension_selection_display",
       "caption": "附图 A-13 技能特征阈值与文本维度的验证集表现",
       "图内图题": "附图 A-13 技能特征阈值与文本维度的验证集表现",
       "图型": "supplementary",
@@ -992,12 +992,12 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s13_skill_threshold_text_dimension_selection_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s13_skill_threshold_text_dimension_selection_display.pdf"
     },
     {
-      "figure_id": "图S14",
-      "stem": "图S14_每岗福利标签数量分布_display",
+      "figure_id": "fig",
+      "stem": "fig_s14_benefit_label_count_distribution_display",
       "caption": "附图 A-14 每个岗位的公司福利标签数量分布",
       "图内图题": "附图 A-14 每个岗位的公司福利标签数量分布",
       "图型": "supplementary",
@@ -1021,12 +1021,12 @@
       "subfigures": [],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s14_benefit_label_count_distribution_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s14_benefit_label_count_distribution_display.pdf"
     },
     {
-      "figure_id": "图S15",
-      "stem": "图S15_目标泄漏检查与特征组构成_display",
+      "figure_id": "fig",
+      "stem": "fig_s15_target_leakage_feature_group_composition_display",
       "caption": "附图 A-15 目标泄漏检查与特征组构成",
       "图内图题": "附图 A-15 目标泄漏检查与特征组构成",
       "图型": "supplementary",
@@ -1063,16 +1063,16 @@
       ],
       "subfigure_caption_visible": true,
       "subfigure_label_sequence_ok": true,
-      "png_path": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.pdf"
+      "png_path": "outputs\\figures\\supplementary\\fig_s15_target_leakage_feature_group_composition_display.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s15_target_leakage_feature_group_composition_display.pdf"
     }
   ],
   "paper_figures": [
     {
-      "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s01_sample_screening_scope_flow.png",
       "论文版无图内总图题": true,
-      "png_bytes": 321701,
-      "pdf_bytes": 46719,
+      "png_bytes": 330378,
+      "pdf_bytes": 48034,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1089,7 +1089,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s02_company_attribute_slot_repair_composition.png",
       "论文版无图内总图题": true,
       "png_bytes": 355169,
       "pdf_bytes": 47242,
@@ -1109,7 +1109,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s03_data_split_subsets_salary_distribution.png",
       "论文版无图内总图题": true,
       "png_bytes": 326422,
       "pdf_bytes": 46181,
@@ -1129,7 +1129,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s04_company_certification_four_class_salary.png",
       "论文版无图内总图题": true,
       "png_bytes": 449589,
       "pdf_bytes": 57071,
@@ -1149,7 +1149,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s05_company_benefit_label_effect_overview.png",
       "论文版无图内总图题": true,
       "png_bytes": 466798,
       "pdf_bytes": 57543,
@@ -1169,10 +1169,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s06_high_effect_benefit_label_cluster.png",
       "论文版无图内总图题": true,
-      "png_bytes": 622653,
-      "pdf_bytes": 65975,
+      "png_bytes": 618399,
+      "pdf_bytes": 65374,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1191,8 +1191,8 @@
     {
       "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现.png",
       "论文版无图内总图题": true,
-      "png_bytes": 780175,
-      "pdf_bytes": 83750,
+      "png_bytes": 776491,
+      "pdf_bytes": 83217,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1209,7 +1209,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s07_structured_factor_effect_ranking.png",
       "论文版无图内总图题": true,
       "png_bytes": 455754,
       "pdf_bytes": 58243,
@@ -1229,7 +1229,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s08_skill_count_tier_salary.png",
       "论文版无图内总图题": true,
       "png_bytes": 424367,
       "pdf_bytes": 45829,
@@ -1249,10 +1249,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异.png",
+      "路径": "outputs\\figures\\ch6\\fig_6_4_skill_salary_control_dumbbell.png",
       "论文版无图内总图题": true,
-      "png_bytes": 447994,
-      "pdf_bytes": 58040,
+      "png_bytes": 452875,
+      "pdf_bytes": 59399,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1269,10 +1269,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s10_robustness_check_comparison.png",
       "论文版无图内总图题": true,
-      "png_bytes": 351298,
-      "pdf_bytes": 48543,
+      "png_bytes": 360917,
+      "pdf_bytes": 49905,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1289,10 +1289,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s11_feature_group_incremental_bootstrap_ci.png",
       "论文版无图内总图题": true,
-      "png_bytes": 379736,
-      "pdf_bytes": 56965,
+      "png_bytes": 378902,
+      "pdf_bytes": 56954,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1309,10 +1309,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s12_shap_interpretation_stability.png",
       "论文版无图内总图题": true,
-      "png_bytes": 442640,
-      "pdf_bytes": 69713,
+      "png_bytes": 444556,
+      "pdf_bytes": 69702,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1329,10 +1329,10 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s13_skill_threshold_text_dimension_selection.png",
       "论文版无图内总图题": true,
-      "png_bytes": 479526,
-      "pdf_bytes": 48915,
+      "png_bytes": 483183,
+      "pdf_bytes": 48970,
       "门禁": {
         "no_infigure_caption": true,
         "no_top_title": true,
@@ -1349,7 +1349,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s14_benefit_label_count_distribution.png",
       "论文版无图内总图题": true,
       "png_bytes": 390974,
       "pdf_bytes": 37141,
@@ -1369,7 +1369,7 @@
       "未通过": []
     },
     {
-      "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成.png",
+      "路径": "outputs\\figures\\supplementary\\fig_s15_target_leakage_feature_group_composition.png",
       "论文版无图内总图题": true,
       "png_bytes": 436465,
       "pdf_bytes": 68549,
@@ -1420,12 +1420,12 @@
     "forbidden_in_notebook": [],
     "open_figures": [],
     "failed": [],
-    "failed_anchor_count": 0
+    "failed_anchor_count": 8
   },
   "per_figure_results": [
     {
-      "stem": "图S01_样本筛选与口径流转",
-      "caption": "附图 A-7 正式薪资样本的筛选与口径流转",
+      "stem": "fig_s01_sample_screening_scope_flow",
+      "caption": "附图 A-7 正式薪资样本的筛选与统计范围流转",
       "论文去向": "附录",
       "passed": true,
       "attempts": 1,
@@ -1447,10 +1447,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s01_sample_screening_scope_flow.png",
         "论文版无图内总图题": true,
-        "png_bytes": 321701,
-        "pdf_bytes": 46719,
+        "png_bytes": 330378,
+        "pdf_bytes": 48034,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -1467,8 +1467,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S01_样本筛选与口径流转_display.png",
-        "png_bytes": 372973,
+        "路径": "outputs\\figures\\supplementary\\fig_s01_sample_screening_scope_flow_display.png",
+        "png_bytes": 385241,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -1488,7 +1488,7 @@
       }
     },
     {
-      "stem": "图S02_公司属性语义槽位异常修复构成",
+      "stem": "fig_s02_company_attribute_slot_repair_composition",
       "caption": "附图 A-8 公司属性语义槽位异常的修复构成与残留校验",
       "论文去向": "附录",
       "passed": true,
@@ -1511,7 +1511,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s02_company_attribute_slot_repair_composition.png",
         "论文版无图内总图题": true,
         "png_bytes": 355169,
         "pdf_bytes": 47242,
@@ -1531,7 +1531,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S02_公司属性语义槽位异常修复构成_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s02_company_attribute_slot_repair_composition_display.png",
         "png_bytes": 421655,
         "门禁": {
           "inward_ticks": true,
@@ -1552,7 +1552,7 @@
       }
     },
     {
-      "stem": "图S03_数据划分与三子集薪资分布",
+      "stem": "fig_s03_data_split_subsets_salary_distribution",
       "caption": "附图 A-9 数据划分与三个子集的薪资分布对照",
       "论文去向": "附录",
       "passed": true,
@@ -1575,7 +1575,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s03_data_split_subsets_salary_distribution.png",
         "论文版无图内总图题": true,
         "png_bytes": 326422,
         "pdf_bytes": 46181,
@@ -1595,7 +1595,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S03_数据划分与三子集薪资分布_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s03_data_split_subsets_salary_distribution_display.png",
         "png_bytes": 382154,
         "门禁": {
           "inward_ticks": true,
@@ -1616,7 +1616,7 @@
       }
     },
     {
-      "stem": "图S04_公司认证四类薪资分布与组间比较",
+      "stem": "fig_s04_company_certification_four_class_salary",
       "caption": "图 5-2 公司认证状态的薪资分布与组间比较",
       "论文去向": "正文 图 5-2（5.5.1 节）",
       "passed": true,
@@ -1639,7 +1639,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s04_company_certification_four_class_salary.png",
         "论文版无图内总图题": true,
         "png_bytes": 449589,
         "pdf_bytes": 57071,
@@ -1659,7 +1659,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S04_公司认证四类薪资分布与组间比较_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s04_company_certification_four_class_salary_display.png",
         "png_bytes": 503110,
         "门禁": {
           "inward_ticks": true,
@@ -1680,7 +1680,7 @@
       }
     },
     {
-      "stem": "图S05_公司福利标签效应量与显著性总览",
+      "stem": "fig_s05_company_benefit_label_effect_overview",
       "caption": "图 S05 公司福利标签的效应量与显著性总览（审计图，正文见图 5-3）",
       "论文去向": "审计/展示",
       "passed": true,
@@ -1703,7 +1703,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s05_company_benefit_label_effect_overview.png",
         "论文版无图内总图题": true,
         "png_bytes": 466798,
         "pdf_bytes": 57543,
@@ -1723,7 +1723,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S05_公司福利标签效应量与显著性总览_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s05_company_benefit_label_effect_overview_display.png",
         "png_bytes": 530422,
         "门禁": {
           "inward_ticks": true,
@@ -1744,7 +1744,7 @@
       }
     },
     {
-      "stem": "图S06_高效应福利标签共现簇",
+      "stem": "fig_s06_high_effect_benefit_label_cluster",
       "caption": "图 S06 高效应福利标签的共现簇（审计图，正文见图 5-3）",
       "论文去向": "审计/展示",
       "passed": true,
@@ -1767,10 +1767,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s06_high_effect_benefit_label_cluster.png",
         "论文版无图内总图题": true,
-        "png_bytes": 622653,
-        "pdf_bytes": 65975,
+        "png_bytes": 618399,
+        "pdf_bytes": 65374,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -1787,8 +1787,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S06_高效应福利标签共现簇_display.png",
-        "png_bytes": 684705,
+        "路径": "outputs\\figures\\supplementary\\fig_s06_high_effect_benefit_label_cluster_display.png",
+        "png_bytes": 680440,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -1833,8 +1833,8 @@
       "paper": {
         "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现.png",
         "论文版无图内总图题": true,
-        "png_bytes": 780175,
-        "pdf_bytes": 83750,
+        "png_bytes": 776491,
+        "pdf_bytes": 83217,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -1852,7 +1852,7 @@
       },
       "display": {
         "路径": "outputs\\figures\\supplementary\\图S05S06_公司福利标签薪资关联与共现_display.png",
-        "png_bytes": 836071,
+        "png_bytes": 832470,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -1872,7 +1872,7 @@
       }
     },
     {
-      "stem": "图S07_结构化因素效应量排序",
+      "stem": "fig_s07_structured_factor_effect_ranking",
       "caption": "图 5-4 结构化因素的效应量排序",
       "论文去向": "正文 图 5-4（5.6 节）",
       "passed": true,
@@ -1895,7 +1895,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s07_structured_factor_effect_ranking.png",
         "论文版无图内总图题": true,
         "png_bytes": 455754,
         "pdf_bytes": 58243,
@@ -1915,7 +1915,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S07_结构化因素效应量排序_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s07_structured_factor_effect_ranking_display.png",
         "png_bytes": 502231,
         "门禁": {
           "inward_ticks": true,
@@ -1936,7 +1936,7 @@
       }
     },
     {
-      "stem": "图S08_技能数量档与薪资",
+      "stem": "fig_s08_skill_count_tier_salary",
       "caption": "附图 A-10 技能数量档与薪资的关系",
       "论文去向": "附录",
       "passed": true,
@@ -1959,7 +1959,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s08_skill_count_tier_salary.png",
         "论文版无图内总图题": true,
         "png_bytes": 424367,
         "pdf_bytes": 45829,
@@ -1979,7 +1979,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S08_技能数量档与薪资_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s08_skill_count_tier_salary_display.png",
         "png_bytes": 474511,
         "门禁": {
           "inward_ticks": true,
@@ -2000,7 +2000,7 @@
       }
     },
     {
-      "stem": "图S09_控制细分类前后技能薪资差异",
+      "stem": "fig_6_4_skill_salary_control_dumbbell",
       "caption": "图 6-4 控制岗位细分类前后的技能薪资差异变化",
       "论文去向": "正文 图 6-4（6.5 节）",
       "passed": true,
@@ -2023,10 +2023,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异.png",
+        "路径": "outputs\\figures\\ch6\\fig_6_4_skill_salary_control_dumbbell.png",
         "论文版无图内总图题": true,
-        "png_bytes": 447994,
-        "pdf_bytes": 58040,
+        "png_bytes": 452875,
+        "pdf_bytes": 59399,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -2043,8 +2043,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S09_控制细分类前后技能薪资差异_display.png",
-        "png_bytes": 505789,
+        "路径": "outputs\\figures\\ch6\\fig_6_4_skill_salary_control_dumbbell_display.png",
+        "png_bytes": 510705,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -2064,7 +2064,7 @@
       }
     },
     {
-      "stem": "图S10_稳健性检查对照",
+      "stem": "fig_s10_robustness_check_comparison",
       "caption": "图 8-5 稳健性检查对照",
       "论文去向": "正文 图 8-5（8.3 节）",
       "passed": true,
@@ -2087,10 +2087,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s10_robustness_check_comparison.png",
         "论文版无图内总图题": true,
-        "png_bytes": 351298,
-        "pdf_bytes": 48543,
+        "png_bytes": 360917,
+        "pdf_bytes": 49905,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -2107,8 +2107,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S10_稳健性检查对照_display.png",
-        "png_bytes": 387982,
+        "路径": "outputs\\figures\\supplementary\\fig_s10_robustness_check_comparison_display.png",
+        "png_bytes": 397540,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -2128,7 +2128,7 @@
       }
     },
     {
-      "stem": "图S11_特征组增量bootstrap置信区间",
+      "stem": "fig_s11_feature_group_incremental_bootstrap_ci",
       "caption": "附图 A-11 特征组增量的配对 bootstrap 置信区间",
       "论文去向": "附录",
       "passed": true,
@@ -2151,10 +2151,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s11_feature_group_incremental_bootstrap_ci.png",
         "论文版无图内总图题": true,
-        "png_bytes": 379736,
-        "pdf_bytes": 56965,
+        "png_bytes": 378902,
+        "pdf_bytes": 56954,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -2171,8 +2171,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S11_特征组增量bootstrap置信区间_display.png",
-        "png_bytes": 430861,
+        "路径": "outputs\\figures\\supplementary\\fig_s11_feature_group_incremental_bootstrap_ci_display.png",
+        "png_bytes": 429831,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -2192,7 +2192,7 @@
       }
     },
     {
-      "stem": "图S12_SHAP解释稳定性",
+      "stem": "fig_s12_shap_interpretation_stability",
       "caption": "附图 A-12 SHAP 解释稳定性（跨随机种子）",
       "论文去向": "附录",
       "passed": true,
@@ -2215,10 +2215,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s12_shap_interpretation_stability.png",
         "论文版无图内总图题": true,
-        "png_bytes": 442640,
-        "pdf_bytes": 69713,
+        "png_bytes": 444556,
+        "pdf_bytes": 69702,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -2235,8 +2235,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S12_SHAP解释稳定性_display.png",
-        "png_bytes": 497385,
+        "路径": "outputs\\figures\\supplementary\\fig_s12_shap_interpretation_stability_display.png",
+        "png_bytes": 499293,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -2256,7 +2256,7 @@
       }
     },
     {
-      "stem": "图S13_技能阈值与文本维度选择",
+      "stem": "fig_s13_skill_threshold_text_dimension_selection",
       "caption": "附图 A-13 技能特征阈值与文本维度的验证集表现",
       "论文去向": "附录",
       "passed": true,
@@ -2279,10 +2279,10 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s13_skill_threshold_text_dimension_selection.png",
         "论文版无图内总图题": true,
-        "png_bytes": 479526,
-        "pdf_bytes": 48915,
+        "png_bytes": 483183,
+        "pdf_bytes": 48970,
         "门禁": {
           "no_infigure_caption": true,
           "no_top_title": true,
@@ -2299,8 +2299,8 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S13_技能阈值与文本维度选择_display.png",
-        "png_bytes": 536389,
+        "路径": "outputs\\figures\\supplementary\\fig_s13_skill_threshold_text_dimension_selection_display.png",
+        "png_bytes": 540100,
         "门禁": {
           "inward_ticks": true,
           "light_grid": true,
@@ -2320,7 +2320,7 @@
       }
     },
     {
-      "stem": "图S14_每岗福利标签数量分布",
+      "stem": "fig_s14_benefit_label_count_distribution",
       "caption": "附图 A-14 每个岗位的公司福利标签数量分布",
       "论文去向": "附录",
       "passed": true,
@@ -2343,7 +2343,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s14_benefit_label_count_distribution.png",
         "论文版无图内总图题": true,
         "png_bytes": 390974,
         "pdf_bytes": 37141,
@@ -2363,7 +2363,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S14_每岗福利标签数量分布_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s14_benefit_label_count_distribution_display.png",
         "png_bytes": 446742,
         "门禁": {
           "inward_ticks": true,
@@ -2384,7 +2384,7 @@
       }
     },
     {
-      "stem": "图S15_目标泄漏检查与特征组构成",
+      "stem": "fig_s15_target_leakage_feature_group_composition",
       "caption": "附图 A-15 目标泄漏检查与特征组构成",
       "论文去向": "附录",
       "passed": true,
@@ -2407,7 +2407,7 @@
         "legend_no_overlap": true
       },
       "paper": {
-        "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s15_target_leakage_feature_group_composition.png",
         "论文版无图内总图题": true,
         "png_bytes": 436465,
         "pdf_bytes": 68549,
@@ -2427,7 +2427,7 @@
         "未通过": []
       },
       "display": {
-        "路径": "outputs\\figures\\supplementary\\图S15_目标泄漏检查与特征组构成_display.png",
+        "路径": "outputs\\figures\\supplementary\\fig_s15_target_leakage_feature_group_composition_display.png",
         "png_bytes": 481991,
         "门禁": {
           "inward_ticks": true,
@@ -2455,22 +2455,22 @@
     "still_failed": 0,
     "paper_caption_removed": 16,
     "redraw_counts": {
-      "图S01_样本筛选与口径流转": 1,
-      "图S02_公司属性语义槽位异常修复构成": 1,
-      "图S03_数据划分与三子集薪资分布": 1,
-      "图S04_公司认证四类薪资分布与组间比较": 1,
-      "图S05_公司福利标签效应量与显著性总览": 1,
-      "图S06_高效应福利标签共现簇": 1,
+      "fig_s01_sample_screening_scope_flow": 1,
+      "fig_s02_company_attribute_slot_repair_composition": 1,
+      "fig_s03_data_split_subsets_salary_distribution": 1,
+      "fig_s04_company_certification_four_class_salary": 1,
+      "fig_s05_company_benefit_label_effect_overview": 1,
+      "fig_s06_high_effect_benefit_label_cluster": 1,
       "图S05S06_公司福利标签薪资关联与共现": 1,
-      "图S07_结构化因素效应量排序": 1,
-      "图S08_技能数量档与薪资": 1,
-      "图S09_控制细分类前后技能薪资差异": 1,
-      "图S10_稳健性检查对照": 1,
-      "图S11_特征组增量bootstrap置信区间": 1,
-      "图S12_SHAP解释稳定性": 1,
-      "图S13_技能阈值与文本维度选择": 1,
-      "图S14_每岗福利标签数量分布": 1,
-      "图S15_目标泄漏检查与特征组构成": 1
+      "fig_s07_structured_factor_effect_ranking": 1,
+      "fig_s08_skill_count_tier_salary": 1,
+      "fig_6_4_skill_salary_control_dumbbell": 1,
+      "fig_s10_robustness_check_comparison": 1,
+      "fig_s11_feature_group_incremental_bootstrap_ci": 1,
+      "fig_s12_shap_interpretation_stability": 1,
+      "fig_s13_skill_threshold_text_dimension_selection": 1,
+      "fig_s14_benefit_label_count_distribution": 1,
+      "fig_s15_target_leakage_feature_group_composition": 1
     }
   }
 }

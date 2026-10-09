@@ -128,7 +128,7 @@ def build_dataset_version_table(git_info: dict, analysis: pd.DataFrame,
             {'项目': '分析集', '内容': f'{len(analysis)} 行 × {analysis.shape[1]} 列'},
             {'项目': '建模集', '内容': f'{len(model_frame)} 行 × {model_frame.shape[1]} 列'},
             {'项目': '特征分组', '内容': 'A 岗位基础 / B 地域 / C 公司 / D 技能 / E 文本语义'},
-            {'项目': '技能口径', '内容': 'ALL_USABLE（REQUIREMENT_SECTION + FULL_TEXT_FALLBACK）'}]
+            {'项目': '技能统计范围', '内容': 'ALL_USABLE（REQUIREMENT_SECTION + FULL_TEXT_FALLBACK）'}]
     for name, info in sources.items():
         rows.append({'项目': f'源文件 {name}',
                      '内容': f"{info['path']}（{info['rows']} 行）"})
@@ -223,14 +223,14 @@ def write_record(metrics: dict, audit: dict, git_info: dict) -> Path:
         '',
         '## 7. 技能 multi-hot 策略（阈值只做候选）',
         '',
-        '| 阈值口径 | 保留技能数 | 矩阵维度 | 覆盖率 |',
+        '| 阈值设定 | 保留技能数 | 矩阵维度 | 覆盖率 |',
         '| --- | --- | --- | --- |',
     ]
     for row in audit['06_技能特征候选'].itertuples(index=False):
-        lines.append(f'| {row.阈值口径} | {int(row.保留技能数)} | {row.矩阵维度} | {row.覆盖率:.2%} |')
+        lines.append(f'| {row.阈值设定} | {int(row.保留技能数)} | {row.矩阵维度} | {row.覆盖率:.2%} |')
     lines += [
         '',
-        '> 技能口径 = ALL_USABLE（REQUIREMENT_SECTION + FULL_TEXT_FALLBACK）；'
+        '> 技能统计范围 = ALL_USABLE（REQUIREMENT_SECTION + FULL_TEXT_FALLBACK）；'
         '最终阈值在 Stage 14 的 validation 上选择，**禁止**用 test set 决定。',
         '',
         '## 8. 文本语义策略（E 组）',
@@ -393,7 +393,7 @@ def main() -> int:
         '02_字段清单': pd.DataFrame([
             {'字段名': column, '所在数据集': '分析集/建模集',
              '数据类型': str(analysis[column].dtype),
-             '是否参与模型（分析集口径）': int(
+             '是否参与模型（分析集范围）': int(
                  manifest.set_index('字段名').loc[column, '是否参与模型'])
              if column in manifest_columns else None}
             for column in analysis.columns]),
@@ -407,14 +407,14 @@ def main() -> int:
             {'数据集': 'job_analysis_dataset', '行数': len(analysis),
              '唯一 intern_id 数': int(analysis[schema.ID_FIELD].nunique()),
              '重复数': int(analysis[schema.ID_FIELD].duplicated().sum()),
-             '口径': '1 intern_id = 1 行'},
+             '统计范围': '1 intern_id = 1 行'},
             {'数据集': 'job_salary_model_dataset', '行数': len(model_frame),
              '唯一 intern_id 数': int(model_frame[schema.ID_FIELD].nunique()),
              '重复数': int(model_frame[schema.ID_FIELD].duplicated().sum()),
-             '口径': '正式薪资样本'},
+             '统计范围': '正式薪资样本'},
         ]),
         '11_数据集版本信息': build_dataset_version_table(git_info, analysis, model_frame, sources),
-        '12_技能口径控制': pd.DataFrame([
+        '12_技能统计范围控制': pd.DataFrame([
             {'指标': 'EMPTY_TEXT 岗位数（建模集）',
              '数值': int((model_frame[modeling_dataset.TEXT_EMPTY_FIELD] == 1).sum()),
              '说明': '无可用技能文本：不得解释为「企业没有技能要求」'},
@@ -424,7 +424,7 @@ def main() -> int:
              '说明': '文本存在但未识别到规范技能'},
             {'指标': '有技能岗位数（建模集）',
              '数值': int((model_frame[modeling_dataset.HAS_SKILL_FIELD] == 1).sum()),
-             '说明': '技能口径 = ALL_USABLE'},
+             '说明': '技能统计范围 = ALL_USABLE'},
             {'指标': 'E 组向量可用岗位数（建模集）',
              '数值': int(model_frame[modeling_dataset.TEXT_VECTOR_AVAILABLE_FIELD].sum()),
              '说明': 'model-safe BGE 向量可用性（缺失由标志控制）'},

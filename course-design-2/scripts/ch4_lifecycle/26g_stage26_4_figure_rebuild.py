@@ -12,8 +12,8 @@
 |---|---|---|---|
 | 图S55 | 4-3 | 图内统计注释框（Median/IQR/P90 多行），1×2 横排 | 2×1 纵排，删除统计注释框，只留 P50/P90 参考线与必要数据标签 |
 | 图S56 | 4-5 | 时间区域说明色块 + 三条窗口图例，图例与横轴挤压 | 2×1 纵排，删除时间区域色块与说明，图例移至坐标区上方并加大上下间距 |
-| 图S57 | 4-6 | 图内两行口径说明框、时间区域色块 | 单面板 7 日滚动中位数，删除图内说明框与色块并放大 |
-| 图S58 | 4-7 | 原始逐日序列与 7 日滚动序列高度重复，图内色块 | 只保留 IQR 带 + 7 日滚动中位数（删除重复原始序列面板，口径说明移正文） |
+| 图S57 | 4-6 | 图内两行统计范围说明框、时间区域色块 | 单面板 7 日滚动中位数，删除图内说明框与色块并放大 |
+| 图S58 | 4-7 | 原始逐日序列与 7 日滚动序列高度重复，图内色块 | 只保留 IQR 带 + 7 日滚动中位数（删除重复原始序列面板，统计范围说明移正文） |
 | 图S59 | 5-1 | 1×3 横排，子图名与横轴、纵轴标签挤压 | 3×1 纵排，加大 hspace，统一总图题 |
 | 图S60 | 5-2 | 1×2 横排 + 图内 ε² 统计注释框 | 2×1 纵排，删除统计注释框，效应量标签由 6 位小数收紧为 3 位 |
 | 图S61 | 5-3 | 与共现结构挤在同一组合图，图内 4 行统计说明框 | 拆分为独立图「福利标签薪资关联效应」，删除统计说明框 |
@@ -328,7 +328,7 @@ def run_reused() -> list:
     round_labels(fig, 3)
     results.append(save('fig_5_5_certification_salary_distribution', fig, subs,
                         {'数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
-                         '图内文字': '已删除 ε² 统计注释框（口径与数值移入正文表 5-1）',
+                         '图内文字': '已删除 ε² 统计注释框（统计范围与数值移入正文表 5-1）',
                          '用途': '第5章 图 5-2 重制（1×2 横排 → 2×1 纵排）'}))
 
     # ---------------- 图 5-3（拆分：福利标签薪资关联效应） ---------------- #
@@ -347,7 +347,7 @@ def run_reused() -> list:
     fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
     b18.tag_overlap_bars(axes[0])
     b18.tag_jaccard_heatmap(axes[1])
-    captions = [('a', '高效应福利标签与集合口径的岗位规模'),
+    captions = [('a', '高效应福利标签与集合统计范围的岗位规模'),
                 ('b', '高效应福利标签两两 Jaccard 相似度')]
     for (letter, caption), ax in zip(captions, axes):
         plot_style.add_subfigure_caption(ax, letter, caption)
@@ -399,7 +399,7 @@ def run_lifecycle_figures(c26, daily, dates) -> list:
     fig.subplots_adjust()
     results.append(save('fig_s57_main_category_planned_coverage', fig, [('a', caption, ax)],
                         {'数据来源': 'job_strict_daily_panel_26_1.parquet × 岗位大类集合',
-                         '图内文字': '已删除样本口径说明框与历史回溯区 / 采集窗口色块',
+                         '图内文字': '已删除样本统计范围说明框与历史回溯区 / 采集窗口色块',
                          '用途': '第4章 图 4-6（只保留 7 日滚动中位数并放大）'}))
 
     _apply_mode('single', 15.5, 4.3,
@@ -528,7 +528,7 @@ def run_skill_shap() -> dict:
         assert abs(actual - value) < 5e-4, f'{name} 平均绝对 SHAP 与表 8-5 不一致：{actual}'
     return save('fig_s65_skill_shap_contribution', fig, [],
                 {'数据来源': 'ch7/52_stage26_4_metrics_final.xlsx / 14_技能SHAP',
-                 '口径': '技能出现口径；条长 = 平均绝对 SHAP 值，标记 = 技能存在时平均贡献方向',
+                 '统计范围': '技能出现统计范围；条长 = 平均绝对 SHAP 值，标记 = 技能存在时平均贡献方向',
                  '用途': '第8章 图 8-6（按 Stage26.4 正式模型 288 维重绘）'})
 
 
@@ -575,7 +575,7 @@ def run_beeswarm(block: dict) -> dict:
                              '划分协议下编码后 288 维，'
                              '训练集 + 验证集重拟合后编码 %d 维）在测试集上的 TreeSHAP'
                              % block['特征维度'],
-                 '口径': '加性一致性最大误差随模型重算校验；只表示模型预测贡献，非因果',
+                 '统计范围': '加性一致性最大误差随模型重算校验；只表示模型预测贡献，非因果',
                  '测试集 MAE': round(block['测试集指标']['MAE'], 6),
                  '用途': '第8章 图 8-5（按 Stage26.4 正式模型重绘）'})
 

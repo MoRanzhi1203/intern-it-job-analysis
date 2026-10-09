@@ -279,7 +279,7 @@ class SalaryFeatureAssembler:
 
 
 def build_skill_map(membership: pd.DataFrame, scopes) -> dict:
-    """岗位 → 规范技能集合（按技能口径筛选，intern_id 去重）。"""
+    """岗位 → 规范技能集合（按技能统计范围筛选，intern_id 去重）。"""
     frame = membership[membership['match_scope'].isin(scopes)]
     grouped = frame.groupby('intern_id')['canonical_skill'].apply(lambda values: tuple(set(values)))
     return grouped.to_dict()
@@ -376,7 +376,7 @@ def selected_skill_columns(frequency: pd.Series, threshold: int) -> list:
 
 
 def load_scope_universe(analysis: pd.DataFrame) -> dict:
-    """技能口径样本集（复用封版口径，Stage 12/13 同一实现）。"""
+    """技能统计范围样本集（复用封版统计范围，Stage 12/13 同一实现）。"""
     return skill_eda.load_scope_universe(analysis)
 
 

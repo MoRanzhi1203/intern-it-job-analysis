@@ -273,7 +273,7 @@ SALARY_LEAKAGE_PATTERNS = [
     # 7) 福利类金额关键词 + 金额
     re.compile(SALARY_BENEFIT_KEYWORDS + r'\s*[:：]?\s*' + SALARY_BRACKET_OPEN + r'?\s*'
                + r'\d+(?:\.\d+)?\s*(?:元|块)?' + SALARY_LIST_GUARD),
-    # 8) 纯数字 + 元：3000元、200元、3元以上（与严格检查口径一致）
+    # 8) 纯数字 + 元：3000元、200元、3元以上（与严格检查统计范围一致）
     re.compile(r'\d+(?:\.\d+)?\s*元(?:/|\s*每)?(?:天|日|月|年|时|小时)?'),
     # 9) k / 千 / 万 金额缩写：8k、1.5万（排除数量单位与英文后缀）
     re.compile(r'\d+(?:\.\d+)?\s*[kKwW](?![A-Za-z])'),

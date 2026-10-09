@@ -90,23 +90,23 @@ class SkillConfig:
         return {skill for skill, group in self.skill_to_group.items() if group in wanted}
 
     def ai_skills(self) -> set:
-        """AI 技能口径：配置中显式声明的 AI 相关组内的全部标准实体。"""
+        """AI 技能统计范围：配置中显式声明的 AI 相关组内的全部标准实体。"""
         return self.group_skills(self.ai_skill_groups)
 
     def language_skills(self) -> set:
-        """编程语言技能口径（编程语言技能数）。"""
+        """编程语言技能统计范围（编程语言技能数）。"""
         return self.group_skills(self.language_skill_groups)
 
     def database_skills(self) -> set:
-        """数据库技能口径（数据库技能数）。"""
+        """数据库技能统计范围（数据库技能数）。"""
         return self.group_skills(self.database_skill_groups)
 
     def security_skills(self) -> set:
-        """安全技能口径（安全技能数）。"""
+        """安全技能统计范围（安全技能数）。"""
         return self.group_skills(self.security_skill_groups)
 
     def office_skills(self) -> set:
-        """办公工具技能口径（办公工具技能数）。"""
+        """办公工具技能统计范围（办公工具技能数）。"""
         return self.group_skills(self.office_skill_groups)
 
     def rule_canonicals(self) -> list:

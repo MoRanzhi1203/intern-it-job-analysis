@@ -393,7 +393,7 @@ def field_multi_value_ids(frame: pd.DataFrame, field: str) -> set:
 
 
 def field_multi_value_stats(frame: pd.DataFrame, fields, id_field: str | None = None) -> pd.DataFrame:
-    """按字段统计「同一岗位历史多值」的岗位数（口径与最终实体冲突统计一致）。"""
+    """按字段统计「同一岗位历史多值」的岗位数（统计范围与最终实体冲突统计一致）。"""
     id_field = id_field or schema.ID_FIELD
     rows = []
     for field in fields:

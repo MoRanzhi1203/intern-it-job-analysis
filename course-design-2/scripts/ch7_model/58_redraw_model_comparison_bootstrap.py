@@ -10,7 +10,7 @@
 
 任一不符即中止，不产出图件。
 
-版式改动（数值与抽样口径不变）：
+版式改动（数值与抽样统计范围不变）：
 
 - 原先只在图上画零线与点估计线、区间只写在文字里；现补上 95% 置信区间底纹，
   并把零线、点估计线、区间三者写进图例（含数值），「是否跨 0」可直接判读；
@@ -221,7 +221,7 @@ def main() -> int:
         fig, project_paths.FIGURES_DIR, STEM, subfigures=[],
         meta={'数据来源': 'outputs/results/E1_E3_E4_E5/model_comparison_paired_bootstrap.csv ＋ %s'
                           % data_diag['来源'],
-              '口径': '测试集配对绝对误差差（LightGBM − CatBoost）的 %d 次 bootstrap 抽样，'
+              '统计范围': '测试集配对绝对误差差（LightGBM − CatBoost）的 %d 次 bootstrap 抽样，'
                       '随机种子固定；95%% 区间取抽样的 2.5%% 与 97.5%% 分位点'
                       % data_diag['抽样次数'],
               '校验': '两模型测试集 MAE 与 ΔMAE／区间均与冻结值逐项对齐：%s'

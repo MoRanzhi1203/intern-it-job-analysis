@@ -15,7 +15,7 @@
     Stage 05 最终岗位实体（最终核心版本优先 + 原子替换）
     Stage 06 岗位版本文本语料（原始/清洗/语义分析版/模型安全版）
     Stage 07 岗位技能与文本特征（feature_family → group → canonical）
-    Stage 08 岗位描述语义时序（完整 / 去薪资双口径 + token 截断审计）
+    Stage 08 岗位描述语义时序（完整 / 去薪资两种统计范围 + token 截断审计）
     Stage 09 公司实体识别（跨地域不再自动拆分）
     Stage 10 公司简介快照 / 版本 / 语义时序
 
@@ -50,7 +50,7 @@ STAGE_SCRIPTS = {
     5: ('scripts/ch3_data/05_build_unique_jobs.py', 'Stage 05 最终岗位实体构建'),
     6: ('scripts/ch3_data/06_prepare_text_corpus.py', 'Stage 06 岗位版本文本语料准备'),
     7: ('scripts/ch3_data/07_extract_job_text_features.py', 'Stage 07 最终岗位技能与文本特征'),
-    8: ('scripts/ch3_data/08_build_job_text_semantics.py', 'Stage 08 岗位描述语义时序（完整 / 去薪资双口径）'),
+    8: ('scripts/ch3_data/08_build_job_text_semantics.py', 'Stage 08 岗位描述语义时序（完整 / 去薪资两种统计范围）'),
     9: ('scripts/ch3_data/09_resolve_company_entities.py', 'Stage 09 公司实体高置信度识别（跨地域不拆分）'),
     10: ('scripts/ch3_data/10_build_company_text_semantics.py', 'Stage 10 公司简介快照 / 版本 / 语义时序'),
     11: ('scripts/ch3_data/11_clean_structured_fields.py', 'Stage 11 结构化业务字段清洗与薪资目标解析'),

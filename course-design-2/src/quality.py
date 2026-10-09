@@ -65,7 +65,7 @@ STAGE07_GATES = [
     'CATEGORY_SKILL_COVERAGE_BUILD', 'SKILL_AUDIT_EXPORT', 'TEXT_FEATURE_AUDIT_EXPORT',
 ]
 
-# ---- Stage 08 门禁：岗位描述语义时序（Refinement R1 增加双口径与截断审计） ----
+# ---- Stage 08 门禁：岗位描述语义时序（Refinement R1 增加两种统计范围与截断审计） ----
 STAGE08_GATES = [
     'TFIDF_BASELINE_BUILD', 'EMBEDDING_MODEL_LOAD', 'EMBEDDING_BUILD',
     'SEMANTIC_DISTANCE_CHECK',
@@ -152,14 +152,14 @@ STAGE16_COMPANY_FIELD_GATES = [
     'COMPANY_FACTOR_MISLABEL_CONFIRMED', 'COMPANY_FIELD_AUDIT_EXPORT',
 ]
 
-# ---- Stage 17 最终解释封版门禁（字段语义修正 + 技能 SHAP presence 口径） ----
+# ---- Stage 17 最终解释封版门禁（字段语义修正 + 技能 SHAP presence 统计方式） ----
 STAGE17_INTERPRETATION_GATES = [
     'INTERPRETATION_FIELD_SEMANTICS', 'INTERPRETATION_SHAP_PRESENCE',
     'INTERPRETATION_MODEL_UNCHANGED', 'FINAL_AUDIT_SHEET_STRUCTURE', 'ANALYSIS_FREEZE',
     'INTERPRETATION_EXPORT',
 ]
 
-# ---- Stage 13 技能 EDA 口径审计门禁（独立脚本，不进入 Stage 00~11 流水线） ----
+# ---- Stage 13 技能 EDA 统计范围审计门禁（独立脚本，不进入 Stage 00~11 流水线） ----
 STAGE13_SKILL_EDA_GATES = [
     'SKILL_EDA_SCOPE_SAMPLE', 'SKILL_EDA_LAYER_SPLIT', 'SKILL_EDA_GROUP_DEDUP',
     'SKILL_EDA_ROBUSTNESS', 'SKILL_EDA_SALARY_SCOPE', 'SKILL_EDA_AUDIT_EXPORT',
@@ -215,15 +215,15 @@ BASELINE_METRICS = {
     'top_conflict_field_groups': 2399,
 }
 
-# ---- 本轮有意改变口径的指标：标记为「预期变化」，不参与回归失败判定 ----
+# ---- 本轮有意改变统计范围的指标：标记为「预期变化」，不参与回归失败判定 ----
 EXPECTED_CHANGE_METRICS = {
     'unique_job_columns': '实体选择规则由「全历史完整度优先」改为「最终核心版本优先」，'
                           '并新增岗位版本摘要字段（核心版本数/完整页面版本数/历史是否发生X变化），'
                           '原「公司介绍图片链接」已在去重前完成语义映射并被删除',
-    'multi_value_business_fields': '字段多值审计改用版本签名的归一化口径（去首尾空格、'
+    'multi_value_business_fields': '字段多值审计改用版本签名的归一化统计范围（去首尾空格、'
                                   '空字符串统一归一为缺失）并采用 nunique(dropna=True)，'
                                   '「有值 vs 空值」不再计为字段冲突（仍会在版本签名中体现为不同状态）',
-    'business_conflict_rows': '同上：冲突留档口径迁移到变化事件表与 14 号版本审计表；'
+    'business_conflict_rows': '同上：冲突留档统计范围迁移到变化事件表与 14 号版本审计表；'
                               '另：Stage 01 已确定性修复源记录的公司属性语义槽位异常'
                               '（公司性质/公司规模/公司所在地），相关字段的伪冲突随之减少',
     'key_conflict_jobs': '同上：空串归一为缺失后，1 个岗位的关键字段差异实际为「有值 vs 空值」，'

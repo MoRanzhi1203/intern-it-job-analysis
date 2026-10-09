@@ -43,13 +43,13 @@ feature_families:
   技术领域:
     - 技术领域
 
-# AI 技能组（AI技能数口径 = 岗位技能集合中落在这些组的标准实体数量）
+# AI 技能组（AI技能数统计范围 = 岗位技能集合中落在这些组的标准实体数量）
 ai_skill_groups:
   - AI算法技能
   - AI框架
   - 大模型技能
 
-# 岗位级技能画像中的分组计数口径（组名必须已在 feature_families 中登记）
+# 岗位级技能画像中的分组计数统计范围（组名必须已在 feature_families 中登记）
 language_skill_groups: [编程语言]
 database_skill_groups: [数据库]
 security_skill_groups: [网络与安全]

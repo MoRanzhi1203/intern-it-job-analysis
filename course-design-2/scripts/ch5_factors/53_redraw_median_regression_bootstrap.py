@@ -132,7 +132,7 @@ def main() -> int:
     diagnostics = figure_finalize.save_paper_figure(
         fig, FIGDIR, STEM, subfigures=[],
         meta={'数据来源': 'outputs/results/E2_E7/quantile_regression_cluster_bootstrap.csv（E7 冻结结果）',
-              '口径': '只展示已定义的代表性变量，不做显著性筛选；岗位级 bootstrap 以岗位为重抽样单位，'
+              '统计范围': '只展示已定义的代表性变量，不做显著性筛选；岗位级 bootstrap 以岗位为重抽样单位，'
                       '公司级 cluster bootstrap 以公司为重抽样单位并带入该公司全部岗位，各 1,000 轮',
               '呈现': (f'单面板森林图：隔行浅底纹 + 带端帽的两类 95% 区间 + 菱形点估计；'
                        f'横轴为 symlog（|系数| ≤ {SYMLOG_LINTHRESH:.0f} 元/天 段线性，'

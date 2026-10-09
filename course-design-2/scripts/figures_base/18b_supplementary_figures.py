@@ -3,7 +3,7 @@
 
 双输出路径（Stage23 硬要求）
 ---------------------------
-- **论文版**：覆盖同名主文件（``fig_s01_sample_screening_caliber_flow.png`` 等），图片内部**不含**
+- **论文版**：覆盖同名主文件（``fig_s01_sample_screening_scope_flow.png`` 等），图片内部**不含**
   「图 X-X / 附图 A-x」正式总图题（总图题交给 Word Caption），保留绘图区 / 坐标轴 / 图例与
   位于各子图下方的 ``(a)(b)(c)(d)`` 子图名；600 dpi PNG + 矢量 PDF；
 - **独立展示版**：``<stem>_display.png|pdf``，底部带 Stage23 正式图题（PPT / 单独查看用）。
@@ -62,7 +62,7 @@ BLUE, ORANGE, GREEN, RED = PALETTE[0], PALETTE[1], PALETTE[2], PALETTE[3]
 PURPLE, BROWN, PINK, GRAY, OLIVE = PALETTE[4], PALETTE[5], PALETTE[6], PALETTE[7], PALETTE[8]
 MUTED = plot_style.MUTED_COLOR
 
-CLIFF_THRESHOLDS = (0.147, 0.33, 0.474)  # Romano et al. 2006，与统计阶段口径一致
+CLIFF_THRESHOLDS = (0.147, 0.33, 0.474)  # Romano et al. 2006，与统计阶段统计范围一致
 SPLIT_LABELS = {'train': '训练集', 'validation': '验证集', 'test': '测试集'}
 SPLIT_ORDER = ['train', 'validation', 'test']
 CERT_ORDER = ['无认证', '行业认证', '最佳雇主', '两者均有']
@@ -191,7 +191,7 @@ def tag_effect_panel(ax, fix: int = 0, legend_ncol: int = 4):
 
 
 def tag_overlap_items() -> list:
-    """S06 面板：5 个高效应标签命中岗位数 + 全部交集 / 全部并集（读数全部来自冻结口径）。"""
+    """S06 面板：5 个高效应标签命中岗位数 + 全部交集 / 全部并集（读数全部来自冻结统计范围）。"""
     counts = V['top5_counts']
     items = [(f'{tag}', int(counts[tag]), BLUE) for tag in TOP5_TAGS]
     items += [('5 个标签交集（共同命中）', V['top5_intersection'], RED),
@@ -200,7 +200,7 @@ def tag_overlap_items() -> list:
 
 
 def tag_overlap_bars(ax, show_universe_lines: bool = False):
-    """S06 面板：标签与集合口径的岗位规模横向柱状图（可选交集 / 并集参考线）。"""
+    """S06 面板：标签与集合统计范围的岗位规模横向柱状图（可选交集 / 并集参考线）。"""
     items = tag_overlap_items()
     union = V['top5_union']
     positions = np.arange(len(items))[::-1]
@@ -279,7 +279,7 @@ def load_data() -> dict:
     data['anomaly_residual'] = read_sheet('ch3/16_company_attribute_semantic_anomaly_audit.xlsx', '08_残留异常')
     data['obs_audit'] = read_sheet('ch3/07_observation_snapshot_audit.xlsx', '01_总体统计')
     data['salary_parse'] = read_sheet('ch3/15_structured_field_salary_audit.xlsx', '02_薪资解析状态')
-    data['skill_scope'] = read_sheet('ch6/19_skill_eda_scope_audit.xlsx', '01_样本口径')
+    data['skill_scope'] = read_sheet('ch6/19_skill_eda_scope_audit.xlsx', '01_样本统计范围')
     data['merge_audit'] = read_sheet('ch3/05_unique_job_merge_audit.xlsx', '合并审计汇总')
     data['eda_metrics'] = read_metrics('stage_13_eda.json')
     return data
@@ -309,7 +309,7 @@ def build_anchor_values(data: dict, jobs: pd.DataFrame) -> dict:
     salary = data['salary_desc'].set_index('指标')['数值']
     obs_row = data['obs_audit'].set_index('指标')['数值']
     parse = data['salary_parse'].set_index('薪资解析状态')['岗位数']
-    scope = data['skill_scope'].set_index('口径')['岗位数']
+    scope = data['skill_scope'].set_index('统计范围')['岗位数']
     merge = data['merge_audit'].set_index('指标')['数值']
     kw = data['stats'][data['stats']['检验块'] == '多组比较（Kruskal–Wallis）']
     label_block = data['stats'][data['stats']['检验块'] == '单标签二元比较（present vs absent；Mann–Whitney + BH-FDR）']
@@ -382,9 +382,9 @@ def build_anchor_values(data: dict, jobs: pd.DataFrame) -> dict:
                   'stage_13_eda.json:top_cliff_overlap.全部并集岗位数')
     record_anchor('前5标签最大 Jaccard', values['top5_max_jaccard'], 1.0,
                   'stage_13_eda.json:top_cliff_overlap.两两最大Jaccard')
-    record_anchor('技能主口径', values['skill_main'], 8822, '27_skill_eda_scope_audit/01_样本口径')
-    record_anchor('技能扩展口径', values['skill_extended'], 16378, '27_skill_eda_scope_audit/01_样本口径')
-    record_anchor('技能仅模板口径', values['skill_empty'], 766, '27_skill_eda_scope_audit/01_样本口径')
+    record_anchor('技能主统计范围', values['skill_main'], 8822, '27_skill_eda_scope_audit/01_样本统计范围')
+    record_anchor('技能扩展统计范围', values['skill_extended'], 16378, '27_skill_eda_scope_audit/01_样本统计范围')
+    record_anchor('技能仅模板统计范围', values['skill_empty'], 766, '27_skill_eda_scope_audit/01_样本统计范围')
     record_anchor('技能列数', values['skill_dims'], 44, '30_model_comparison/02_特征维度')
     record_anchor('文本维度', values['text_dims'], 16, '30_model_comparison/02_特征维度')
     record_anchor('最终特征维度', values['feature_total'], 320, '30_model_comparison/02_特征维度')
@@ -426,7 +426,7 @@ def fig_s01(fix: int = 0):
     ax.set_xlim(-0.05 * top, 1.95 * top)
     ax.set_ylim(-0.75, len(labels) - 0.25)
     ax.set_xlabel('岗位数量（个）')
-    ax.set_ylabel('筛选与口径层级')
+    ax.set_ylabel('筛选与统计范围层级')
     note(ax, f'折叠重复观测 {v["n_merged_dup"]:,}\n'
              f'面议 {v["n_negotiable"]:,}（占唯一岗位 {v["n_negotiable"] / v["n_unique_jobs"] * 100:.2f}%，不进正式样本）\n'
              f'薪资逻辑异常 {v["n_anomaly"]:,}（占可解析 {v["n_anomaly"] / v["n_parsed"] * 100:.3f}%，不进正式样本）',
@@ -703,7 +703,7 @@ def fig_s09(fix: int = 0):
     values = before + after
     ax.set_ylim(min(values) - (max(values) - min(values)) * 0.18,
                 max(values) + (max(values) - min(values)) * 0.30)
-    ax.set_xlabel('对比口径（薪资中点中位数差）')
+    ax.set_xlabel('对比统计范围（薪资中点中位数差）')
     ax.set_ylabel('有技能 − 无技能的薪资中点中位数差（元/天）')
     plot_style.apply_sci_axis(ax, grid_axis='y', grid=True)
     legend_above(ax, ncol=3, fix=fix)
@@ -714,7 +714,7 @@ def fig_s09(fix: int = 0):
 
 def fig_s10(fix: int = 0):
     extreme = V['robust_extreme'].set_index('实验')
-    target = V['robust_target'].set_index('目标口径')
+    target = V['robust_target'].set_index('目标定义')
     baseline_mae = float(extreme.loc['主模型（真实薪资 y）', 'MAE'])
     baseline_r2 = float(extreme.loc['主模型（真实薪资 y）', 'R²'])
 
@@ -748,8 +748,8 @@ def fig_s10(fix: int = 0):
     note(ax_a, '虚线 = 主模型基准', x=0.985, y=0.03, ha='right', va='bottom')
     note(ax_b, '虚线 = 主模型基准', x=0.985, y=0.03, ha='right', va='bottom')
     legend_above(ax_b, ncol=2, handles=[Patch(facecolor=BLUE, edgecolor='black', label='主任务 / 主模型'),
-                                        Patch(facecolor=ORANGE, edgecolor='black', label='稳健性替代口径')],
-                 labels=['主任务 / 主模型', '稳健性替代口径'], fix=fix)
+                                        Patch(facecolor=ORANGE, edgecolor='black', label='稳健性替代统计范围')],
+                 labels=['主任务 / 主模型', '稳健性替代统计范围'], fix=fix)
 
     plot_style.add_subfigure_caption(ax_a, 'a', 'MAE 对照')
     plot_style.add_subfigure_caption(ax_b, 'b', 'R² 对照')
@@ -1075,7 +1075,7 @@ def main() -> int:
 
     # Stage23 正式图题（展示版底部图题）与去向；论文版覆盖同名主文件且不含图内总图题
     specs = [
-        ('fig_s01_sample_screening_caliber_flow', '附图 A-7 正式薪资样本的筛选与口径流转',
+        ('fig_s01_sample_screening_scope_flow', '附图 A-7 正式薪资样本的筛选与统计范围流转',
          fig_s01, '附录'),
         ('fig_s02_company_attribute_slot_repair_composition',
          '附图 A-8 公司属性语义槽位异常的修复构成与残留校验', fig_s02, '附录'),
@@ -1209,7 +1209,7 @@ def main() -> int:
         print(f'  [{flag}] {row["锚点"]}: {row["实际读取值"]} (期望 {row["期望值"]}) '
               f'<- {row["来源"]}')
     print('-' * 78)
-    print('本脚本内标签共现口径交叉核对（只读复算，与冻结值比对）：')
+    print('本脚本内标签共现统计范围交叉核对（只读复算，与冻结值比对）：')
     for row in ANCHOR_LOG:
         flag = 'OK ' if row['一致'] else 'ERR'
         print(f'  [{flag}] {row["锚点"]}: {row["读取值"]} (期望 {row["校验值"]}) <- {row["来源"]}')

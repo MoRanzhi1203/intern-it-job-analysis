@@ -38,7 +38,7 @@
 | `05_build_unique_jobs.py` | Stage 05 最终岗位实体构建（最终核心版本优先 + 原子替换） |
 | `06_prepare_text_corpus.py` | Stage 06 岗位版本文本语料准备 |
 | `07_extract_job_text_features.py` | Stage 07 技能与文本特征（→ `ch3/18_job_skill_extraction_audit.xlsx`） |
-| `08_build_job_text_semantics.py` | Stage 08 岗位描述语义时序（完整 / 去薪资双口径） |
+| `08_build_job_text_semantics.py` | Stage 08 岗位描述语义时序（完整 / 去薪资两种统计范围） |
 | `09_resolve_company_entities.py` | Stage 09 公司实体识别（跨地域不自动拆分） |
 | `10_build_company_text_semantics.py` | Stage 10 公司简介快照 / 版本 / 语义时序 |
 | `11_clean_structured_fields.py` | Stage 11 结构化业务字段清洗与薪资目标解析 |
@@ -51,7 +51,7 @@
 | --- | --- | --- |
 | `12_build_modeling_dataset.py` | 建模宽表与目标泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
 | `13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
-| `13b_skill_eda_scope_audit.py` | 技能 EDA 双口径 + 分层榜单 + 稳健性 | `ch6/19_skill_eda_scope_audit.xlsx` |
+| `13b_skill_eda_scope_audit.py` | 技能 EDA 两种统计范围 + 分层榜单 + 稳健性 | `ch6/19_skill_eda_scope_audit.xlsx` |
 | `14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
 | `15_ablation_robustness_shap.py` | 消融 / 公司 Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
 | `16_company_field_semantic_audit.py` | 公司字段语义只读取证（公司认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
@@ -78,7 +78,7 @@
 | `59_redraw_company_split_boxplot.py` | 图 8-10 重复公司分组划分 MAE 分布 |
 | `60_redraw_shap_beeswarm.py` | 图 S64 主模型 SHAP 蜂群图 |
 | `61_redraw_benefit_cluster_permutation.py` | 图 8-11 福利标签簇置换 MAE 增量 |
-| `65_redraw_figure_s44_heatmap.py` | 图 S44 热力图重绘（移除图内「主口径」字样） |
+| `65_redraw_figure_s44_heatmap.py` | 图 S44 热力图重绘（移除图内「主统计范围」字样） |
 
 ## 5. Stage25 / 26 / 27 专项阶段
 
@@ -87,13 +87,13 @@
 | 脚本 | 说明 | 主要审计表 |
 | --- | --- | --- |
 | `25_stage25_factor_revision.py` | 多值类别二元检验 / 中位数基线 / 图 S17 | `ch5/26_stage25_factor_revision.xlsx` |
-| `26b_stage26_1_temporal_tightening.py` | Stage26.1 招聘生命周期与时序口径收紧 | 44–48 |
+| `26b_stage26_1_temporal_tightening.py` | Stage26.1 招聘生命周期与时序设定收紧 | 44–48 |
 | `26c_stage26_2_final_consolidation.py` | Stage26.2 方法修复与补充分析 | 49–54 |
 | `26d_stage26_3_structure_finalize.py` | Stage26.3 结构精简配套必要重算 | 55–59 |
 | `26e_stage26_3_figure_refresh.py` | Stage26.3 图件重制（图 S34–S49） | — |
 | `26f_stage26_4_final_polish.py` | Stage26.4 数据/模型修正配套重算 | 60–64 |
 | `26g_stage26_4_figure_rebuild.py` | Stage26.4 图件重构 | — |
-| `26j_stage26_6_figures.py` | Stage26.6 图件去留审计 / 地域口径 / 重绘 | 70–74 |
+| `26j_stage26_6_figures.py` | Stage26.6 图件去留审计 / 地域归属范围 / 重绘 | 70–74 |
 | `33_stage26_7_time_and_audit.py` | Stage26.7 业务时间维度专题分析（+ `figures/time/01–03`） | `ch4/59_business_time_dimension_analysis.xlsx` |
 
 ## 6. 「补全任务」实验与交付

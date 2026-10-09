@@ -93,7 +93,7 @@ def main() -> int:
     changed = clean_labels(fig)
     diagnostics = g.save(STEM, fig, subfigures, {
         '数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 06_公司因素薪资、11_统计检验',
-        '图内文字': '已删除 ε² 统计注释框（口径与数值移入正文表 5-1）',
+        '图内文字': '已删除 ε² 统计注释框（统计范围与数值移入正文表 5-1）',
         '文字清理': changed,
         '用途': '第5章「公司认证状态的薪资分布与组间比较」重绘（图题由 Word 构建脚本生成）'})
 

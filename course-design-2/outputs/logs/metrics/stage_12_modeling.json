@@ -1,0 +1,81 @@
+{
+  "analysis_path": "data\\processed\\job_analysis_dataset.parquet",
+  "model_path": "data\\processed\\job_salary_model_dataset.parquet",
+  "audit_path": "outputs\\tables\\ch3\\20_modeling_dataset_audit.xlsx",
+  "analysis_rows": 17144,
+  "analysis_columns": 65,
+  "model_rows": 14883,
+  "model_columns": 69,
+  "analysis_unique_check": "唯一",
+  "model_unique_check": "唯一",
+  "model_feature_count": 54,
+  "numeric_feature_count": 40,
+  "categorical_feature_count": 12,
+  "multi_value_feature_count": 2,
+  "blacklist_count": 13,
+  "leakage_hits": 0,
+  "text_vector_available": 14186,
+  "text_vector_missing": 697,
+  "embedding_status": "PASS",
+  "embedding_model": "BAAI/bge-small-zh-v1.5",
+  "embedding_dim": 512,
+  "skill_threshold_candidates": [
+    {
+      "阈值设定": ">= 50",
+      "阈值（岗位数）": 50,
+      "保留技能数": 83,
+      "矩阵维度": "14883 × 83",
+      "至少命中 1 个保留技能的岗位数": 10060,
+      "覆盖率": 0.675939,
+      "保留技能列表": "Excel、数据分析、办公软件、人工智能、Python、SQL、PPT、大模型、内容运营、Java、Word、C++、机器学习、深度学习、项目管理、产品设计、C、原型设计、市场调研、Linux、数据可视化、PyTorch、用户研究、AIGC、大数据、计算机视觉、TensorFlow、MySQL、Agent、后端、Git、多模态、前端、JavaScript、数据科学、Prompt Engineering、NLP、Tableau、HTML、数据挖掘、Power BI、数据运营、强化学习、CSS、Vue、微调、React、单元测试、MATLAB、Spark、Redis、爬虫、RAG、Hive、Pandas、信息安全、Oracle、Docker、PHP、Shell、Go、NumPy、云计算、Spring Boot、推荐系统、模型部署、自动化测试、Hadoop、Spring、CI/CD、Android、小程序、SPSS、LangChain、C#、Node.js、SQL Server、OpenCV、全栈、Kafka、Kubernetes、性能测试、Flink",
+      "说明": "本轮只提供候选；最终阈值在 Stage 14 validation 上选择（禁止用 test set 决定）"
+    },
+    {
+      "阈值设定": ">= 80",
+      "阈值（岗位数）": 80,
+      "保留技能数": 63,
+      "矩阵维度": "14883 × 63",
+      "至少命中 1 个保留技能的岗位数": 9992,
+      "覆盖率": 0.67137,
+      "保留技能列表": "Excel、数据分析、办公软件、人工智能、Python、SQL、PPT、大模型、内容运营、Java、Word、C++、机器学习、深度学习、项目管理、产品设计、C、原型设计、市场调研、Linux、数据可视化、PyTorch、用户研究、AIGC、大数据、计算机视觉、TensorFlow、MySQL、Agent、后端、Git、多模态、前端、JavaScript、数据科学、Prompt Engineering、NLP、Tableau、HTML、数据挖掘、Power BI、数据运营、强化学习、CSS、Vue、微调、React、单元测试、MATLAB、Spark、Redis、爬虫、RAG、Hive、Pandas、信息安全、Oracle、Docker、PHP、Shell、Go、NumPy、云计算",
+      "说明": "本轮只提供候选；最终阈值在 Stage 14 validation 上选择（禁止用 test set 决定）"
+    },
+    {
+      "阈值设定": ">= 100",
+      "阈值（岗位数）": 100,
+      "保留技能数": 54,
+      "矩阵维度": "14883 × 54",
+      "至少命中 1 个保留技能的岗位数": 9965,
+      "覆盖率": 0.669556,
+      "保留技能列表": "Excel、数据分析、办公软件、人工智能、Python、SQL、PPT、大模型、内容运营、Java、Word、C++、机器学习、深度学习、项目管理、产品设计、C、原型设计、市场调研、Linux、数据可视化、PyTorch、用户研究、AIGC、大数据、计算机视觉、TensorFlow、MySQL、Agent、后端、Git、多模态、前端、JavaScript、数据科学、Prompt Engineering、NLP、Tableau、HTML、数据挖掘、Power BI、数据运营、强化学习、CSS、Vue、微调、React、单元测试、MATLAB、Spark、Redis、爬虫、RAG、Hive",
+      "说明": "本轮只提供候选；最终阈值在 Stage 14 validation 上选择（禁止用 test set 决定）"
+    },
+    {
+      "阈值设定": ">= 0.5% × 14883（= 74）",
+      "阈值（岗位数）": 74,
+      "保留技能数": 68,
+      "矩阵维度": "14883 × 68",
+      "至少命中 1 个保留技能的岗位数": 10004,
+      "覆盖率": 0.672176,
+      "保留技能列表": "Excel、数据分析、办公软件、人工智能、Python、SQL、PPT、大模型、内容运营、Java、Word、C++、机器学习、深度学习、项目管理、产品设计、C、原型设计、市场调研、Linux、数据可视化、PyTorch、用户研究、AIGC、大数据、计算机视觉、TensorFlow、MySQL、Agent、后端、Git、多模态、前端、JavaScript、数据科学、Prompt Engineering、NLP、Tableau、HTML、数据挖掘、Power BI、数据运营、强化学习、CSS、Vue、微调、React、单元测试、MATLAB、Spark、Redis、爬虫、RAG、Hive、Pandas、信息安全、Oracle、Docker、PHP、Shell、Go、NumPy、云计算、Spring Boot、推荐系统、模型部署、自动化测试、Hadoop",
+      "说明": "本轮只提供候选；最终阈值在 Stage 14 validation 上选择（禁止用 test set 决定）"
+    }
+  ],
+  "core_versions": 17584,
+  "full_versions": 21588,
+  "git": {
+    "git_commit": "81d8c0e",
+    "working_tree_dirty": true,
+    "生成时间": "2026-10-09 13:47:10",
+    "主机": "MSI"
+  },
+  "gates": {
+    "MODEL_DATASET_ONE_JOB_ONE_ROW": "PASS",
+    "MODEL_DATASET_TARGET_SAMPLE": "PASS",
+    "MODEL_DATASET_TARGET_LEAKAGE": "PASS",
+    "MODEL_DATASET_SALARY_DERIVED_FEATURE_BLOCK": "PASS",
+    "MODEL_DATASET_TEXT_LEAKAGE": "PASS",
+    "MODEL_DATASET_FEATURE_MANIFEST": "PASS",
+    "MODEL_DATASET_AUDIT_EXPORT": "PASS"
+  }
+}

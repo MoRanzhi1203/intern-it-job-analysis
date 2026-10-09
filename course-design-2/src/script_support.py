@@ -3,7 +3,7 @@
 
 本模块集中实现各阶段与出图脚本重复使用的通用工具（动态装载脚本、文件 SHA-256、
 26f 装载、论文样式初始化、图件收尾、JSON 落盘、特征装配器构造），各脚本导入使用。
-只收纳无副作用、与具体阶段口径无关的工具；带阶段全局依赖的 helper 仍留在各自脚本内。
+只收纳无副作用、与具体阶段统计范围无关的工具；带阶段全局依赖的 helper 仍留在各自脚本内。
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def load_script(alias: str, relative: str):
 
 
 def load_polish():
-    """装载 ``26f_stage26_4_final_polish``（多脚本复用的正式口径工具集）。"""
+    """装载 ``26f_stage26_4_final_polish``（多脚本复用的正式统计范围工具集）。"""
     return load_script('s26f', 'scripts/ch4_lifecycle/26f_stage26_4_final_polish.py')
 
 
@@ -192,7 +192,7 @@ def fit_eval(frame, labels, groups, grouped, skill_map, text_matrix, text_by_id,
 
 def section_length(source_dir, visible_body, han_count, file_name: str,
                    start_pattern: str, end_pattern: str) -> dict:
-    """统计章节段落数 / 汉字数（visible_body 与 han_count 由调用脚本按其口径传入）。"""
+    """统计章节段落数 / 汉字数（visible_body 与 han_count 由调用脚本按其统计范围传入）。"""
     import re
 
     text = visible_body((Path(source_dir) / file_name).read_text(encoding='utf-8'))

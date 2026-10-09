@@ -4,7 +4,7 @@
 严格边界（与提示词一致）：
     - 只读冻结数据与既有正式结果，所有输出写入 outputs/deliverables/ 目录，不覆盖任何已有文件；
     - 不新增任何机器学习模型 / 交叉验证 / 消融组合；
-    - 任务 2 只按 Stage26.4 正式口径复现已锁定的 LightGBM 最终模型（预处理器与估计器均在
+    - 任务 2 只按 Stage26.4 正式统计范围复现已锁定的 LightGBM 最终模型（预处理器与估计器均在
       train + validation 上重拟合，测试集不参与任何拟合或选择），用于绘制真实值—预测值对照图，
       并校验测试集 MAE / RMSE / R² 是否与论文正式结果 35.48 / 64.81 / 0.582 一致；
     - 任务 6（论文图号冲突）不在本脚本，见 Markdown / Word 源文件与生成脚本的同步修改。
@@ -76,7 +76,7 @@ def task2_actual_vs_predicted(polish):
     metrics = model_training.regression_metrics(y_test, y_pred)
     print('复现最终模型：维度 %d；拟合 %d 行；测试 %d 行' %
           (assembler.schema.dimension, len(fit_frame), len(test_frame)))
-    print('test MAE = %.6f  RMSE = %.6f  R2 = %.6f（论文正式口径 35.48 / 64.81 / 0.582）'
+    print('test MAE = %.6f  RMSE = %.6f  R2 = %.6f（论文正式统计范围 35.48 / 64.81 / 0.582）'
           % (metrics['MAE'], metrics['RMSE'], metrics['R2']))
 
     pred_frame = pd.DataFrame({
@@ -134,7 +134,7 @@ def task4_negotiable_vs_public():
     single = pd.read_excel(src, sheet_name='01_结构对照_单值')
     chi_single = pd.read_excel(src, sheet_name='02_卡方检验_单值')
     multi = pd.read_excel(src, sheet_name='03_结构对照_多值')
-    concl = pd.read_excel(src, sheet_name='04_结论与口径')
+    concl = pd.read_excel(src, sheet_name='04_结论与统计范围')
 
     full = []
     for _, row in single.iterrows():
@@ -203,7 +203,7 @@ def task3_main_findings(pred_metrics):
     eps = dict(zip(kw['检验对象'].astype(str), kw['效应量'].astype(float)))
 
     ranks = pd.read_excel(project_paths.TABLES_DIR / 'ch6/19_skill_eda_scope_audit.xlsx',
-                          sheet_name='02_主口径技能排名')
+                          sheet_name='02_主统计范围技能排名')
     rank_map = dict(zip(ranks['技能标准名'], ranks['岗位数']))
 
     summary = pd.read_csv(project_paths.RESULTS_E2_E7 / 'company_group_split_summary.csv')
@@ -236,12 +236,12 @@ def task3_main_findings(pred_metrics):
          'interpretation': '行业与公司规模同薪资存在统计关联，行业差异中包含岗位职能构成的影响，'
                            '本文不作进一步分解。'},
         {'analysis_module': '技能结构',
-         'representative_result': '主口径 8,822 个岗位中，Python 覆盖 %d 个岗位、SQL 覆盖 %d 个岗位；'
+         'representative_result': '主统计范围 8,822 个岗位中，Python 覆盖 %d 个岗位、SQL 覆盖 %d 个岗位；'
                                   '技术领域以数据分析 %d、人工智能 %d 最广，办公工具以 Excel %d、'
                                   '办公软件 %d 最广'
                    % (rank_map['Python'], rank_map['SQL'], rank_map['数据分析'],
                       rank_map['人工智能'], rank_map['Excel'], rank_map['办公软件']),
-         'metric': 'Python %d（%.2f%%）；SQL %d（%.2f%%）；技能主口径分母 8,822'
+         'metric': 'Python %d（%.2f%%）；SQL %d（%.2f%%）；技能主统计范围分母 8,822'
                    % (rank_map['Python'], 100 * rank_map['Python'] / 8822,
                       rank_map['SQL'], 100 * rank_map['SQL'] / 8822),
          'interpretation': '技能需求呈基础面广、方向分化的结构：编程语言与数据库覆盖最广，'
@@ -255,7 +255,7 @@ def task3_main_findings(pred_metrics):
          'interpretation': '模型对实习岗位日薪具有稳定的预测能力，平均绝对误差约相当于'
                            '中位薪资的两成，误差随薪资水平升高而增大。'},
         {'analysis_module': '泛化分析（跨公司）',
-         'representative_result': '按公司分组划分下测试集 MAE 升至 %.2f 元/天（随机划分同口径为 '
+         'representative_result': '按公司分组划分下测试集 MAE 升至 %.2f 元/天（随机划分同统计范围为 '
                                   '%.2f 元/天）；5 个随机种子的重复划分为 %.2f ± %.2f 元/天'
                    % (51.98, random_test_mae, float(summary_map['测试集 MAE 均值']),
                       float(summary_map['测试集 MAE 标准差'])),
@@ -284,13 +284,13 @@ def task3_main_findings(pred_metrics):
 
 # 任务 5（可选）：技能词云
 def task5_skill_wordcloud():
-    print('\n' + '=' * 70 + '\n任务 5：技能词云（主口径）\n' + '=' * 70)
+    print('\n' + '=' * 70 + '\n任务 5：技能词云（主统计范围）\n' + '=' * 70)
     from wordcloud import WordCloud  # noqa: PLC0415
     import matplotlib.pyplot as plt  # noqa: PLC0415
     from matplotlib import colors as mcolors  # noqa: PLC0415
 
     ranks = pd.read_excel(project_paths.TABLES_DIR / 'ch6/19_skill_eda_scope_audit.xlsx',
-                          sheet_name='02_主口径技能排名')
+                          sheet_name='02_主统计范围技能排名')
     counts = {str(name): int(count) for name, count in
               zip(ranks['技能标准名'], ranks['岗位数']) if int(count) >= 20}
     font = Path(r'C:\Windows\Fonts\simhei.ttf')

@@ -183,11 +183,11 @@ def main() -> int:
     }
     time_summary['发布年份分布'] = {int(k): int(v) for k, v in time_summary['发布年份分布'].items()}
 
-    # 技能命中率（主口径：要求段落优先）
+    # 技能命中率（主统计范围：要求段落优先）
     membership = pd.read_parquet(FEATURES / 'job_skill_membership.parquet')
     main_scope = membership[membership['match_scope'] == 'REQUIREMENT_SECTION']
     scope_main = entity[entity[SCOPE] == 'REQUIREMENT_SECTION'][[ID, 'period']]
-    denom = scope_main.groupby('period')[ID].count().rename('主口径岗位数')
+    denom = scope_main.groupby('period')[ID].count().rename('主统计范围岗位数')
     skill_rows = {}
     for skill in SKILLS:
         ids = set(main_scope.loc[main_scope['canonical_skill'] == skill, 'intern_id'])
@@ -258,7 +258,7 @@ def main() -> int:
         diagnostics = figure_finalize.save_paper_figure(
             fig, FIGDIR, 'fig_4_8_publish_cohort_count', subfigures=[],
             meta={'数据来源': '唯一岗位表按岗位发布时间聚合到自然月',
-                  '口径': '柱＝样本岗位数（含薪资面议），线＝有效薪资岗位数；'
+                  '统计范围': '柱＝样本岗位数（含薪资面议），线＝有效薪资岗位数；'
                           '逐月对照只描述本样本，不代表市场岗位存量',
                   '用途': '第4章 图 4-9（E8 新图编号顺延后）重绘'})
         plt.close(fig)
@@ -267,7 +267,7 @@ def main() -> int:
 
     # 图T2、图T3：论文版式。绘制与门禁逻辑统一在 49 号重绘脚本的 save_salary_figure /
     # save_skill_figure 中：无图内总图题、600 dpi PNG + 矢量 PDF、内向刻度、浅虚线网格，
-    # 薪资图对 n < 30 的窗口加浅色底纹，技能图横轴沿用「只排给出命中率的窗口」的原有口径，
+    # 薪资图对 n < 30 的窗口加浅色底纹，技能图横轴沿用「只排给出命中率的窗口」的原有统计范围，
     # 与全文其他重绘图件保持同一版式
     figure_spec = importlib.util.spec_from_file_location(
         '_fig49_time_cohort', ROOT / 'scripts' / 'ch4_lifecycle' / '49_redraw_time_cohort_figures.py')

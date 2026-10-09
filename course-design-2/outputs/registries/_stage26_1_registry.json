@@ -75,9 +75,9 @@
       "failed_paper_gates": []
     },
     {
-      "stem": "图S27_Strict与Relaxed口径对照",
-      "png_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed口径对照.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed口径对照.pdf",
+      "stem": "图S27_Strict与Relaxed统计范围对照",
+      "png_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed统计范围对照.png",
+      "pdf_path": "outputs\\figures\\supplementary\\图S27_Strict与Relaxed统计范围对照.pdf",
       "png_pixel_size": [
         8720,
         2535

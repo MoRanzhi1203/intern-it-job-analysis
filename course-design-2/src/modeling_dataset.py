@@ -19,7 +19,7 @@
 - **C 公司**：公司名称/公司实体信息、所属行业、公司性质（缺失保持）、公司规模数值与等级、
   公司认证标签、公司标签数量、公司简介字符数；
 - **D 技能**：聚合技能特征（技能总数 + 各技能组计数）+ `技能提取范围` 控制变量；
-  高频技能 multi-hot 由 `data/features/job_skill_membership.parquet`（ALL_USABLE 口径）
+  高频技能 multi-hot 由 `data/features/job_skill_membership.parquet`（ALL_USABLE 统计范围）
   在建模阶段临时构造，**不写入 processed 宽表**；
 - **E 文本语义**：model-safe BGE 向量以 `文本向量行号` 引用（512 维，索引见
   `data/features/job_text_embedding_index.parquet` 的 `job_text_safe`），
@@ -43,7 +43,7 @@ def is_multi_value(value) -> bool:
     """多值字段判定（parquet 读取的列表列可能是 list / ndarray / set）。"""
     return isinstance(value, (list, tuple, set, frozenset, np.ndarray))
 
-# ---- 主目标与稳健性口径 ----
+# ---- 主目标与稳健性统计范围 ----
 TARGET_FIELD = schema.SALARY_MID_FIELD
 ROBUSTNESS_TARGET_FIELDS = [schema.SALARY_MIN_FIELD, schema.SALARY_MAX_FIELD,
                             schema.SALARY_SPAN_FIELD]
@@ -147,14 +147,14 @@ COLUMN_SPEC = {
     '公司标签数量': (GROUP_COMPANY, '数值', 1, 0, 0, 1, 'Stage 06', ''),
     schema.COMPANY_PROFILE_CHAR_COUNT_FIELD: (GROUP_COMPANY, '数值', 1, 0, 0, 1, 'Stage 06', ''),
     schema.SKILL_SET_FIELD: (GROUP_SKILL, '列表', 0, 0, 1, 0, 'Stage 07',
-                             'ALL_USABLE 口径规范技能集合（关系引用）'),
+                             'ALL_USABLE 统计范围规范技能集合（关系引用）'),
     schema.SKILL_GROUP_FIELD: (GROUP_SKILL, '列表', 0, 0, 1, 0, 'Stage 06', '技能组列表'),
     schema.SKILL_FAMILY_LIST_FIELD: (GROUP_SKILL, '列表', 0, 0, 1, 0, 'Stage 07',
                                      '技能一级类型列表'),
     **{column: (GROUP_SKILL, '数值', 1, 0, 0, 1, 'Stage 07', '')
        for column in SKILL_AGGREGATE_FIELDS},
     schema.SKILL_SCOPE_FIELD: (GROUP_SKILL, '文本', 0, 1, 0, 1, 'Stage 07',
-                               '技能提取口径控制变量（REQUIREMENT_SECTION / FULL_TEXT_FALLBACK / EMPTY_TEXT）'),
+                               '技能提取统计范围控制变量（REQUIREMENT_SECTION / FULL_TEXT_FALLBACK / EMPTY_TEXT）'),
     TEXT_EMPTY_FIELD: (GROUP_SKILL, '数值', 1, 0, 0, 1, 'Stage 12',
                        '无可用技能文本标志：与「有文本但 0 技能」严格区分'),
     HAS_SKILL_FIELD: (GROUP_SKILL, '数值', 1, 0, 0, 1, 'Stage 12', ''),
@@ -193,7 +193,7 @@ def salary_derived_columns(columns) -> list:
 
 
 def valid_salary_mask(salary: pd.DataFrame) -> pd.Series:
-    """正式薪资样本掩码（与 Stage 13 技能 EDA 完全一致的口径）。"""
+    """正式薪资样本掩码（与 Stage 13 技能 EDA 完全一致的统计范围）。"""
     return (salary[schema.SALARY_NEGOTIABLE_FIELD].eq(0)
             & salary[schema.SALARY_PARSE_STATUS_FIELD].eq('已解析')
             & salary[schema.SALARY_MID_FIELD].notna()
@@ -333,7 +333,7 @@ def build_feature_manifest(analysis_columns, model_frame: pd.DataFrame) -> pd.Da
         '是否参与模型': 1, '是否目标派生': 0, '是否存在泄漏风险': '否',
         '处理方式': '建模阶段用 MultiLabelBinarizer / sparse pivot 临时构造；'
                 '阈值候选 50 / 80 / 100 / 0.5% training jobs，最终在 Stage 14 validation 上选择',
-        '备注': f'技能口径 = ALL_USABLE；建模样本 {len(model_frame)} 行；'
+        '备注': f'技能统计范围 = ALL_USABLE；建模样本 {len(model_frame)} 行；'
                 'EMPTY_TEXT 不解释为「无技能」，由文本是否为空/技能提取范围显式控制',
     })
     rows.append({
@@ -392,7 +392,7 @@ def build_skill_threshold_table(membership: pd.DataFrame, model_ids: set) -> pd.
         kept = counts[counts >= threshold]
         jobs = int(frame[frame['canonical_skill'].isin(set(kept.index))]['intern_id'].nunique())
         rows.append({
-            '阈值口径': label,
+            '阈值设定': label,
             '阈值（岗位数）': threshold,
             '保留技能数': int(len(kept)),
             '矩阵维度': f'{denominator} × {len(kept)}',

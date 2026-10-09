@@ -49,7 +49,7 @@ EXPECTED_SAMPLE = 14883
 SEED_STABILITY_SEEDS = (42, 7, 2024)
 SHAP_TOP_N = 20
 SKILL_SHAP_TOP_N = 20
-# §17 重点技能（presence 口径必须逐个报告）
+# §17 重点技能（presence 统计方式必须逐个报告）
 KEY_SKILLS = ['Python', 'Java', 'SQL', 'MySQL', 'C++', 'Excel',
               '机器学习', '深度学习', '大模型', 'Agent',
               '强化学习', 'Linux', '数据分析', '办公软件']
@@ -142,7 +142,7 @@ def register_gates(gates, audit: dict, metrics: dict, key_skill: pd.DataFrame) -
                 and skill_shap['presence_direction']
                 .isin(['正向预测贡献', '负向预测贡献', '中性/弱影响']).all()
                 and not key_skill.empty and set(KEY_SKILLS) <= set(key_skill['技能']),
-                f"技能 SHAP 已增加 presence 口径：present + absent = "
+                f"技能 SHAP 已增加 presence 统计方式：present + absent = "
                 f"{metrics['shap_rows']:,}（原 test 子集）逐技能成立；"
                 f"presence_direction 按 mean_SHAP_present（阈值 1e-8）判定，"
                 f"与 global_mean_SHAP_direction 分列；"
@@ -187,7 +187,7 @@ def build_increment_sheet(prediction_frames: dict, pairs, group_label: str) -> p
                 'bootstrap_CI95_上界': stats['bootstrap_CI95_上界'],
                 'CI是否跨0': stats['CI是否跨0'],
                 'bootstrap轮数': stats['bootstrap轮数'], '随机种子': stats['随机种子'],
-                '结论口径': conclusion,
+                '结论表述': conclusion,
                 '说明': '正值 ΔMAE 表示加入该特征组后 MAE 下降；CI 不跨 0 表示差异稳定',
             })
     return pd.DataFrame(rows)
@@ -334,7 +334,7 @@ def figure_skill_shap(skill_table: pd.DataFrame, registry: list,
     plot_style.add_bottom_caption(fig, caption)
     fig.subplots_adjust(left=0.38, bottom=0.18)
     return _finish(fig, '08_skill_shap_top20', caption, registry,
-                   meta={'图表类型': '横向柱状图', '数据来源': 'TreeSHAP 技能特征（presence 口径）'})
+                   meta={'图表类型': '横向柱状图', '数据来源': 'TreeSHAP 技能特征（presence 统计方式）'})
 
 
 def pair_summary(increment: pd.DataFrame, pair_label: str) -> dict:
@@ -452,7 +452,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '',
         increment_sentence(text_increment, 'Full vs Base+Skill', 'E 文本语义组'),
         f'- 判读：{skill_value_verdict(text_summary, "文本语义组 E")}',
-        '- 说明：文本组与技能组的口径不同（前者是通用语义压缩维度，后者是显式技能要求），'
+        '- 说明：文本组与技能组的统计范围不同（前者是通用语义压缩维度，后者是显式技能要求），'
         '两者增量大小不可直接与「技能是否存在价值」的结论互相替代。',
         '',
         '## 4. 公司 Group Split（跨公司泛化）',
@@ -470,7 +470,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '- 解读：随机划分反映**同分布预测**能力（岗位可能来自训练集中出现过的公司），'
         '公司 Group Split 反映**跨公司泛化**能力（测试公司完全未见）。'
         '两者差距说明随机划分结果部分受益于同公司岗位相似性，但**不能据此认为原模型无效**；'
-        '该差距正是需要在论文中显式报告的口径差异。',
+        '该差距正是需要在论文中显式报告的统计范围差异。',
         '',
         '## 5. 稳健性',
         '',
@@ -482,11 +482,11 @@ def write_record(metrics: dict, audit: dict) -> Path:
                      f"{row.get('R²', '')} | {row['说明']} |")
     lines += [
         '',
-        '| 目标口径 | MAE | RMSE | R² | 说明 |',
+        '| 目标定义 | MAE | RMSE | R² | 说明 |',
         '| --- | --- | --- | --- | --- |',
     ]
     for row in target_table.to_dict('records'):
-        lines.append(f"| {row['目标口径']} | {row['MAE']} | {row['RMSE']} | {row['R²']} | "
+        lines.append(f"| {row['目标定义']} | {row['MAE']} | {row['RMSE']} | {row['R²']} | "
                      f"{row['说明']} |")
     lines += [
         '',
@@ -510,7 +510,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
                      f"{row['global_mean_SHAP_direction']} | {row['低频标记']} |")
     lines += [
         '',
-        '### 6.1 重点技能（presence 口径）',
+        '### 6.1 重点技能（presence 统计方式）',
         '',
         '| 技能 | 模型样本岗位频率 | test_present_n | mean_SHAP_present | mean_abs_SHAP | presence_direction |',
         '| --- | --- | --- | --- | --- | --- |',
@@ -523,15 +523,15 @@ def write_record(metrics: dict, audit: dict) -> Path:
                      f"{mean_present} | {mean_abs} | {row['presence_direction']} |")
     lines += [
         '',
-        '### 6.2 两种方向口径（严格区分，不得混用）',
+        '### 6.2 两种方向统计范围（严格区分，不得混用）',
         '',
-        '| 口径 | 定义 | 用途 |',
+        '| 统计范围 | 定义 | 用途 |',
         '| --- | --- | --- |',
         '| `global_mean_SHAP_direction`（原「方向性」） | mean(SHAP) 在**全部解释样本**上的正负 | '
-        '历史口径，保留用于对比；受 0/1 特征结构影响 |',
+        '历史统计范围，保留用于对比；受 0/1 特征结构影响 |',
         '| `presence_direction`（论文与图表优先） | **技能存在时**（技能列 = 1）的 '
         'mean_SHAP_present > 1e-8 → 正向预测贡献；< -1e-8 → 负向预测贡献；否则中性/弱影响 | '
-        '对 0/1 技能特征更直观的解释口径 |',
+        '对 0/1 技能特征更直观的解释方式 |',
         '',
         f"- SHAP 使用 LightGBM 原生 TreeSHAP（`pred_contrib`），解释样本 = test 子集 "
         f"{metrics['shap_rows']:,} 行；基准值 {metrics['shap_base_value']}，"
@@ -540,8 +540,8 @@ def write_record(metrics: dict, audit: dict) -> Path:
         f"- 解释对象：产出目录中的正式主模型 {metrics['shap_model_key']}"
         '（预处理器 train-only 拟合、估计器在 train+validation 重拟合，test 从未参与拟合与选模），'
         '未对消融配置或其它候选模型执行 SHAP；',
-        f"- 分母口径：模型样本频率 = 岗位数 / {metrics['model_sample']:,}（Stage 12 建模样本，"
-        f'ALL_USABLE 技能口径）；presence 口径 = test 现技能岗位数 / '
+        f"- 分母范围：模型样本频率 = 岗位数 / {metrics['model_sample']:,}（Stage 12 建模样本，"
+        f'ALL_USABLE 技能统计范围）；presence 统计方式 = test 现技能岗位数 / '
         f"{metrics['shap_rows']:,}（原 test 子集），两个分母**禁止混用**；",
         f"- 解释稳定性（多种子 {SEED_STABILITY_SEEDS}）：mean|SHAP| 排名 Spearman 相关 "
         f"{metrics['shap_stability']}；",
@@ -557,8 +557,8 @@ def write_record(metrics: dict, audit: dict) -> Path:
         f'3. 文本语义（E 组）：{skill_value_verdict(text_summary, "文本语义组 E")}',
         f'4. 随机划分与公司 Group Split 的差距（test MAE '
         f"{group_table[group_table['划分方式'].str.startswith('差异')]['MAE'].iloc[0]:+.4f}）"
-        '量化了「同分布预测」与「跨公司泛化」的口径差异；',
-        '5. 极端值与目标口径稳健性实验表明误差量级与重要性方向稳定，未改变主任务与主模型；',
+        '量化了「同分布预测」与「跨公司泛化」的统计范围差异；',
+        '5. 极端值与目标定义稳健性实验表明误差量级与重要性方向稳定，未改变主任务与主模型；',
         '6. 全部结论限于预测与关联层面，未做因果推断；技能词典与本轮主模型在本轮**未被修改**。',
         '',
         '## 8. 门禁',
@@ -743,7 +743,7 @@ def main() -> int:
         model_frame, '公司 Group Split test')
     print(f'Group Split test MAE {group_metrics["MAE"]} vs Random test MAE {random_metrics["MAE"]}')
 
-    # ---- 4. 稳健性：极端值 + 目标口径 ----
+    # ---- 4. 稳健性：极端值 + 目标定义 ----
     low, high = np.percentile(y_train, 1), np.percentile(y_train, 99)
     winsor_train = np.clip(y_train, low, high)
     full_assembler, full_model, full_matrix_train, full_matrix_test = ablation_models['Full']
@@ -765,7 +765,7 @@ def main() -> int:
                                 [0])
     robustness_table = pd.DataFrame([
         {'实验': '主模型（真实薪资 y）', 'MAE': main_metrics['MAE'], 'RMSE': main_metrics['RMSE'],
-         'R²': main_metrics['R2'], '说明': '主分析与主模型口径，未做任何缩尾'},
+         'R²': main_metrics['R2'], '说明': '主分析与主模型统计范围，未做任何缩尾'},
         {'实验': '训练集 y winsorize 1%/99%', 'MAE': winsor_metrics['MAE'],
          'RMSE': winsor_metrics['RMSE'], 'R²': winsor_metrics['R2'],
          '说明': f'训练目标裁剪至 [{low:.1f}, {high:.1f}]，评估仍用真实 test 薪资'},
@@ -777,7 +777,7 @@ def main() -> int:
         {'实验': '主模型 Top5 特征', 'MAE': '', 'RMSE': '', 'R²': '',
          '说明': '、'.join(main_importance.sort_values(ascending=False).head(5).index.tolist())},
     ])
-    target_rows = [{'目标口径': '薪资中点（主任务）', 'MAE': main_metrics['MAE'],
+    target_rows = [{'目标定义': '薪资中点（主任务）', 'MAE': main_metrics['MAE'],
                     'RMSE': main_metrics['RMSE'], 'R²': main_metrics['R2'],
                     '说明': '正式主任务，本轮不改变'}]
     for target in ablation_shap.TARGET_VARIANTS:
@@ -793,7 +793,7 @@ def main() -> int:
             dtype='float64')
         truth_t = test_frame[target].to_numpy(dtype='float64')
         metrics_t = model_training.regression_metrics(truth_t, pred_t)
-        target_rows.append({'目标口径': target, 'MAE': metrics_t['MAE'], 'RMSE': metrics_t['RMSE'],
+        target_rows.append({'目标定义': target, 'MAE': metrics_t['MAE'], 'RMSE': metrics_t['RMSE'],
                             'R²': metrics_t['R2'],
                             '说明': '稳健性实验：仅比较趋势，不作为新的主任务或主模型'})
         print(f'{target}: MAE {metrics_t["MAE"]}')

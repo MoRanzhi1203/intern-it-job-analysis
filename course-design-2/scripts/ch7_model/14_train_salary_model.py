@@ -65,7 +65,7 @@ SCALE_FOR = {'Ridge'}
 
 
 def numeric_feature_columns() -> list:
-    """A/B/C/D/E 中参与模型的数值字段（来自 Stage 12 Feature Manifest 口径）。"""
+    """A/B/C/D/E 中参与模型的数值字段（来自 Stage 12 Feature Manifest 统计范围）。"""
     return ['学历等级', '每周到岗天数', '实习月数', '岗位大类数量', '岗位细分类数量',
             '岗位标签数量', '岗位描述字符数', '岗位描述分词数', schema.JOB_DIRECTION_MATCH_FIELD,
             '核心版本数', '完整页面版本数', '是否多版本岗位', '是否直辖市',
@@ -134,7 +134,7 @@ def build_dimension_sheet(assembler: model_training.SalaryFeatureAssembler,
          '说明': '岗位大类 / 岗位细分类 / 公司认证标签（各自取训练集 Top'
                  f'{model_training.TOP_MULTI_VALUES}）'},
         {'特征块': '技能 multi-hot（D 组）', '列数': len(spec.skill_columns),
-         '说明': f'阈值 = {spec.skill_threshold}（train 频率），口径 ALL_USABLE'},
+         '说明': f'阈值 = {spec.skill_threshold}（train 频率），统计范围 ALL_USABLE'},
         {'特征块': '文本语义 SVD（E 组）', '列数': spec.text_dim,
          '说明': 'model-safe BGE 向量在训练集上拟合 TruncatedSVD 后变换'},
         {'特征块': '合计', '列数': spec.dimension, '说明': '实际进入模型的特征维度'},
@@ -335,11 +335,11 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '',
         '## 3. 技能阈值选择（只依据 validation MAE）',
         '',
-        '| 阈值口径 | 阈值 | 技能列数 | 特征维度 | validation MAE |',
+        '| 阈值设定 | 阈值 | 技能列数 | 特征维度 | validation MAE |',
         '| --- | --- | --- | --- | --- |',
     ]
     for row in audit['12_技能阈值选择'].itertuples(index=False):
-        lines.append(f'| {row.阈值口径} | {int(row.阈值)} | {int(row.技能列数)} | '
+        lines.append(f'| {row.阈值设定} | {int(row.阈值)} | {int(row.技能列数)} | '
                      f'{int(row.特征维度)} | {row.validation_MAE} |')
     lines += [
         '',
@@ -519,7 +519,7 @@ def main() -> int:
                                             REFERENCE_MODEL, REFERENCE_PARAMS)
         metrics = model_training.regression_metrics(y_valid, fit['valid_pred'])
         threshold_rows.append({
-            '阈值口径': label, '阈值': resolved, '技能列数': len(assembler.schema.skill_columns),
+            '阈值设定': label, '阈值': resolved, '技能列数': len(assembler.schema.skill_columns),
             '特征维度': assembler.schema.dimension, 'validation_MAE': metrics['MAE'],
             'validation_RMSE': metrics['RMSE'], 'validation_R2': metrics['R2'],
             '参考模型': f'{REFERENCE_MODEL}（固定参数）', '训练耗时秒': round(time.time() - started, 1),

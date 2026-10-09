@@ -1,0 +1,41 @@
+{
+  "stage": "stage_04",
+  "gates": {
+    "CORE_SIGNATURE_BUILD": {
+      "status": "PASS",
+      "note": "17584 个核心版本各自对应唯一核心签名，相邻核心版本签名必然不同（同一状态再次出现时保留为独立版本）"
+    },
+    "FULL_SIGNATURE_BUILD": {
+      "status": "PASS",
+      "note": "完整页面版本 21588 个，且完整版本数 >= 核心版本数"
+    },
+    "VERSION_SEQUENCE_BUILD": {
+      "status": "PASS",
+      "note": "同一岗位核心版本号严格为 1..K，完整页面版本号非递减"
+    },
+    "VERSION_TIME_ORDER": {
+      "status": "PASS",
+      "note": "版本时间顺序、版本号连续性、负间隔检查全部通过"
+    },
+    "VERSION_CONTIGUITY": {
+      "status": "PASS",
+      "note": "版本观测次数合计 172055 = 观测快照总数，版本时间区间不重叠且最终版本结束时间留空"
+    },
+    "CHANGE_EVENT_BUILD": {
+      "status": "PASS",
+      "note": "变化字段数合计 751 与变化事件行数一致，且旧值 != 新值"
+    },
+    "FIELD_CONSISTENCY_AUDIT": {
+      "status": "PASS",
+      "note": "21 个业务字段全部完成同岗位历史多值审计，19 个字段存在多值"
+    },
+    "BUSINESS_CONFLICT_EXPORT": {
+      "status": "PASS",
+      "note": "11 个 Sheet 已生成（变化事件与冲突岗位全部留档）"
+    },
+    "VERSION_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "14 号版本审计表 11 个 Sheet"
+    }
+  }
+}

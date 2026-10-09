@@ -59,7 +59,7 @@ def load_data() -> tuple[np.ndarray, np.ndarray, float]:
     company = pd.read_csv(REPEATS_CSV)['test MAE'].to_numpy('float64')
     summary = pd.read_csv(SUMMARY_CSV).set_index('指标')['取值']
     # 该行名是冻结 CSV 的取值键，不进入图件文字
-    baseline = float(summary.loc['随机划分同口径 MAE 基准'])
+    baseline = float(summary.loc['随机划分同统计范围 MAE 基准'])
     seeds = pd.read_excel(METRICS_XLSX, sheet_name='08_多种子明细')
     random_mae = seeds[seeds['模型'] == 'LightGBM']['test MAE'].to_numpy('float64')
     if [round(float(v), 3) for v in company] != [round(v, 3) for v in ANCHOR_COMPANY]:
@@ -115,7 +115,7 @@ def main() -> int:
         fig, project_paths.FIGURES_DIR, STEM, subfigures=[],
         meta={'数据来源': 'company_group_split_repeats.csv（5 次公司分组划分）＋ '
                           'ch7/52_stage26_4_metrics_final.xlsx / 08_多种子明细（5 个随机种子）；'
-                          '基准线取 company_group_split_summary.csv 的「随机划分同口径 MAE 基准」行'
+                          '基准线取 company_group_split_summary.csv 的「随机划分同统计范围 MAE 基准」行'
                           '（该行名沿用冻结 CSV 原样，仅作取值键，不出现在图中）',
               '计算说明': '公司分组划分按公司实体整体划分（训练 2,453 / 验证 526 / 测试 526 家公司），'
                           '随机划分按薪资十分位分层随机划分；两者均为 A+B+C+D+E（288 维）、'

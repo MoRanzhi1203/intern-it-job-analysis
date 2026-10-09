@@ -54,7 +54,7 @@ from src.script_support import (build_assembler, dump_json, fit_eval,  # noqa: E
                                        grouped_columns, section_length, sha256_of)
 
 # ============================================================================
-# 常量与口径（与 Stage26.2 统一协议保持一致，便于逐项对照）
+# 常量与统计范围（与 Stage26.2 统一协议保持一致，便于逐项对照）
 # ============================================================================
 SEED = 42
 SEEDS = (42, 52, 62, 72, 82)
@@ -303,11 +303,11 @@ def build_diagnostics(frame: pd.DataFrame, feature_manifest: dict,
                                   & membership['intern_id'].isin(set(train_ids))]
     frequency = train_membership.groupby('canonical_skill')['intern_id'].nunique()
     skill_table = pd.DataFrame([
-        {'检查项': '技能主/扩展口径可命中技能条目数', '数值': int(frequency.size)},
+        {'检查项': '技能主/扩展统计范围可命中技能条目数', '数值': int(frequency.size)},
         {'检查项': '训练集频次 ≥ 100（保留为模型列）', '数值': int((frequency >= 100).sum())},
         {'检查项': '训练集频次 < 100（不进入模型列）', '数值': int((frequency < 100).sum())},
         {'检查项': '训练集频次 < 10', '数值': int((frequency < 10).sum())},
-        {'检查项': '阈值口径', '数值': '技能列只保留训练集频次 ≥ 100 的技能，'
+        {'检查项': '阈值设定', '数值': '技能列只保留训练集频次 ≥ 100 的技能，'
                                  '该阈值只在训练集上计算'}])
 
     pairs = [column for column in CONTINUOUS_NUMERIC if column in frame.columns]
@@ -396,7 +396,7 @@ def figure_flow() -> dict:
         fig, SUPP_DIR, FIG_FLOW,
         subfigures=[('a', '薪资预测模型构建与评估流程', ax)],
         meta={'数据来源': '本文第 7 章与第 8 章的建模流程',
-              '口径': '流程图只描述正式流程，不含任何统计结果',
+              '统计范围': '流程图只描述正式流程，不含任何统计结果',
               'seed': SEED, '用途': '第7章 图 7-1（替代原模型验证集误差比较图）'})
     plt.close(fig)
     return diagnostics
@@ -472,7 +472,7 @@ def figure_diagnostics(diagnostics: dict) -> dict:
         subfigures=[('a', 'Train / Validation / Test 基本分布对照', axes[0]),
                     ('b', caption_b, axes[1])],
         meta={'数据来源': 'job_salary_model_dataset.parquet + model_splits.parquet',
-              '口径': '移除发布时点不可得的后验特征后的正式特征集；'
+              '统计范围': '移除发布时点不可得的后验特征后的正式特征集；'
                       '相关矩阵只覆盖有连续意义的数值特征，不做 320×320 全特征矩阵',
               'seed': SEED, '用途': '第7章 7.1 节 建模前特征诊断（配合表 7-1）'})
     plt.close(fig)
@@ -526,7 +526,7 @@ def han_count(text: str) -> int:
 
 
 def sentence_count(text: str) -> int:
-    """按句号、问号、叹号切分的句数（与小结压缩口径一致，不含分号）。"""
+    """按句号、问号、叹号切分的句数（与小结压缩统计范围一致，不含分号）。"""
     return len([item for item in re.split(r'[。！？]', text) if item.strip()])
 
 
@@ -1034,7 +1034,7 @@ def run_compute() -> int:
     base_pred = np.asarray(base_model.predict(base_matrix_test), dtype='float64')
     base_metrics = model_training.regression_metrics(truth_test, base_pred)
     base_names = base_assembler.feature_names()
-    robustness_rows.append({'检查项': '对照基准', '口径': '真实薪资，主口径未缩尾',
+    robustness_rows.append({'检查项': '对照基准', '统计范围': '真实薪资，主统计范围未缩尾',
                             'MAE': base_metrics['MAE'], 'RMSE': base_metrics['RMSE'],
                             'R²': base_metrics['R2'],
                             '说明': 'A+B+C+D+E，仅用训练集拟合'})
@@ -1046,18 +1046,18 @@ def run_compute() -> int:
     winsor_pred = np.asarray(winsor_model.predict(base_matrix_test), dtype='float64')
     winsor_metrics = model_training.regression_metrics(truth_test, winsor_pred)
     robustness_rows.append({
-        '检查项': '极端值敏感性', '口径': '训练目标 winsorize 1%/99%',
+        '检查项': '极端值敏感性', '统计范围': '训练目标 winsorize 1%/99%',
         'MAE': winsor_metrics['MAE'], 'RMSE': winsor_metrics['RMSE'],
         'R²': winsor_metrics['R2'],
         '说明': f'训练目标裁剪至 {lower_bound:.0f} 至 {upper_bound:.0f} 元/天，'
                 f'评估仍用真实测试薪资'})
-    for name, field in [('目标口径 薪资下限', schema.SALARY_MIN_FIELD),
-                        ('目标口径 薪资上限', schema.SALARY_MAX_FIELD)]:
+    for name, field in [('目标定义 薪资下限', schema.SALARY_MIN_FIELD),
+                        ('目标定义 薪资上限', schema.SALARY_MAX_FIELD)]:
         model = model_training.make_model('LightGBM', best_params, random_state=SEED)
         model.fit(base_matrix_train, train_only_frame[field].to_numpy('float64'))
         prediction = np.asarray(model.predict(base_matrix_test), dtype='float64')
         metrics = model_training.regression_metrics(truth_test, prediction)
-        robustness_rows.append({'检查项': name, '口径': field, 'MAE': metrics['MAE'],
+        robustness_rows.append({'检查项': name, '统计范围': field, 'MAE': metrics['MAE'],
                                 'RMSE': metrics['RMSE'], 'R²': metrics['R2'],
                                 '说明': '仅比较趋势，不作为新的主任务'})
     gain_base = np.asarray(
@@ -1072,7 +1072,7 @@ def run_compute() -> int:
 
     gain_spearman = float(scipy_stats.spearmanr(gain_base, gain_winsor).statistic)
     robustness_rows.append({
-        '检查项': '特征重要性方向', '口径': 'winsorize 与主模型 gain 排名的 Spearman',
+        '检查项': '特征重要性方向', '统计范围': 'winsorize 与主模型 gain 排名的 Spearman',
         'MAE': None, 'RMSE': None, 'R²': None,
         '说明': f'{gain_spearman:.6f}，共有特征 {len(base_names)} 个'})
 
@@ -1107,7 +1107,7 @@ def run_compute() -> int:
         shap_status = 'OK'
         robustness_rows.append({
             '检查项': '解释稳定性',
-            '口径': '三种随机种子 42、7、2024 与主模型 mean|SHAP| 排名的 Spearman',
+            '统计范围': '三种随机种子 42、7、2024 与主模型 mean|SHAP| 排名的 Spearman',
             'MAE': None, 'RMSE': None, 'R²': None,
             '说明': '；'.join(f'{value:.6f}' for value in correlations)
                     + f'（共同特征 {len(base_names)} 个）'})

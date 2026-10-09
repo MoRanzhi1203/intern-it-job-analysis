@@ -74,7 +74,7 @@ def build_figure(body: pd.DataFrame):
 
     positions = np.arange(len(body), dtype='float64')
     panels = [('MAE（元/天）', 'MAE', plot_style.MAIN_COLOR, np.arange(0.0, 80.1, 20.0), 80.0),
-              # (b) 轴名简写为 nMAE，口径（MAE / 组内薪资中位数）见子图名与载体正文
+              # (b) 轴名简写为 nMAE，统计范围（MAE / 组内薪资中位数）见子图名与载体正文
               ('nMAE', 'nMAE', plot_style.ACCENT_COLOR, np.arange(0.0, 0.31, 0.1), 0.36)]
     for ax, (ylabel, column, color, ticks, top) in zip(axes, panels):
         values = body[column].to_numpy('float64')
@@ -124,7 +124,7 @@ def main() -> int:
         fig, FIGDIR, STEM,
         subfigures=[(letter, text, ax) for (letter, text), ax in zip(CAPTIONS, axes)],
         meta={'数据来源': 'outputs/results/E1_E3_E4_E5/test_error_by_salary_quartile.csv（45 号实验 E3 冻结结果）',
-              '口径': '测试集按真实薪资四分位分组；nMAE = 该组 MAE / 组内薪资中位数；'
+              '统计范围': '测试集按真实薪资四分位分组；nMAE = 该组 MAE / 组内薪资中位数；'
                       '总体（n = 2,233）不进入柱图，只在组内比较',
               '版式': '去掉图内总标题与子图标题，改为 (a)(b) 子图名下置；'
                       '按版心 %.1f cm 出图，字号换算到打印 11~12 pt；两面板统一全文色板'

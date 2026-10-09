@@ -332,7 +332,7 @@ def run_custom() -> None:
               [h.get_label() for h in handles + [band, line_raw, line_smooth]],
               loc='lower center', bbox_to_anchor=(0.5, 1.005), ncol=2, frameon=False)
     plot_style.apply_sci_axis(ax, grid_axis='y')
-    caption = '活跃计划周期薪资中位数与 IQR（Strict 口径）'
+    caption = '活跃计划周期薪资中位数与 IQR（Strict 统计范围）'
     plot_style.add_subfigure_caption(ax, 'a', caption)
     fig.subplots_adjust()
     save('fig_s39_active_cycle_salary_median_iqr', fig, [('a', caption, ax)],
@@ -381,7 +381,7 @@ def run_custom() -> None:
     save('fig_s48_salary_model_build_eval_flow', fig,
          [],
          {'数据来源': '本文第 7 章与第 8 章的正式建模流程',
-          '口径': '流程图只描述正式流程，不含任何统计结果',
+          '统计范围': '流程图只描述正式流程，不含任何统计结果',
           '用途': '第7章 图 7-1（替代原模型验证集 MAE / RMSE 比较图）'})
 
     # ---------------- 图 7-2：建模前特征诊断与子集分布对照 ---------------- #
@@ -449,7 +449,7 @@ def run_custom() -> None:
     save('fig_s49_pre_model_diagnostics_subset_distribution', fig,
          [('a', caption_a, axes[0]), ('b', caption_b, axes[1])],
          {'数据来源': 'ch7/48_stage26_3_pre_model_diagnostics.xlsx / 05、07 子表',
-          '口径': '移除发布时点不可得的后验特征后的正式特征集；'
+          '统计范围': '移除发布时点不可得的后验特征后的正式特征集；'
                   '冗余诊断只覆盖有连续意义的数值特征，不做 320×320 全特征矩阵',
           '用途': '第7章 7.1 节 图 7-2 建模前特征诊断（配合表 7-1、表 7-3）'})
 

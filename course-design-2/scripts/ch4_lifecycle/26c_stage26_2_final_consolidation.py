@@ -6,7 +6,7 @@
 
 覆盖提示词 §5~§15 的方法修复与补充分析部分：
 
-1. 事实核实：三种划分的测试集样本量与构成、消融 MAE 真实跨度、T2「0 天」口径冲突、
+1. 事实核实：三种划分的测试集样本量与构成、消融 MAE 真实跨度、T2「0 天」统计范围冲突、
    T1 阈值敏感性（3/5/7/14 天）、五层结构表述残留、Safe-F 退化证据；
 2. Safe-F 精简为 `publish_month` + `publish_weekday` 两个发布时间位置特征；
 3. 统一三种泛化实验协议（LightGBM / A+B+C+D+E / 技能阈值 100 / 文本 SVD 16）并重算；
@@ -59,7 +59,7 @@ from src import (ablation_shap, eda_analysis, figure_finalize, io_utils,  # noqa
 from src.script_support import build_assembler, project_manifest, sha256_of  # noqa: E402
 
 # ============================================================================
-# 常量与口径
+# 常量与统计范围
 # ============================================================================
 SEED = 42
 SEEDS = (42, 52, 62, 72, 82)
@@ -91,7 +91,7 @@ MEDIAN_MIN_FREQ = 20
 MEDIAN_TOP_MULTI = 30
 MEDIAN_BOOTSTRAP_ROUNDS = 100
 
-CALIBER_ACTIVE = ('按业务日期重构的样本活跃计划周期数量：由当前样本岗位的『发布时间 → 投递截止日期』'
+SCOPE_ACTIVE = ('按业务日期重构的样本活跃计划周期数量：由当前样本岗位的『发布时间 → 投递截止日期』'
                   '计划区间展开得到，曲线只反映本样本的计划招聘覆盖结构，'
                   '不等同于当日完整市场存量，也不构成市场时序。')
 
@@ -127,7 +127,7 @@ SKIP_DIRS = {'.git', '.pytest_cache', '__pycache__', '.ipynb_checkpoints', '.ide
 MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config', 'notebooks', 'tests']
 
 STAGE26_1_MOTHER = (PROJECT_ROOT / 'docs' / 'paper'
-                    / '课程设计论文时序口径收紧修订版_Stage26.1.md')
+                    / '课程设计论文时序设定收紧修订版_Stage26.1.md')
 WORDING_PATTERNS = [
     ('四层结构残留', r'四层'),
     ('三层结构残留', r'三层'),
@@ -149,19 +149,19 @@ def input_record(path: Path) -> dict:
 
 
 # ============================================================================
-# T1 / T2 / T3 统一口径（gap 以精确时间差计算后转换为日历天；相差 0 天归入 T3）
+# T1 / T2 / T3 统一统计范围（gap 以精确时间差计算后转换为日历天；相差 0 天归入 T3）
 # ============================================================================
 def assign_episodes_calendar(segments: pd.DataFrame, threshold_days: int) -> pd.DataFrame:
-    """按「日历天」统一口径重算三档转换与 Strict / Relaxed 周期归属。
+    """按「日历天」统一统计范围重算三档转换与 Strict / Relaxed 周期归属。
 
-    口径：gap = date(start) − date(当前周期结束日)（日历天，整数）。
+    统计范围：gap = date(start) − date(当前周期结束日)（日历天，整数）。
     - `gap >= threshold_days` → T1_CONFIRMED，新建正式周期；
-    - `0 < gap < threshold_days` → T2_SUSPECTED，严格口径归并（Relaxed 口径新建）；
-    - `gap <= 0` → T3_CONFLICT，两口径均归并。
+    - `0 < gap < threshold_days` → T2_SUSPECTED，严格统计范围归并（Relaxed 统计范围新建）；
+    - `gap <= 0` → T3_CONFLICT，两种统计范围均归并。
 
     与 Stage26.1 实现的差异：Stage26.1 用精确时间差（浮点天）判档、再用日历天报告，
     因而出现「T2 区间为 0 < gap < 7、但报告最小值为 0 天」的自相矛盾记录；
-    本函数把判档口径与报告口径统一为日历天。
+    本函数把判档统计范围与报告统计范围统一为日历天。
     """
     frame = segments.sort_values(['intern_id', 'segment_first_observed', 'segment_no'],
                                  kind='stable').reset_index(drop=True)
@@ -214,11 +214,11 @@ def threshold_block(frame: pd.DataFrame, threshold_days: int) -> list:
     strict = frame['transition_tier_unified'].eq('T1_CONFIRMED')
     relaxed_mask = frame['transition_tier_unified'].isin(['T1_CONFIRMED', 'T2_SUSPECTED'])
     return [
-        {'口径': 'Strict（T1 新建；T2 / T3 归并）', '阈值（日历天）': threshold_days,
+        {'统计范围': 'Strict（T1 新建；T2 / T3 归并）', '阈值（日历天）': threshold_days,
          'T1 事件数': int(strict.sum()),
          'T1 岗位数': int(frame.loc[strict, 'intern_id'].nunique()),
          '正式周期数': int(frame.groupby('intern_id')['episode_no_strict_unified'].max().sum())},
-        {'口径': 'Relaxed（T1 + T2 新建；T3 归并）', '阈值（日历天）': threshold_days,
+        {'统计范围': 'Relaxed（T1 + T2 新建；T3 归并）', '阈值（日历天）': threshold_days,
          'T1 事件数': int(relaxed_mask.sum()),
          'T1 岗位数': int(frame.loc[relaxed_mask, 'intern_id'].nunique()),
          '正式周期数': int(frame.groupby('intern_id')['episode_no_relaxed_unified'].max().sum())},
@@ -436,7 +436,7 @@ def figure_duration(episodes: pd.DataFrame, registry: list) -> dict:
         subfigures=[('a', '招聘周期计划持续天数分布（横轴截断至 P99）', axes[0]),
                     ('b', '招聘周期计划持续天数的累积分布', axes[1])],
         meta={'数据来源': 'job_strict_episode_26_1.parquet',
-              '口径': ('计划持续天数 = 末次观测截止日 − 发布时间（日历差）+ 1；'
+              '统计范围': ('计划持续天数 = 末次观测截止日 − 发布时间（日历差）+ 1；'
                        '属计划窗口，不等于实际招满所需时间'),
               'seed': SEED, '用途': '第4章 图 4-4 重绘（T1/T2/T3 数量改用表格）'})
     plt.close(fig)
@@ -481,7 +481,7 @@ def figure_daily(daily: pd.DataFrame, registry: list) -> dict:
         fig, SUPP_DIR, FIG_STEMS[2],
         subfigures=[('a', panels[0][1], axes[0]), ('b', panels[1][1], axes[1])],
         meta={'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级聚合',
-              '口径': CALIBER_ACTIVE,
+              '统计范围': SCOPE_ACTIVE,
               '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
               '采集窗口标识': f'首次采集日 {COLLECT_FIRST.date()} / 最后采集日 {COLLECT_LAST.date()}',
               'seed': SEED, '用途': '第4章 图 4-5 放大版（单独占整行）'})
@@ -525,7 +525,7 @@ def figure_category(category_daily: dict, daily: pd.DataFrame, registry: list) -
         subfigures=[('a', 'N(c,t) 样本活跃计划周期数（原始日序列）', axes[0]),
                     ('b', 'N(c,t) 样本活跃计划周期数（7 日滚动中位数）', axes[1])],
         meta={'数据来源': 'job_strict_daily_panel_26_1.parquet × 岗位大类集合',
-              '口径': CALIBER_ACTIVE,
+              '统计范围': SCOPE_ACTIVE,
               '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
               '采集窗口标识': f'首次采集日 {COLLECT_FIRST.date()} / 最后采集日 {COLLECT_LAST.date()}',
               'seed': SEED, '用途': '第4章 图 4-6 放大版（单独占整行）'})
@@ -631,7 +631,7 @@ def main() -> int:  # noqa: C901
     episodes_unique = episodes.drop_duplicates(
         subset=['intern_id', 'episode_id_strict']).reset_index(drop=True)
     print(f'输入：建模样本 {len(model_frame):,} / 候选发布时间段 {len(segments):,} / '
-          f'严格口径正式周期 {len(episodes_unique):,}（周期层导出一行 = 一个候选段）')
+          f'严格统计范围正式周期 {len(episodes_unique):,}（周期层导出一行 = 一个候选段）')
 
     # ---------------------------------------------------------------- A 事实核实
     frame_publish = job_ids.map(entity_publish)
@@ -670,7 +670,7 @@ def main() -> int:  # noqa: C901
     print('三种划分样本量：')
     print(split_table.to_string(index=False))
 
-    # ---- T2 gap 口径核实（Stage26.1 实测）
+    # ---- T2 gap 统计范围核实（Stage26.1 实测）
     tier_counts = segments['transition_tier'].value_counts()
     gap_rows = []
     for name, key in [('T1 确认重招', 'T1_CONFIRMED'), ('T2 疑似重开', 'T2_SUSPECTED'),
@@ -698,7 +698,7 @@ def main() -> int:  # noqa: C901
     print(f'T2 定义冲突证据：T2 事件 {len(t2_block)} 个，其中日历天 = 0 的记录 '
           f'{t2_calendar_zero} 个（精确天落在 (0,1)）')
 
-    # ---- 阈值敏感性（统一日历天口径）
+    # ---- 阈值敏感性（统一日历天设定）
     threshold_frames = {}
     sensitivity_rows = []
     for threshold in THRESHOLD_GRID:
@@ -716,12 +716,12 @@ def main() -> int:  # noqa: C901
     old_counts = {'T1': int(tier_counts.get('T1_CONFIRMED', 0)),
                   'T2': int(tier_counts.get('T2_SUSPECTED', 0)),
                   'T3': int(tier_counts.get('T3_CONFLICT', 0))}
-    caliber_table = pd.DataFrame([
+    scope_table = pd.DataFrame([
         {'项目': 'Stage26.1 判档依据', '内容': 'gap 用精确时间差（浮点天）判档，报告时改用日历天',
          'T1 事件数': old_counts['T1'], 'T2 事件数': old_counts['T2'],
          'T3 事件数': old_counts['T3'], 'Strict 周期数': int(len(episodes_unique)),
          'Relaxed 周期数': 17678},
-        {'项目': 'Stage26.2 统一口径', '内容': 'gap 先转日历天再判档；相差 0 天归入 T3',
+        {'项目': 'Stage26.2 统一统计范围', '内容': 'gap 先转日历天再判档；相差 0 天归入 T3',
          'T1 事件数': unified_counts['T1'], 'T2 事件数': unified_counts['T2'],
          'T3 事件数': unified_counts['T3'], 'Strict 周期数': unified_episodes,
          'Relaxed 周期数': unified_relaxed},
@@ -732,7 +732,7 @@ def main() -> int:  # noqa: C901
          'Strict 周期数': unified_episodes - int(len(episodes_unique)),
          'Relaxed 周期数': unified_relaxed - 17678},
     ])
-    print('阈值敏感性（统一日历天口径）：')
+    print('阈值敏感性（统一日历天设定）：')
     print(sensitivity_table.to_string(index=False))
 
     # ---- Safe-F 退化证据与精简
@@ -781,10 +781,10 @@ def main() -> int:  # noqa: C901
         {'项目': '精简后特征清单', '数值': '、'.join(SAFE_F_FINAL)},
         {'项目': '被移出预测模型的特征', '数值': '、'.join(SAFE_F_STAGE26_1[2:])},
         {'项目': '被移出特征的去向', '数值': '只保留在生命周期描述分析表（45 号表），不进入预测模型'},
-        {'项目': '严格口径多周期岗位数（代表周期口径）', '数值': multi_episode_jobs},
+        {'项目': '严格统计范围多周期岗位数（代表周期统计范围）', '数值': multi_episode_jobs},
         {'项目': 'previous_reopen_gap_days 缺失数', '数值': int(
             safe_evidence['previous_reopen_gap_days'].isna().sum())},
-        {'项目': '正文口径要求', '数值': 'publish_month / publish_weekday 只解释为发布时间位置特征，'
+        {'项目': '正文范围要求', '数值': 'publish_month / publish_weekday 只解释为发布时间位置特征，'
                                  '不得解释为市场季节性'},
     ])
 
@@ -1028,7 +1028,7 @@ def main() -> int:  # noqa: C901
         {'项目': '实现', '数值': 'sklearn.linear_model.QuantileRegressor（quantile=0.5, '
                            'alpha=0.0, fit_intercept=False, solver="highs-ipm"，'
                            '设计矩阵首列显式包含截距）；statsmodels 未安装，未使用'},
-        {'项目': '显著性口径', '数值': f'成对 bootstrap {MEDIAN_BOOTSTRAP_ROUNDS} 次（随机种子 '
+        {'项目': '显著性判定方式', '数值': f'成对 bootstrap {MEDIAN_BOOTSTRAP_ROUNDS} 次（随机种子 '
                             f'{SEED}）的 2.5% / 97.5% 区间；区间不跨 0 记为显著'},
         {'项目': '纳入变量', '数值': '、'.join(MEDIAN_CATEGORICAL + MEDIAN_MULTI)},
         {'项目': '不纳入变量', '数值': '4,000+ 福利标签、全部技能、文本 SVD、高维公司 ID'},
@@ -1107,7 +1107,7 @@ def main() -> int:  # noqa: C901
         {'项目': '结论', '数值': '面议与公开薪资样本在岗位结构上存在系统性差异，'
                           '薪资建模样本存在由企业披露策略带来的选择性；'
                           '本轮不做面议薪资插补或预测'},
-        {'项目': '实现口径', '数值': '多值岗位类别按 present / absent 逐取值做 2×2 卡方并做 BH-FDR；'
+        {'项目': '实现方式', '数值': '多值岗位类别按 present / absent 逐取值做 2×2 卡方并做 BH-FDR；'
                            '单值字段按高频取值列联表做卡方检验'},
     ])
 
@@ -1147,10 +1147,10 @@ def main() -> int:  # noqa: C901
     # ---------------------------------------------------------------- D 输出
     io_utils.write_excel(TABLES / TABLE_FILES[0], {
         '01_三种划分样本量': split_table,
-        '02_T2口径与gap实测': gap_table,
+        '02_T2统计范围与gap实测': gap_table,
         '03_T2日历天分布': t2_calendar_dist,
-        '04_阈值敏感性_统一口径': sensitivity_table,
-        '05_口径对比与变化': caliber_table,
+        '04_阈值敏感性_统一统计范围': sensitivity_table,
+        '05_统计范围对比与变化': scope_table,
         '06_SafeF退化与精简': pd.concat([safe_table, safe_conclusion], ignore_index=True,
                                    sort=False),
         '07_消融结果（精简SafeF）': ablation_table,
@@ -1171,14 +1171,14 @@ def main() -> int:  # noqa: C901
 
     io_utils.write_excel(TABLES / TABLE_FILES[2], {
         '01_中位数回归全表': median_table, '02_主要变量Top20': median_top,
-        '03_口径说明': median_meta})
+        '03_统计范围说明': median_meta})
     print('51 号表已写入')
 
     io_utils.write_excel(TABLES / TABLE_FILES[3], {
         '01_结构对照_单值': pd.DataFrame(bias_rows),
         '02_卡方检验_单值': pd.DataFrame(chi_rows),
         '03_结构对照_多值': multi_bias_table,
-        '04_结论与口径': bias_summary})
+        '04_结论与统计范围': bias_summary})
     print('52 号表已写入')
 
     io_utils.write_excel(TABLES / TABLE_FILES[4], {
@@ -1191,15 +1191,15 @@ def main() -> int:  # noqa: C901
 
     io_utils.write_excel(TABLES / TABLE_FILES[5], {
         '01_表述残留命中': wording_table,
-        '02_统一口径建议': pd.DataFrame([
+        '02_统一统计范围建议': pd.DataFrame([
             {'项目': '正式五层结构',
              '内容': '观测 → 完整页面版本 → 候选发布时间段 → 正式招聘周期 → 岗位实体'},
             {'项目': '图 3-3 建议图题',
              '内容': '岗位观测向唯一岗位实体的核心压缩路径（候选发布时间段与招聘周期'
                      '属生命周期分析的中间层）'},
-            {'项目': '减少量正确口径',
-             '内容': 'T2 与 T3 均在严格口径下并入当前周期，共减少 3,410 个候选发布时间段'},
-            {'项目': 'T2 口径',
+            {'项目': '减少量正确统计范围',
+             '内容': 'T2 与 T3 均在严格统计范围下并入当前周期，共减少 3,410 个候选发布时间段'},
+            {'项目': 'T2 统计范围',
              '内容': 'gap 以精确时间差计算后转换为日历天；相差 0 天归入 T3，'
                      'T2 区间为 0 < gap < 7 日历天'}])})
     print('54 号表已写入')
@@ -1252,11 +1252,11 @@ def main() -> int:  # noqa: C901
                  '文本SVD': TEXT_DIM, '拟合范围': '仅 train（预处理与估计器均只在 train 拟合）'},
         '事实核实': {
             '三种划分样本量': split_table.to_dict('records'),
-            'T2口径实测': gap_table.to_dict('records'),
+            'T2统计范围实测': gap_table.to_dict('records'),
             'T2日历天为0的记录数': t2_calendar_zero,
-            '统一口径三档计数': unified_counts,
-            '统一口径Strict周期数': unified_episodes,
-            '统一口径Relaxed周期数': unified_relaxed,
+            '统一统计范围三档计数': unified_counts,
+            '统一统计范围Strict周期数': unified_episodes,
+            '统一统计范围Relaxed周期数': unified_relaxed,
             '阈值敏感性': sensitivity_table.to_dict('records'),
             'SafeF精简': safe_conclusion.to_dict('records'),
             '消融新MAE跨度': float(test_mae.max() - test_mae.min()),
@@ -1269,7 +1269,7 @@ def main() -> int:  # noqa: C901
                 '结论': seed_conclusion.to_dict('records')[0]},
         'CompanyGroup5次划分': {'明细': group_table.to_dict('records'),
                             '汇总': group_summary.to_dict('records')[0]},
-        '中位数回归': {'口径': median_meta.to_dict('records'),
+        '中位数回归': {'统计范围': median_meta.to_dict('records'),
                    'Top20': median_top.to_dict('records')},
         '面议选择偏差': {'结论': bias_summary.to_dict('records'), '单值卡方': chi_rows},
         '极端值审计': {'结论': extreme_summary.to_dict('records'), '需复核条数': anomaly_total},

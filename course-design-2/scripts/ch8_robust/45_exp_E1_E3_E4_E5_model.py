@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """E1 / E3 / E4 / E5：模型比较配对检验、分组误差相对尺度、消融增量汇总、福利标签簇置换。
 
-配置与论文正式口径完全一致（Stage26.4 统一协议）：
+配置与论文正式统计范围完全一致（Stage26.4 统一协议）：
     A+B+C+D+E，移除 REMOVED_FINAL 字段后 288 维，LightGBM 400/0.05/63，
     技能阈值 100，文本 SVD 16，随机种子 42，随机划分 10418/2232/2233。
 
@@ -152,19 +152,19 @@ def main() -> int:
     print('train/validation/test = %d/%d/%d' % (len(train_frame), len(fit_frame) - len(train_frame),
                                                 len(test_frame)))
 
-    # ---- 稳健性对照口径：预处理器仅 fit 训练集 ----
+    # ---- 稳健性对照统计范围：预处理器仅 fit 训练集 ----
     train_only_assembler = polish.build_assembler(polish.MODEL_FEATURE_GROUPS, grouped,
                                                   SKILL_THRESHOLD, TEXT_DIM)
     train_only_assembler.fit(train_frame, skill_map, text_for(train_frame))
 
-    # ---- 锁定配置：按 Stage26.4 正式口径重拟合（预处理器与估计器均在 train+validation 上，
-    #      test 全程不参与任何拟合或选择），该口径复现论文正式模型 MAE = 35.476021 ----
+    # ---- 锁定配置：按 Stage26.4 正式统计范围重拟合（预处理器与估计器均在 train+validation 上，
+    #      test 全程不参与任何拟合或选择），该统计范围复现论文正式模型 MAE = 35.476021 ----
     assembler = polish.build_assembler(polish.MODEL_FEATURE_GROUPS, grouped,
                                        SKILL_THRESHOLD, TEXT_DIM)
     assembler.fit(fit_frame, skill_map, text_for(fit_frame))
     matrix_fit = assembler.transform(fit_frame, skill_map, text_for(fit_frame))
     matrix_test = assembler.transform(test_frame, skill_map, text_for(test_frame))
-    print('正式口径维度 %d；估计器拟合 %d 行；测试 %d 行'
+    print('正式统计范围维度 %d；估计器拟合 %d 行；测试 %d 行'
           % (assembler.schema.dimension, len(fit_frame), len(test_frame)))
 
     final_pred = {}
@@ -196,14 +196,14 @@ def main() -> int:
         pred = np.asarray(model.predict(matrix_test_train_only), dtype='float64')
         metrics = model_training.regression_metrics(y_test, pred)
         sensitivity_rows.append({
-            '口径': '预处理器仅 fit 训练集（%d 维），估计器 train+validation 重拟合'
+            '统计范围': '预处理器仅 fit 训练集（%d 维），估计器 train+validation 重拟合'
                     % train_only_assembler.schema.dimension,
             '模型': key, 'test MAE': metrics['MAE'], 'test RMSE': metrics['RMSE'],
             'test R²': metrics['R2'], 'n': metrics['n']})
     for key in ('LightGBM', 'CatBoost'):
         metrics = model_training.regression_metrics(y_test, final_pred[key])
         sensitivity_rows.append({
-            '口径': '预处理器与估计器均在 train+validation 重拟合（%d 维，Stage26.4 正式口径）'
+            '统计范围': '预处理器与估计器均在 train+validation 重拟合（%d 维，Stage26.4 正式统计范围）'
                     % assembler.schema.dimension,
             '模型': key, 'test MAE': metrics['MAE'], 'test RMSE': metrics['RMSE'],
             'test R²': metrics['R2'], 'n': metrics['n']})
@@ -333,7 +333,7 @@ def main() -> int:
     descriptive = benefit_cluster_block(model_frame)
     descriptive['测试集上完全相同的簇内标签列'] = duplicate_pairs or '无'
     descriptive['簇内标签'] = BENEFIT_CLUSTER
-    descriptive['置换口径'] = ('对测试集特征矩阵中对应的 one-hot 列做行置换；'
+    descriptive['置换方式'] = ('对测试集特征矩阵中对应的 one-hot 列做行置换；'
                                '簇置换 = 5 列使用同一次行置换；单列置换 = 每次只置换 1 列')
     with (project_paths.RESULTS_E1_E3_E4_E5 / 'benefit_cluster_descriptive.json').open('w', encoding='utf-8') as handle:
         json.dump(descriptive, handle, ensure_ascii=False, indent=1)

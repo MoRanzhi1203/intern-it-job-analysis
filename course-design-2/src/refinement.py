@@ -90,7 +90,7 @@ def capture_baseline_section(section: str, metrics: dict, source: str,
 
 
 def capture_job_baseline(path: Path | None = None) -> dict:
-    """捕获岗位语义层修复前基线（旧口径：完整语义距离）。
+    """捕获岗位语义层修复前基线（旧统计范围：完整语义距离）。
 
     幂等：该 section 已固化时直接返回，不再读取当前（可能已被覆盖的）产物文件。
     """
@@ -103,7 +103,7 @@ def capture_job_baseline(path: Path | None = None) -> dict:
                               columns=[schema.ID_FIELD, schema.CORE_VERSION_FIELD])
     if events.empty:
         return {}
-    # Refinement R1 之前的字段名为「岗位描述语义距离」（完整口径）
+    # Refinement R1 之前的字段名为「岗位描述语义距离」（完整文本统计范围）
     legacy_field = '岗位描述语义距离'
     distance_field = legacy_field if legacy_field in events.columns \
         else schema.JD_DISTANCE_FULL_FIELD
@@ -112,7 +112,7 @@ def capture_job_baseline(path: Path | None = None) -> dict:
         '岗位核心版本数': int(len(versions)),
         '文本版本数': int(len(corpus)),
         '岗位语义事件数': int(len(events)),
-        '旧语义距离字段口径': distance_field,
+        '旧语义距离字段统计范围': distance_field,
         '旧文本完全一致事件数': (int(events['文本完全一致标志'].sum())
                           if '文本完全一致标志' in events.columns else None),
     }
@@ -137,7 +137,7 @@ def capture_job_baseline(path: Path | None = None) -> dict:
 
 
 def capture_company_baseline(path: Path | None = None) -> dict:
-    """捕获公司层修复前基线（旧口径：按所在地拆分 + 不做同时间冲突判定）。
+    """捕获公司层修复前基线（旧统计范围：按所在地拆分 + 不做同时间冲突判定）。
 
     幂等：该 section 已固化时直接返回。
     """
@@ -166,7 +166,7 @@ def capture_company_baseline(path: Path | None = None) -> dict:
         实体数=(schema.COMPANY_ENTITY_ID_FIELD, 'nunique'))
     metrics['旧映射方式分布'] = '；'.join(
         f'{name}={int(row.实体数)}' for name, row in method_counts.iterrows())
-    metrics['旧旧口径_EXACT_NAME_LOCATION实体数'] = int(
+    metrics['旧版统计范围_EXACT_NAME_LOCATION实体数'] = int(
         entity_map.loc[entity_map[schema.COMPANY_MAPPING_METHOD_FIELD] == 'EXACT_NAME_LOCATION',
                        schema.COMPANY_ENTITY_ID_FIELD].nunique())
     return capture_baseline_section(
@@ -219,7 +219,7 @@ def _records_frame(records, columns) -> pd.DataFrame:
 
 # 本轮预期变化指标（禁止强行对齐旧数值）
 EXPECTED_CHANGE_REASONS = {
-    '岗位语义事件数': '事件口径不变（相邻核心版本一对），仅列口径与判定阈值来源改变',
+    '岗位语义事件数': '事件统计范围不变（相邻核心版本一对），仅列统计范围与判定阈值来源改变',
     '岗位显著语义变化候选数': '主判据由完整语义距离改为去薪资语义距离，阈值随真实分布重算',
     '公司正式实体数': '跨地域不再作为自动拆分正式实体的充分条件，同名跨地域改判 MULTI_LOCATION_AMBIGUOUS',
     '公司简介版本数': '只允许 CONSISTENT 快照进入正式版本历史，同时间多简介不再串成时间版本',
@@ -272,14 +272,14 @@ def build_audit_tables(baseline: dict, stage_metrics: dict,
     overview_rows = [
         {'指标': '岗位核心版本数', '数值': job_metrics.get('corpus_rows')},
         {'指标': '岗位文本语义事件数', '数值': job_metrics.get('event_rows')},
-        {'指标': '去薪资口径显著变化候选数_P90', '数值': job_metrics.get('significant_events')},
-        {'指标': '去薪资口径极端变化候选数_P95', '数值': job_metrics.get('extreme_events')},
-        {'指标': '旧完整口径显著候选数_P90', '数值': job_metrics.get('significant_full_caliber')},
-        {'指标': '旧完整口径极端候选数_P95', '数值': job_metrics.get('extreme_full_caliber')},
+        {'指标': '去薪资统计范围显著变化候选数_P90', '数值': job_metrics.get('significant_events')},
+        {'指标': '去薪资统计范围极端变化候选数_P95', '数值': job_metrics.get('extreme_events')},
+        {'指标': '旧完整文本统计范围显著候选数_P90', '数值': job_metrics.get('significant_full_scope')},
+        {'指标': '旧完整文本统计范围极端候选数_P95', '数值': job_metrics.get('extreme_full_scope')},
         {'指标': '因薪资文本影响退出显著候选的事件数',
          '数值': job_metrics.get('dropped_by_salary_text')},
-        {'指标': '因新口径进入显著候选的事件数',
-         '数值': job_metrics.get('entered_by_safe_caliber')},
+        {'指标': '因新统计范围进入显著候选的事件数',
+         '数值': job_metrics.get('entered_by_safe_scope')},
         {'指标': '模型安全版薪资泄漏残留', '数值': job_metrics.get('salary_residual')},
         {'指标': '公司正式时序可用实体数', '数值': company_metrics.get('formal_entities')},
         {'指标': '公司简介快照总数', '数值': company_metrics.get('snapshot_rows')},
@@ -308,8 +308,8 @@ def build_audit_tables(baseline: dict, stage_metrics: dict,
         '01_修复前基线': baseline_frame(baseline),
         '02_修复后总体': pd.DataFrame(overview_rows),
         '03_完整vs去薪资语义': _records_frame(
-            job_metrics.get('caliber_summary'),
-            ['指标', '完整口径', '去薪资口径', '完整减去薪资安全语义距离差']),
+            job_metrics.get('scope_summary'),
+            ['指标', '完整文本统计范围', '去薪资统计范围', '完整减去薪资安全语义距离差']),
         '04_去薪资语义分位数': _records_frame(
             job_metrics.get('safe_thresholds'), ['指标', '阈值', '样本数', '来源', '用途']),
         '05_BGE截断统计': _records_frame(
@@ -376,11 +376,11 @@ def _diff_reason_lines() -> list:
         affected = int((gap > 1e-9).sum())
         identical = int(job_events['文本完全一致标志'].sum())
         lines += [
-            f'- **岗位语义层**：{len(job_events)} 条版本切换中，完整口径与去薪资口径语义距离'
+            f'- **岗位语义层**：{len(job_events)} 条版本切换中，完整文本统计范围与去薪资统计范围语义距离'
             f'存在差异的事件 **{affected}** 条；其余事件两种文本完全一致'
             f'（文本完全一致事件 {identical} 条），距离逐位相同，因此分位数与显著候选数不变；',
             f"  去薪资文本完全相同的版本对 {job_metrics.get('safe_identical_pairs', '—')} 条，"
-            '其去薪资语义距离全部为 0，说明「纯薪资文字调整」在正式口径下不再被计为岗位语义变化。',
+            '其去薪资语义距离全部为 0，说明「纯薪资文字调整」在正式统计范围下不再被计为岗位语义变化。',
         ]
     snapshots = _read_optional(project_paths.COMPANY_PROFILE_SNAPSHOTS_PARQUET,
                                columns=[schema.COMPANY_ENTITY_ID_FIELD,
@@ -394,9 +394,9 @@ def _diff_reason_lines() -> list:
             schema.COMPANY_ENTITY_ID_FIELD])
         pseudo = consistent_entities & missing_entities
         lines += [
-            f'- **公司层版本数下降**：旧口径把「空简介 ↔ 非空简介」也压缩成时间版本（伪版本），'
+            f'- **公司层版本数下降**：旧统计范围把「空简介 ↔ 非空简介」也压缩成时间版本（伪版本），'
             f'本轮有 {len(pseudo)} 个公司同时存在 CONSISTENT 与 MISSING 快照，'
-            '这些公司在新口径下只保留 CONSISTENT 版本，空简介不再生成伪版本；',
+            '这些公司在新统计范围下只保留 CONSISTENT 版本，空简介不再生成伪版本；',
             f'  叠加跨地域歧义公司不再进入正式公司时序'
             f'（MULTI_LOCATION_AMBIGUOUS {_multi_location_rows()} 行），'
             '共同导致公司简介版本数与事件数下降。',
@@ -434,20 +434,20 @@ def build_record_lines(baseline: dict, stage_metrics: dict, tables: dict,
         '',
         '| 问题 | 风险 | 本轮处理 |',
         '| --- | --- | --- |',
-        '| 岗位语义距离与薪资文本自相关 | 纯薪资文字调整会被误判为岗位实质变化 | 新增「去薪资」语义口径并作为正式主判据 |',
+        '| 岗位语义距离与薪资文本自相关 | 纯薪资文字调整会被误判为岗位实质变化 | 新增「去薪资」语义统计范围并作为正式主判据 |',
         '| BGE 长文本可能被截断 | 长 JD 的语义距离不可比 | 用真实 tokenizer 做 token 长度与截断审计，并做截断敏感性对照 |',
         '| 技能/业务能力/技术领域混在同一层 | 覆盖率与技能数不可解释 | 技能字典升级为 feature_family → group → canonical 三级 |',
         '| 同名跨地域被自动拆成多个正式公司实体 | 同一企业被过度拆分，公司时序失真 | 所在地不再作为自动拆分充分条件，改判 MULTI_LOCATION_AMBIGUOUS |',
         '| 同一公司同一时间存在多个简介 | 并行简介被强行串成 A → B 时间版本 | 新增公司简介快照层，只有 CONSISTENT 快照进入正式版本历史 |',
         '',
-        '## 2. 修了什么（口径变化清单）',
+        '## 2. 修了什么（统计范围变化清单）',
         '',
-        '| 字段 / 产物 | 旧口径 | 新口径 |',
+        '| 字段 / 产物 | 旧统计范围 | 新统计范围 |',
         '| --- | --- | --- |',
         '| 岗位描述语义距离 | 单一字段，基于语义分析版全文 | 拆为 `_完整` 与 `_去薪资` 两列，正式主字段为 `_去薪资` |',
-        '| 是否显著语义变化候选 | 基于完整语义距离 P90 | 基于去薪资语义距离 P90（完整口径保留为对照字段） |',
+        '| 是否显著语义变化候选 | 基于完整语义距离 P90 | 基于去薪资语义距离 P90（完整文本统计范围保留为对照字段） |',
         '| 完整减去薪资安全语义距离差 | 不存在 | 新增，仅作诊断；**禁止**解释为「薪资文本贡献率」 |',
-        '| 相对上一版本JD语义距离 | 完整语义距离 | 兼容字段，口径切换为**去薪资语义距离** |',
+        '| 相对上一版本JD语义距离 | 完整语义距离 | 兼容字段，统计范围切换为**去薪资语义距离** |',
         '| 技能标准实体 | 单一 group | 新增 feature_family 一级类型，group 保留为细粒度类别 |',
         '| 公司正式时序准入 | EXACT_NORMALIZED_NAME / EXACT_NAME_LOCATION / APPROVED_ALIAS | 仅 EXACT_NORMALIZED_NAME / APPROVED_ALIAS |',
         '| 公司简介版本 | 直接按「实体 + 时间 + 简介」折叠 | 先建快照层，仅 CONSISTENT 快照进入版本层 |',
@@ -459,9 +459,9 @@ def build_record_lines(baseline: dict, stage_metrics: dict, tables: dict,
         '| --- | --- | --- |',
         f"| 岗位语义事件数 | {baseline_job.get('岗位语义事件数', '—')} | "
         f"{job_metrics.get('event_rows', '—')} |",
-        f"| 完整口径语义距离 P90 | {baseline_job.get('旧语义距离P90', '—')} | "
+        f"| 完整文本统计范围语义距离 P90 | {baseline_job.get('旧语义距离P90', '—')} | "
         f"{job_metrics.get('semantic_p90_full', '—')} |",
-        f"| 去薪资口径语义距离 P90 | —（本轮新增） | {job_metrics.get('semantic_p90', '—')} |",
+        f"| 去薪资统计范围语义距离 P90 | —（本轮新增） | {job_metrics.get('semantic_p90', '—')} |",
         f"| 显著变化候选数（P90） | {baseline_job.get('旧显著变化候选数_P90', '—')} | "
         f"{job_metrics.get('significant_events', '—')} |",
         f"| 极端变化候选数（P95） | {baseline_job.get('旧极端变化候选数_P95', '—')} | "
@@ -474,7 +474,7 @@ def build_record_lines(baseline: dict, stage_metrics: dict, tables: dict,
         f"| 哈希去重后新增编码安全文本数 | —（本轮统计） | "
         f"{job_metrics.get('new_safe_encodings', '—')} |",
         '',
-        '> 完整口径只作页面整体变化辅助指标；薪资变化与 JD 语义变化的对照全部改用去薪资口径。',
+        '> 完整文本统计范围只作页面整体变化辅助指标；薪资变化与 JD 语义变化的对照全部改用去薪资统计范围。',
         '',
         '## 4. BGE token 与截断审计',
         '',
@@ -578,9 +578,9 @@ def build_record_lines(baseline: dict, stage_metrics: dict, tables: dict,
         f"- 封版记录：`{project_paths.relative_to_root(project_paths.RECORDS_DIR / project_paths.RECORD_TEXT_SEMANTIC_REFINEMENT)}`；",
         f"- 修复前基线：`{project_paths.relative_to_root(project_paths.REFINEMENT_BASELINE_JSON)}`。",
         '',
-        '## 12. 最终正式口径（封版声明）',
+        '## 12. 最终正式统计范围（封版声明）',
         '',
-        '- 岗位语义：`岗位描述语义距离_去薪资` 为**唯一正式主判据**，完整口径仅作页面整体变化辅助；',
+        '- 岗位语义：`岗位描述语义距离_去薪资` 为**唯一正式主判据**，完整文本统计范围仅作页面整体变化辅助；',
         '- 技能：`feature_family → group → canonical` 三级，AI 技能数与大模型技能数分开统计；',
         '- 公司：仅 `EXACT_NORMALIZED_NAME` / `APPROVED_ALIAS` 进入正式公司时序；',
         '- 公司时序：仅 `CONSISTENT` 快照进入正式公司简介版本历史；',

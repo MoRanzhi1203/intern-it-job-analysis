@@ -1,0 +1,59 @@
+{
+  "map_path": "data\\processed\\company_entity_map.parquet",
+  "map_rows": 4495,
+  "audit_path": "outputs\\tables\\ch3\\12_company_identity_audit.xlsx",
+  "original_names": 4422,
+  "entity_candidates": 4421,
+  "formal_entities": 4377,
+  "formal_jobs": 16558,
+  "review_rows": 88,
+  "unresolved_rows": 0,
+  "multi_location_rows": 77,
+  "multi_location_names": 33,
+  "multi_entity_names": 0,
+  "identity_adjustment": [
+    {
+      "指标": "公司实体候选数（含未解析）",
+      "数值": 4421,
+      "说明": "同一规范化名称不再按所在地拆分，跨地域名称合并为单一候选实体"
+    },
+    {
+      "指标": "正式时序可用公司数",
+      "数值": 4377,
+      "说明": "仅 EXACT_NORMALIZED_NAME / APPROVED_ALIAS 且无需人工复核"
+    },
+    {
+      "指标": "同名跨地域歧义公司数",
+      "数值": 33,
+      "说明": "标记 MULTI_LOCATION_AMBIGUOUS，禁止进入正式公司时序"
+    },
+    {
+      "指标": "同名跨地域行数",
+      "数值": 77,
+      "说明": "旧统计范围会按「名称@所在地」拆分出的行数"
+    },
+    {
+      "指标": "旧统计范围 EXACT_NAME_LOCATION 实体数",
+      "数值": 77,
+      "说明": "历史兼容字段，本轮不再作为正式进入条件"
+    },
+    {
+      "指标": "人工复核候选行数",
+      "数值": 88,
+      "说明": "MULTI_LOCATION_AMBIGUOUS / HIGH_CONFIDENCE_MATCH / UNRESOLVED"
+    },
+    {
+      "指标": "高置信度匹配候选行数",
+      "数值": 11,
+      "说明": "不同名称但公司简介指纹一致，未经人工确认不合并"
+    }
+  ],
+  "metrics_path": "outputs\\logs\\metrics\\stage_09.json",
+  "gates": {
+    "COMPANY_IDENTITY_BUILD": "PASS",
+    "COMPANY_IDENTITY_AMBIGUITY_CHECK": "PASS",
+    "MULTI_LOCATION_COMPANY_CHECK": "PASS",
+    "FORMAL_COMPANY_IDENTITY_FILTER": "PASS",
+    "COMPANY_IDENTITY_AUDIT_EXPORT": "PASS"
+  }
+}

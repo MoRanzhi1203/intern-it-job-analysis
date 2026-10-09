@@ -1,0 +1,49 @@
+{
+  "stage": "stage_11",
+  "gates": {
+    "SALARY_SOURCE_LOAD": {
+      "status": "PASS",
+      "note": "岗位实体 17144 行，薪资信息非空 17144 行，主键唯一"
+    },
+    "SALARY_FORM_AUDIT": {
+      "status": "PASS",
+      "note": "薪资形态仅 ['#-#/天', '#/天', '薪资面议']，共 3 种，已完整枚举"
+    },
+    "SALARY_PARSE_COVERAGE": {
+      "status": "PASS",
+      "note": "已解析 14899 + 面议 2245 = 17144，解析失败 0"
+    },
+    "SALARY_RANGE_VALIDITY": {
+      "status": "PASS",
+      "note": "逻辑异常 16 行（上下限倒置 2、非正数 16），未静默删除，全部标记"
+    },
+    "SALARY_UNIT_CONSISTENCY": {
+      "status": "PASS",
+      "note": "已解析岗位单位取值 ['元/天']，全量薪资文本均含 /天，未做任何单位折算"
+    },
+    "SALARY_MISSING_STRATEGY": {
+      "status": "PASS",
+      "note": "面议 2245 行的数值列全为空（插补 0 行），已解析行的中点无缺失"
+    },
+    "STRUCTURED_FIELD_PARSE": {
+      "status": "PASS",
+      "note": "学历解析失败 0、每周到岗失败 0、实习月数失败 0；公司规模已知 17139 + 空 5 + 槽位异常 0 = 17144"
+    },
+    "COMPANY_ATTRIBUTE_ANOMALY_RESIDUAL_CHECK": {
+      "status": "PASS",
+      "note": "本阶段只复核残留、不修复：上游 Stage 01 确定性修复 467 行（涉及岗位 72），本阶段残留 公司规模 0 行 / 公司性质 0 行 = 0；修复后公司规模已知 17139 + 空 5 = 17144"
+    },
+    "SALARY_JD_CONSISTENCY": {
+      "status": "PASS",
+      "note": "岗位描述含薪资数字的岗位 471 个，共 492 条记录，其中冲突 60 条，已导出明细"
+    },
+    "NO_LABEL_LEAKAGE": {
+      "status": "PASS",
+      "note": "薪资派生列未出现在文本特征/语料层，模型安全版薪资残留 0"
+    },
+    "STAGE11_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "薪资目标 17144 行、结构化特征 17144 行、审计表 16 张子表已写出"
+    }
+  }
+}

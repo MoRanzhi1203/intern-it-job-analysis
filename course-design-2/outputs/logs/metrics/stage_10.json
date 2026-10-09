@@ -1,0 +1,69 @@
+{
+  "snapshot_path": "data\\interim\\company_profile_snapshots.parquet",
+  "snapshot_rows": 165031,
+  "history_path": "data\\processed\\company_profile_history.parquet",
+  "history_rows": 3899,
+  "events_path": "data\\processed\\company_text_change_events.parquet",
+  "event_rows": 235,
+  "audit_path": "outputs\\tables\\ch3\\13_company_text_semantic_audit.xlsx",
+  "formal_entities": 4377,
+  "entities_with_history": 3664,
+  "entities_with_change": 16,
+  "unmapped_rows": 6324,
+  "ambiguous_cross_events": 0,
+  "ai_events": 39,
+  "llm_events": 0,
+  "tfidf_vocabulary": 7522,
+  "semantic_p50": NaN,
+  "semantic_p90": NaN,
+  "semantic_p95": NaN,
+  "embedding_status": "NOT_RUN",
+  "embedding_model": "BAAI/bge-small-zh-v1.5",
+  "embedding_dimension": 0,
+  "embeddings_npz": "NOT_RUN",
+  "embeddings_index": "NOT_RUN",
+  "embeddings_meta": "NOT_RUN",
+  "embedding_shapes": {},
+  "metrics_path": "outputs\\logs\\metrics\\stage_10.json",
+  "consistent_snapshots": 154704,
+  "ambiguous_snapshots": 0,
+  "missing_snapshots": 10327,
+  "ambiguous_entities": 0,
+  "snapshot_state_table": [
+    {
+      "公司简介快照状态": "CONSISTENT",
+      "快照数": 154704,
+      "占比": 0.937424
+    },
+    {
+      "公司简介快照状态": "MISSING",
+      "快照数": 10327,
+      "占比": 0.062576
+    }
+  ],
+  "snapshot_conflict_table": [
+    {
+      "公司简介快照状态": "CONSISTENT",
+      "快照数": 154704,
+      "占比": 0.937424,
+      "涉及公司数": 3664
+    },
+    {
+      "公司简介快照状态": "MISSING",
+      "快照数": 10327,
+      "占比": 0.062576,
+      "涉及公司数": 738
+    }
+  ],
+  "gates": {
+    "COMPANY_PROFILE_SNAPSHOT_BUILD": "PASS",
+    "COMPANY_PROFILE_SNAPSHOT_UNIQUE": "PASS",
+    "COMPANY_SAME_TIME_CONFLICT_AUDIT": "PASS",
+    "AMBIGUOUS_SNAPSHOT_EXCLUSION": "PASS",
+    "COMPANY_VERSION_REBUILD": "PASS",
+    "COMPANY_PROFILE_VERSION_BUILD": "PASS",
+    "COMPANY_EVENT_REBUILD": "PASS",
+    "COMPANY_TEXT_EVENT_BUILD": "PASS",
+    "COMPANY_TEXT_AUDIT_EXPORT": "PASS"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "stage_12_modeling",
+  "gates": {
+    "MODEL_DATASET_ONE_JOB_ONE_ROW": {
+      "status": "PASS",
+      "note": "分析集 17144 行（intern_id 唯一）／建模集 14883 行（intern_id 唯一），均为一岗一行"
+    },
+    "MODEL_DATASET_TARGET_SAMPLE": {
+      "status": "PASS",
+      "note": "正式建模样本 14883 = 14,899 − 16；目标非空 14883；建模集内薪资逻辑异常 0；14883 + 2245 + 16 = 17144"
+    },
+    "MODEL_DATASET_TARGET_LEAKAGE": {
+      "status": "PASS",
+      "note": "X 共 65 列；命中显式黑名单 无；命中命名模式 无；y = 薪资中点"
+    },
+    "MODEL_DATASET_SALARY_DERIVED_FEATURE_BLOCK": {
+      "status": "PASS",
+      "note": "黑名单 13 个字段全部阻断；稳健性薪资列 ['薪资下限', '薪资上限', '薪资区间宽度'] 保留但标记为非特征"
+    },
+    "MODEL_DATASET_TEXT_LEAKAGE": {
+      "status": "PASS",
+      "note": "model-safe 文本薪资残留 0；E 组向量取自 `job_text_safe`（模型 BAAI/bge-small-zh-v1.5，512 维）；技能特征来自 Stage 07 model-safe 提取"
+    },
+    "MODEL_DATASET_FEATURE_MANIFEST": {
+      "status": "PASS",
+      "note": "Manifest 覆盖 71 行（未登记字段 无，非法特征组 无）；参与模型字段 54 个"
+    },
+    "MODEL_DATASET_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "分析集（17144 行）与建模集（14883 行）已落盘；28 号审计表含 12 张子表（含门禁表）"
+    }
+  }
+}

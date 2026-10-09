@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """正式 EDA 与统计检验计算层（Stage 13）。
 
-## 口径（严格遵循封版）
+## 统计范围（严格遵循封版）
 
 - EDA 分析单元 = **唯一岗位实体**（17,144，1 intern_id = 1 行），不使用 172,063 条原始搜索观测；
 - 薪资分析样本 = **14,883**（非面议 + 解析成功 + 中点有效 + 无逻辑异常）；
-- 技能主口径 = REQUIREMENT_SECTION（8,822）；扩展口径 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（16,378）；
+- 技能主统计范围 = REQUIREMENT_SECTION（8,822）；扩展统计范围 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK（16,378）；
   EMPTY_TEXT（766）单独报告；
 - 技能榜分四层（具体技术技能 / 技术领域 / 业务能力 / 办公工具），组级统计按 intern_id 去重；
 - 两组比较 = Mann–Whitney U + Cliff's delta；多组比较 = Kruskal–Wallis（+ 成对 Mann–Whitney + BH-FDR）；
@@ -15,7 +15,7 @@
 ## 复用而非重复实现
 
 `cliff_delta`、`benjamini_hochberg`、`rank_skills`、`layer_rank`、`cooccurrence`、
-`rank_robustness`、`group_job_counts` 直接复用 `src/skill_eda.py`（技能口径唯一实现）。
+`rank_robustness`、`group_job_counts` 直接复用 `src/skill_eda.py`（技能统计范围唯一实现）。
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ COMPANY_TAG_LABEL = '公司标签（福利标签）'
 TAG_FACTOR_KEY = 'company_tags'
 CERT_FACTOR_KEY = 'company_certification'
 
-# ---- 公司标签（福利标签）正式口径：描述性统计 + 单标签 present/absent 二元比较 ----
+# ---- 公司标签（福利标签）正式统计范围：描述性统计 + 单标签 present/absent 二元比较 ----
 # 公司标签是高基数多值字段（同一岗位可同时命中多个标签），标签组之间**不独立**，
 # 因此禁止把数百个重叠标签当作一个整体做 Kruskal–Wallis 正式推断。
 TAG_ANALYSIS_TYPE = '描述性多值标签'
@@ -230,18 +230,18 @@ def build_sample_overview(analysis: pd.DataFrame, model: pd.DataFrame,
         {'指标': '公司实体数', '数值': int(analysis['company_entity_id'].nunique()),
          '说明': 'Stage 09 公司实体（含跨地域歧义标记）'},
         {'指标': '所属行业数', '数值': int(analysis['所属行业'].nunique()), '说明': ''},
-        {'指标': '技能提取口径样本', '数值': '',
-         '说明': f'主口径 REQUIREMENT_SECTION '
+        {'指标': '技能提取统计范围样本', '数值': '',
+         '说明': f'主统计范围 REQUIREMENT_SECTION '
                  f'{int((analysis[schema.SKILL_SCOPE_FIELD] == "REQUIREMENT_SECTION").sum())}；'
                  f'FULL_TEXT_FALLBACK '
                  f'{int((analysis[schema.SKILL_SCOPE_FIELD] == "FULL_TEXT_FALLBACK").sum())}；'
                  f'EMPTY_TEXT {int((analysis[schema.SKILL_SCOPE_FIELD] == "EMPTY_TEXT").sum())}'},
-        {'指标': '主口径岗位数', '数值': int(
+        {'指标': '主统计范围岗位数', '数值': int(
             (analysis[schema.SKILL_SCOPE_FIELD] == 'REQUIREMENT_SECTION').sum()),
          '说明': 'REQUIREMENT_SECTION（技能主分析分母）'},
-        {'指标': '扩展口径 fallback 岗位数', '数值': int(
+        {'指标': '扩展统计范围 fallback 岗位数', '数值': int(
             (analysis[schema.SKILL_SCOPE_FIELD] == 'FULL_TEXT_FALLBACK').sum()),
-         '说明': 'FULL_TEXT_FALLBACK（扩展口径组成部分）'},
+         '说明': 'FULL_TEXT_FALLBACK（扩展统计范围组成部分）'},
         {'指标': '空文本岗位数', '数值': int(
             (analysis[schema.SKILL_SCOPE_FIELD] == 'EMPTY_TEXT').sum()),
          '说明': 'EMPTY_TEXT：无可用技能文本，单独报告，不解释为「无技能要求」'},
@@ -358,7 +358,7 @@ def _group_values(frame: pd.DataFrame, column: str, value, is_multi: bool) -> np
     return frame.loc[mask, '_salary'].dropna().to_numpy()
 
 
-# ---------------------------------------------------------------- 公司标签（福利标签）正式口径
+# ---------------------------------------------------------------- 公司标签（福利标签）正式统计范围
 
 def build_company_tag_descriptive(model: pd.DataFrame,
                                   list_field: str = schema.COMPANY_TAG_LIST_FIELD,
@@ -366,7 +366,7 @@ def build_company_tag_descriptive(model: pd.DataFrame,
     """06_公司因素薪资 · 公司标签描述统计（高基数多值标签，**不做整体 Kruskal–Wallis**）。
 
     输出：标签 / 岗位数 / 岗位占比 / 薪资样本数 / 薪资中位数 / IQR / P25 / P75 / 分析类型。
-    岗位占比分母 = 全量分析岗位数同口径的薪资样本数（14,883）。
+    岗位占比分母 = 全量分析岗位数同统计范围的薪资样本数（14,883）。
     """
     frame = model[[schema.ID_FIELD, list_field, salary_field]].copy()
     total_jobs = int(len(frame))
@@ -466,33 +466,33 @@ def build_binary_multivalue_factor_tests(
     return table.sort_values('p_raw').reset_index(drop=True)
 
 
-# ---------------------------------------------------------------- 技能需求（复用封版口径）
+# ---------------------------------------------------------------- 技能需求（复用封版统计范围）
 
 def build_skill_demand(membership: pd.DataFrame, universe: dict, config) -> tuple:
-    """07_技能需求：主口径分层榜单 + 扩展口径排名。"""
+    """07_技能需求：主统计范围分层榜单 + 扩展统计范围排名。"""
     main_rank = skill_eda.rank_skills(membership, universe[skill_eda.SCOPE_MAIN], config,
                                       scopes=skill_eda.SCOPE_MAIN)
     ext_rank = skill_eda.rank_skills(membership, universe['ALL_USABLE'], config,
                                      scopes=skill_eda.ALL_USABLE_SCOPES)
     layers = skill_extraction.resolve_rank_layers(config)
     detail = skill_eda.layer_rank(main_rank, skill_eda.LAYER_TECHNICAL, 20).copy()
-    detail.insert(0, '榜单', '核心技术技能 Top20（主口径，分母 8,822）')
+    detail.insert(0, '榜单', '核心技术技能 Top20（主统计范围，分母 8,822）')
     blocks = [detail]
     for layer, title, top_n in [
-        (skill_eda.LAYER_DOMAIN, '技术领域 Top15（主口径，分母 8,822）', 15),
-        (skill_eda.LAYER_BUSINESS, '业务能力（主口径，分母 8,822）', None),
-        (skill_eda.LAYER_OFFICE, '办公工具（主口径，分母 8,822）', None),
+        (skill_eda.LAYER_DOMAIN, '技术领域 Top15（主统计范围，分母 8,822）', 15),
+        (skill_eda.LAYER_BUSINESS, '业务能力（主统计范围，分母 8,822）', None),
+        (skill_eda.LAYER_OFFICE, '办公工具（主统计范围，分母 8,822）', None),
     ]:
         table = skill_eda.layer_rank(main_rank, layer, top_n).copy()
         table.insert(0, '榜单', title)
         blocks.append(table)
     extended = ext_rank.head(20).copy()
-    extended.insert(0, '榜单', '扩展口径 Top20（分母 16,378）')
+    extended.insert(0, '榜单', '扩展统计范围 Top20（分母 16,378）')
     extended['层级'] = extended['技能标准名'].map(skill_extraction.skill_layer_map(config))
     blocks.append(extended)
     demand = pd.concat(blocks, ignore_index=True, sort=False)
-    demand['口径说明'] = ('主口径 = REQUIREMENT_SECTION（企业明确要求段落）；'
-                       '扩展口径 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK；'
+    demand['统计范围说明'] = ('主统计范围 = REQUIREMENT_SECTION（企业明确要求段落）；'
+                       '扩展统计范围 = REQUIREMENT_SECTION + FULL_TEXT_FALLBACK；'
                        'EMPTY_TEXT 单独报告，不解释为「无技能要求」')
     return demand, main_rank, ext_rank, layers
 
@@ -514,8 +514,8 @@ def build_skill_salary(membership: pd.DataFrame, salary_layer: pd.DataFrame, mod
                        main_rank: pd.DataFrame) -> tuple:
     """08/09/13：技能薪资（逐技能）、岗位细分类内、技能数量档。
 
-    逐技能与细分类内对比的限制集 = 主口径 ∩ 正式薪资样本；
-    技能数量档使用全部正式薪资样本（技能来自 ALL_USABLE 口径）。
+    逐技能与细分类内对比的限制集 = 主统计范围 ∩ 正式薪资样本；
+    技能数量档使用全部正式薪资样本（技能来自 ALL_USABLE 统计范围）。
     """
     base_ids = set(universe[skill_eda.SCOPE_MAIN]) & set(model_ids)
     focus = sorted(set(main_rank[main_rank['层级'] == skill_eda.LAYER_TECHNICAL]
@@ -561,17 +561,17 @@ def build_skill_salary(membership: pd.DataFrame, salary_layer: pd.DataFrame, mod
     count_table = pd.DataFrame(rows)
     test = kruskal_wallis(groups)
     test.update({'因素': '技能数量档（0/1/2/3/4/5+）', '参与检验组数': len(groups),
-                 '说明': '技能口径 = ALL_USABLE；' + NO_CAUSAL_NOTE})
+                 '说明': '技能统计范围 = ALL_USABLE；' + NO_CAUSAL_NOTE})
     return per_skill, within, count_table, test
 
 
 def build_robustness(model: pd.DataFrame, main_rank: pd.DataFrame,
                      ext_rank: pd.DataFrame) -> pd.DataFrame:
-    """12_稳健性：双口径排名一致性 + 薪资 1%/99% 截断对照。"""
+    """12_稳健性：两种统计范围排名一致性 + 薪资 1%/99% 截断对照。"""
     summary, detail = skill_eda.rank_robustness(main_rank, ext_rank)
     rows = [{'项目': key, '数值': value,
-             '说明': '主口径 = REQUIREMENT_SECTION；扩展口径 = REQUIREMENT_SECTION + '
-                     'FULL_TEXT_FALLBACK（复用 27 号审计口径，未重新设计）'}
+             '说明': '主统计范围 = REQUIREMENT_SECTION；扩展统计范围 = REQUIREMENT_SECTION + '
+                     'FULL_TEXT_FALLBACK（复用 27 号审计统计范围，未重新设计）'}
             for key, value in summary.items()]
     salary = model[schema.SALARY_MID_FIELD].dropna()
     low, high = np.percentile(salary, 1), np.percentile(salary, 99)
@@ -584,7 +584,7 @@ def build_robustness(model: pd.DataFrame, main_rank: pd.DataFrame,
                      '数值': f"{stats['中位数']} / {stats['IQR']}",
                      '说明': f"n = {stats['n']}"})
     skill_top = main_rank.head(20)[['技能标准名', '岗位数', '岗位占比']].to_dict('records')
-    rows.append({'项目': '主口径 Top20 技能（用于稳健性核对）',
+    rows.append({'项目': '主统计范围 Top20 技能（用于稳健性核对）',
                  '数值': '、'.join(f"{item['技能标准名']}({item['岗位数']})" for item in skill_top),
                  '说明': '与 27 号审计表一致'})
     rows.append({'项目': '排名差明细（Top50）',
@@ -628,26 +628,26 @@ def figure_sample_structure(overview_rows: pd.DataFrame, registry: list) -> dict
     fig, axes = plt.subplots(1, 2, figsize=(7.4, 4.0))
     ax = axes[0]
     series = pd.Series(counts)
-    plot_style.bar_ranked(ax, series, xlabel='岗位数', ylabel='样本口径')
+    plot_style.bar_ranked(ax, series, xlabel='岗位数', ylabel='样本统计范围')
     plot_style.apply_sci_axis(ax, grid_axis='x')
     plot_style.format_integer_axis(ax, axis='x')
-    plot_style.add_subfigure_caption(ax, 'a', '样本口径构成（单位：岗位）')
+    plot_style.add_subfigure_caption(ax, 'a', '样本统计范围构成（单位：岗位）')
     ax2 = axes[1]
     layer = pd.Series({
-        'REQUIREMENT_SECTION': int(lookup.get('主口径岗位数', 8822)),
-        'FULL_TEXT_FALLBACK': int(lookup.get('扩展口径 fallback 岗位数', 7556)),
+        'REQUIREMENT_SECTION': int(lookup.get('主统计范围岗位数', 8822)),
+        'FULL_TEXT_FALLBACK': int(lookup.get('扩展统计范围 fallback 岗位数', 7556)),
         'EMPTY_TEXT': int(lookup.get('空文本岗位数', 766)),
     })
     plot_style.bar_ranked(ax2, layer, color=plot_style.ACCENT_COLOR,
-                          xlabel='岗位数', ylabel='技能提取口径')
+                          xlabel='岗位数', ylabel='技能提取统计范围')
     plot_style.apply_sci_axis(ax2, grid_axis='x')
     plot_style.format_integer_axis(ax2, axis='x')
-    plot_style.add_subfigure_caption(ax2, 'b', '技能提取口径构成（单位：岗位）')
+    plot_style.add_subfigure_caption(ax2, 'b', '技能提取统计范围构成（单位：岗位）')
     fig.subplots_adjust(wspace=0.35, bottom=0.3)
-    plot_style.add_bottom_caption(fig, '图01 正式 EDA 样本与技能口径结构')
-    return _finish(fig, '01_sample_structure', '图01 正式 EDA 样本与技能口径结构',
-                   subfigures=[('a', '样本口径构成（单位：岗位）', axes[0]),
-                               ('b', '技能提取口径构成（单位：岗位）', axes[1])],
+    plot_style.add_bottom_caption(fig, '图01 正式 EDA 样本与技能统计范围结构')
+    return _finish(fig, '01_sample_structure', '图01 正式 EDA 样本与技能统计范围结构',
+                   subfigures=[('a', '样本统计范围构成（单位：岗位）', axes[0]),
+                               ('b', '技能提取统计范围构成（单位：岗位）', axes[1])],
                    meta={'图表类型': '柱状图', '数据来源': 'job_analysis_dataset / 27 号审计表'},
                    registry=registry)
 
@@ -743,15 +743,15 @@ def figure_tech_skill_top20(rank_table: pd.DataFrame, registry: list) -> dict:
             edgecolor='black', linewidth=0.5)
     ax.set_yticks(positions)
     ax.set_yticklabels(frame['技能标准名'])
-    ax.set_xlabel('明确要求该技能的岗位数（主口径）')
+    ax.set_xlabel('明确要求该技能的岗位数（主统计范围）')
     ax.set_ylabel('具体技术技能')
     plot_style.apply_sci_axis(ax, grid_axis='x')
     plot_style.format_integer_axis(ax, axis='x')
-    caption = '图05 核心技术技能 Top20（主口径 REQUIREMENT_SECTION，分母 8,822 个岗位）'
+    caption = '图05 核心技术技能 Top20（主统计范围 REQUIREMENT_SECTION，分母 8,822 个岗位）'
     plot_style.add_bottom_caption(fig, caption)
     fig.subplots_adjust(left=0.3, bottom=0.16)
     return _finish(fig, 'fig_6_1_tech_skill_top20', caption,
-                   meta={'图表类型': '横向柱状图', '数据来源': 'job_skill_membership（主口径）'},
+                   meta={'图表类型': '横向柱状图', '数据来源': 'job_skill_membership（主统计范围）'},
                    registry=registry)
 
 
@@ -770,19 +770,19 @@ def figure_skill_layers(domain_table: pd.DataFrame, business_table: pd.DataFrame
                 edgecolor='black', linewidth=0.5)
         ax.set_yticks(positions)
         ax.set_yticklabels([str(item) for item in frame['技能标准名']])
-        ax.set_xlabel('岗位数（主口径）')
+        ax.set_xlabel('岗位数（主统计范围）')
         ax.set_ylabel(title)
         plot_style.apply_sci_axis(ax, grid_axis='x')
         plot_style.format_integer_axis(ax, axis='x')
         plot_style.add_subfigure_caption(ax, letter, f'{title}需求岗位数')
     fig.subplots_adjust(wspace=0.6, bottom=0.3)
     caption = ('图06 技能需求的分层结构：技术领域 / 业务能力 / 办公工具'
-               '（主口径，分母 8,822，各组独立统计不跨层相加）')
+               '（主统计范围，分母 8,822，各组独立统计不跨层相加）')
     plot_style.add_bottom_caption(fig, caption)
     return _finish(fig, '06_skill_layer_structure', caption,
                    subfigures=[(letter, f'{title}需求岗位数', ax)
                                for (letter, title, _t, _n), ax in zip(panels, axes)],
-                   meta={'图表类型': '三联横向柱状图', '数据来源': 'job_skill_membership（主口径）'},
+                   meta={'图表类型': '三联横向柱状图', '数据来源': 'job_skill_membership（主统计范围）'},
                    registry=registry)
 
 
@@ -805,11 +805,11 @@ def figure_category_skill_heatmap(matrix: pd.DataFrame, registry: list) -> dict:
     plot_style.apply_sci_axis(ax, grid=False)
     colorbar = fig.colorbar(image, ax=ax, fraction=0.025, pad=0.02)
     colorbar.set_label('细分类内部命中率', fontsize=plot_style.FONT_SIZES['axis_label'])
-    caption = '图07 岗位细分类 × 技能命中率热力图（主口径，值为细分类内部命中率，非 raw count）'
+    caption = '图07 岗位细分类 × 技能命中率热力图（主统计范围，值为细分类内部命中率，非 raw count）'
     plot_style.add_bottom_caption(fig, caption)
     fig.subplots_adjust(left=0.22, bottom=0.22)
     return _finish(fig, '07_category_skill_heatmap', caption,
-                   meta={'图表类型': '热力图', '数据来源': 'job_skill_membership（主口径）'},
+                   meta={'图表类型': '热力图', '数据来源': 'job_skill_membership（主统计范围）'},
                    registry=registry)
 
 
@@ -847,7 +847,7 @@ def figure_skill_cooccurrence(cooc_table: pd.DataFrame, top_n: int = 15,
     plot_style.add_bottom_caption(fig, caption)
     fig.subplots_adjust(left=0.2, bottom=0.24)
     return _finish(fig, '08_skill_cooccurrence', caption,
-                   meta={'图表类型': '热力图', '数据来源': 'job_skill_membership（主口径）'},
+                   meta={'图表类型': '热力图', '数据来源': 'job_skill_membership（主统计范围）'},
                    registry=registry)
 
 
@@ -886,7 +886,7 @@ def figure_skill_salary(per_skill: pd.DataFrame, count_table: pd.DataFrame,
     plot_style.apply_sci_axis(ax2, grid_axis='y')
     plot_style.add_subfigure_caption(ax2, 'b', '技能数量档与薪资中位数（误差线为 IQR/2）')
     fig.subplots_adjust(wspace=0.35, bottom=0.3)
-    caption = ('图09 技能与薪资的描述性关联（主口径；中位数差异不代表因果关系）')
+    caption = ('图09 技能与薪资的描述性关联（主统计范围；中位数差异不代表因果关系）')
     plot_style.add_bottom_caption(fig, caption)
     return _finish(fig, '09_skill_salary', caption,
                    subfigures=[('a', '重点技能有/无对比（中位数）', axes[0]),
@@ -910,13 +910,13 @@ def figure_scope_robustness(main_rank: pd.DataFrame, ext_rank: pd.DataFrame,
     limit = max(max(xs), max(ys))
     ax.plot([1, limit], [1, limit], color=plot_style.MUTED_COLOR, linewidth=0.9,
             linestyle='--')
-    ax.set_xlabel('主口径排名（REQUIREMENT_SECTION）')
-    ax.set_ylabel('扩展口径排名（ALL_USABLE）')
+    ax.set_xlabel('主统计范围排名（REQUIREMENT_SECTION）')
+    ax.set_ylabel('扩展统计范围排名（ALL_USABLE）')
     ax.text(0.97, 0.06, f'Spearman = {summary["Spearman 排名相关"]:.3f}',
             transform=ax.transAxes, ha='right', va='bottom',
             fontsize=plot_style.FONT_SIZES['annotation'])
     plot_style.apply_sci_axis(ax)
-    plot_style.add_subfigure_caption(ax, 'a', '双口径技能排名对照')
+    plot_style.add_subfigure_caption(ax, 'a', '两种统计范围技能排名对照')
     ax2 = axes[1]
     labels = ['Top10 overlap', 'Top20 overlap']
     values = [summary['Top10 overlap 比例'], summary['Top20 overlap 比例']]
@@ -933,12 +933,12 @@ def figure_scope_robustness(main_rank: pd.DataFrame, ext_rank: pd.DataFrame,
     ax2.set_ylabel('重合比例')
     plot_style.apply_sci_axis(ax2, grid_axis='y')
     plot_style.format_percent_axis(ax2, axis='y')
-    plot_style.add_subfigure_caption(ax2, 'b', '双口径 Top 榜重合比例')
+    plot_style.add_subfigure_caption(ax2, 'b', '两种统计范围 Top 榜重合比例')
     fig.subplots_adjust(wspace=0.32, bottom=0.3)
-    caption = '图10 技能口径稳健性（主口径 vs 扩展口径，排名一致说明结论稳健）'
+    caption = '图10 技能统计范围稳健性（主统计范围 vs 扩展统计范围，排名一致说明结论稳健）'
     plot_style.add_bottom_caption(fig, caption)
     return _finish(fig, '10_scope_robustness', caption,
-                   subfigures=[('a', '双口径技能排名对照', axes[0]),
-                               ('b', '双口径 Top 榜重合比例', axes[1])],
+                   subfigures=[('a', '两种统计范围技能排名对照', axes[0]),
+                               ('b', '两种统计范围 Top 榜重合比例', axes[1])],
                    meta={'图表类型': '散点 + 柱状图', '数据来源': 'job_skill_membership'},
                    registry=registry)

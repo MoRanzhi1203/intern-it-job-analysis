@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """重绘第 4 章业务时间维度两张图（outputs/figures/time/02、03）。
 
-只做版式与可读性优化，不改动任何统计口径与数值：
+只做版式与可读性优化，不改动任何统计范围与数值：
 
 - 图「发布时间队列的薪资中位数及四分位区间」（``fig_4_9_salary_by_publish_time``）：
   数据源为冻结结果表 ``outputs/tables/ch4/59_business_time_dimension_analysis.xlsx`` 的
   ``03_发布时间月度薪资分布`` 工作表，参考线取自 29 号表 ``02_薪资描述统计`` 的中位数；
 - 图「核心技能需求的发布时间队列变化」（``fig_4_10_skill_or_category_time_structure``）：
-  数据源为同表的 ``04_发布时间技能或岗位结构`` 工作表（命中率列），横轴沿用原图口径，
-  只排布主口径岗位数不少于 30、即给出命中率的窗口；
+  数据源为同表的 ``04_发布时间技能或岗位结构`` 工作表（命中率列），横轴沿用原图统计范围，
+  只排布主统计范围岗位数不少于 30、即给出命中率的窗口；
 - 版式为论文版：无图内总图题、600 dpi PNG + 矢量 PDF、四边框内向刻度、浅虚线网格，
   与全文其他重绘图件（如 26j 的图S69~图S73）保持一致；
 - 所有读取均为只读，不重算、不写回任何冻结数据表。
@@ -154,13 +154,13 @@ def build_salary_figure(monthly: pd.DataFrame, full_median: float):
 def build_skill_figure(structure: pd.DataFrame):
     """绘制核心技能需求的发布时间队列变化图，返回 ``(fig, windows)``。
 
-    横轴沿用原图口径：只排布给出命中率的窗口（主口径岗位数不少于 30），等距首尾相接，
+    横轴沿用原图统计范围：只排布给出命中率的窗口（主统计范围岗位数不少于 30），等距首尾相接，
     不补画未达阈值的窗口。
     """
     import matplotlib.pyplot as plt
 
     frame = _with_column(structure, 'period')
-    eligible = frame['主口径岗位数'].to_numpy('float64') >= MIN_WINDOW_N
+    eligible = frame['主统计范围岗位数'].to_numpy('float64') >= MIN_WINDOW_N
     windows = frame.loc[eligible].reset_index(drop=True)
     positions = np.arange(len(windows), dtype='float64')
 
@@ -194,7 +194,7 @@ def save_salary_figure(monthly: pd.DataFrame, full_median: float,
     diagnostics = figure_finalize.save_paper_figure(
         fig, out_dir, stem, subfigures=[],
         meta={'数据来源': '33 号表 03_发布时间月度薪资分布（岗位发布时间聚合到自然月）',
-              '口径': '点为该发布月窗口内有效明确薪资岗位的薪资中点中位数，误差线为 P25~P75 真实'
+              '统计范围': '点为该发布月窗口内有效明确薪资岗位的薪资中点中位数，误差线为 P25~P75 真实'
                       '四分位区间（下误差 = 中位数 − P25，上误差 = P75 − 中位数）；'
                       'n < 30 的窗口加浅色底纹，仅展示、不作趋势解释；'
                       '参考线为全样本薪资中点中位数 %.0f 元/天；逐月对照只描述本样本，'
@@ -216,14 +216,14 @@ def save_skill_figure(structure: pd.DataFrame,
     fig, windows = build_skill_figure(structure)
     diagnostics = figure_finalize.save_paper_figure(
         fig, out_dir, stem, subfigures=[],
-        meta={'数据来源': '33 号表 04_发布时间技能或岗位结构（要求段落主口径命中率列）',
-              '口径': '命中率 = 该发布月窗口内命中该技能的岗位数 ÷ 该窗口主口径岗位数；'
-                      '只在主口径岗位数不少于 30 的窗口给出命中率，未达阈值的窗口不进入本图；'
+        meta={'数据来源': '33 号表 04_发布时间技能或岗位结构（要求段落主统计范围命中率列）',
+              '统计范围': '命中率 = 该发布月窗口内命中该技能的岗位数 ÷ 该窗口主统计范围岗位数；'
+                      '只在主统计范围岗位数不少于 30 的窗口给出命中率，未达阈值的窗口不进入本图；'
                       '四项技能分属具体技术技能（Python、SQL、大模型）与技术领域（人工智能），'
                       '只比较各自随发布队列的变化，不做跨层级效应量比较',
               '横轴': '只排布给出命中率的 %d 个窗口，等距首尾相接' % windows.shape[0],
               '窗口数': int(windows.shape[0]),
-              '阈值（主口径岗位数）': MIN_WINDOW_N,
+              '阈值（主统计范围岗位数）': MIN_WINDOW_N,
               '用途': '第4章「核心技能需求的发布时间队列变化」重绘（图题由 Word 构建脚本生成）'})
     plt.close(fig)
     return diagnostics

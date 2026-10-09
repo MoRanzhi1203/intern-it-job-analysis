@@ -74,7 +74,7 @@ python -m compileall src scripts
 | 05 | 最终岗位实体（最终核心版本优先） | `scripts/ch3_data/05_build_unique_jobs.py` |
 | 06 | 岗位版本文本语料 | `scripts/ch3_data/06_prepare_text_corpus.py` |
 | 07 | 技能与文本特征 | `scripts/ch3_data/07_extract_job_text_features.py` |
-| 08 | 岗位描述语义时序（完整 / 去薪资双口径） | `scripts/ch3_data/08_build_job_text_semantics.py` |
+| 08 | 岗位描述语义时序（完整 / 去薪资两种统计范围） | `scripts/ch3_data/08_build_job_text_semantics.py` |
 | 09 | 公司实体识别 | `scripts/ch3_data/09_resolve_company_entities.py` |
 | 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/ch3_data/10_build_company_text_semantics.py` |
 | 11 | 结构化字段清洗与薪资目标解析 | `scripts/ch3_data/11_clean_structured_fields.py` |
@@ -89,7 +89,7 @@ python -m compileall src scripts
 | --- | --- | --- |
 | `scripts/ch3_data/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
 | `scripts/ch4_lifecycle/13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
-| `scripts/ch6_skills/13b_skill_eda_scope_audit.py` | 技能 EDA 双口径与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
+| `scripts/ch6_skills/13b_skill_eda_scope_audit.py` | 技能 EDA 两种统计范围与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
 | `scripts/ch7_model/14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
 | `scripts/ch8_robust/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
 | `scripts/ch5_factors/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
@@ -99,12 +99,12 @@ python -m compileall src scripts
 （公司标签列表，免费健身设施等）必须严格区分；技能 SHAP 方向以 `presence_direction`
 （技能存在时的平均 SHAP 贡献方向）为准，`global_mean_SHAP_direction` 仅作对比，两者均非因果。
 
-统计推断口径（封版）：公司认证 = 有限四类 Kruskal–Wallis + epsilon² + 成对 Mann–Whitney /
+统计推断方法（封版）：公司认证 = 有限四类 Kruskal–Wallis + epsilon² + 成对 Mann–Whitney /
 Cliff's delta / BH-FDR；公司标签（福利标签）= 描述性统计 + 单标签 present vs absent 二元比较
 （两侧样本 ≥ 50，统一 BH-FDR）；**369 组整体 KW 已标记 `DEPRECATED_INFERENCE`（已废止推断）**，
 不再进入正式因素比较与论文主结论（追溯见 29 号表 16_已废止推断、32/33 号审计表）。
 
-实验状态：`EXPERIMENT_FREEZE = TRUE`（模型实验冻结）+ `ANALYSIS_FREEZE = TRUE`（EDA/统计推断口径冻结）。
+实验状态：`EXPERIMENT_FREEZE = TRUE`（模型实验冻结）+ `ANALYSIS_FREEZE = TRUE`（EDA/统计推断方法冻结）。
 
 ## 4. 正式数据产物
 
@@ -133,7 +133,7 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 - 专项审计：`ch3/16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
   含 MySQL↔raw 跨源证据）、`ch3/17_preprocessing_refactor_cleanup_audit.xlsx`（预处理重构与冗余清理）、
   `ch3/18_job_skill_extraction_audit.xlsx`（Stage 07 技能需求提取）、
-  `ch6/19_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 双口径与分层榜单，含双口径稳健性）、
+  `ch6/19_skill_eda_scope_audit.xlsx`（Stage 13 技能 EDA 两种统计范围与分层榜单，含两种统计范围稳健性）、
    `ch3/20_modeling_dataset_audit.xlsx`（Stage 12 建模数据集、Feature Manifest 与目标泄漏审计）、
    `ch4/21_eda_statistical_analysis.xlsx`（Stage 13 正式 EDA 与统计检验，15 张子表）、
    `ch7/22_model_comparison.xlsx`（Stage 14 薪资预测模型对比、验证集选模与一次性 test 结果）、
@@ -141,15 +141,15 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
    TreeSHAP 整体与技能排名，11 张子表）、
   `ch5/24_company_field_semantic_audit.xlsx`（Stage 16 公司字段语义核查：公司认证 369 组溯源与问题分类）、
   `ch5/25_final_interpretation_audit.xlsx`（Stage 17 最终解释审计：字段语义修正前后 + 技能 SHAP
-  presence 口径 + 核心结果回归保护 + 门禁与测试）。
-- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `fig_6_1_tech_skill_top20`（其余已按第 5.1 节留存口径删除）。
-- 建模图件与模型产出：`figures/modeling/` 目录已按第 5.1 节留存口径**整体移除**；
+  presence 统计方式 + 核心结果回归保护 + 门禁与测试）。
+- 正式 EDA 图件：`outputs/figures/eda/` 现仅保留 `fig_6_1_tech_skill_top20`（其余已按第 5.1 节留存标准删除）。
+- 建模图件与模型产出：`figures/modeling/` 目录已按第 5.1 节留存标准**整体移除**；
   模型产出仍保留于 `outputs/models/salary_model/`（完整 Pipeline + Feature Manifest + 技能列 +
   类别编码 schema + 文本降维 + 参数）。
 
 ### 5.1 图件目录说明（`outputs/figures/`）
 
-`outputs/figures/` 现**只保留论文 docx 中实际出现的 26 张图**（严格逐文件口径）：
+`outputs/figures/` 现**只保留论文 docx 中实际出现的 26 张图**（严格逐文件统计范围）：
 
 | 目录 | 论文图号 | 文件（stem） |
 | --- | --- | --- |
@@ -164,7 +164,7 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 **图号来源**：以 docx 内嵌图片的 SHA-256（21/25 命中）与像素尺寸（其余 4 张）逐一匹配到 `图 X.Y` 题注；
 第 3 章图与「核心代码」类截图不纳入本目录管理。
 
-**留存口径**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
+**留存标准**：以论文 `docs/paper/*.docx` 内嵌图片为准（docx 即 zip，图在 `word/media/`），
 逐文件校验「SHA256 完全一致 或 32×32 灰度归一化互相关 NCC ≥ 0.95」；不满足者一律删除。
 据此共删除 181 个 png/pdf（含全部 PDF 与 `*_display` 变体，及 `sci/`、`modeling/` 两个目录）；
 论文图表实际来自 `figures/supplementary/`、`figures/` 根目录与 `figures/time/`。图件可由相应脚本重新生成。

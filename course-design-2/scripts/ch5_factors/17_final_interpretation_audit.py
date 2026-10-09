@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Stage 17：最终解释审计与封版（公司字段语义修正 + 技能 SHAP presence 口径）。
+"""Stage 17：最终解释审计与封版（公司字段语义修正 + 技能 SHAP presence 统计方式）。
 
 不改数据、不重训模型，只做：
     1. 汇总 Stage 13 公司因素语义修正（修正前 / 修正后，来源 32 号取证表与 29 号表）；
-    2. 汇总技能 SHAP 的两种方向口径（全局 mean(SHAP) 与 presence-conditioned）；
+    2. 汇总技能 SHAP 的两种方向统计范围（全局 mean(SHAP) 与 presence-conditioned）；
     3. 核心结果回归保护（建模样本 / Stage 14 主模型指标 / Stage 15 消融与 Group Split）；
     4. 真实运行 pytest 并把结果写入审计表；
     5. 登记 EXPERIMENT_FREEZE 状态。
@@ -34,7 +34,7 @@ import pandas as pd  # noqa: E402
 from src import eda_analysis, io_utils, project_paths, quality, schema  # noqa: E402
 
 STAGE = 'stage_17_interpretation'
-TITLE = 'Stage 17 最终解释审计与封版（公司字段语义 + 技能 SHAP presence 口径）'
+TITLE = 'Stage 17 最终解释审计与封版（公司字段语义 + 技能 SHAP presence 统计方式）'
 
 EXPECTED_MODEL_SAMPLE = 14883
 EXPECTED_TEST_MAE = 35.335506
@@ -50,7 +50,7 @@ PRESENCE_COLUMNS = ['model_job_count', 'model_job_frequency', 'test_present_n', 
                     'presence_direction', 'global_mean_SHAP_direction']
 # 33 号表最终结构（共 9 个 Sheet，禁止重复门禁 Sheet）
 FINAL_SHEET_ORDER = ['01_字段语义最终确认', '02_公司认证统计', '03_公司标签统计',
-                     '04_Stage13修正前后', '05_技能SHAP旧口径', '06_技能SHAP_presence口径',
+                     '04_Stage13修正前后', '05_技能SHAP旧统计范围', '06_技能SHAP_presence 统计方式',
                      '07_关键结果一致性', '08_全阶段门禁', '09_测试结果']
 EXPECTED_CERT_EPSILON = 0.197545
 CERT_CLASS_COUNTS = {'无认证': 9104, '行业认证': 460, '最佳雇主': 4542, '两者均有': 777}
@@ -75,7 +75,7 @@ def build_field_semantics_sheet(semantic: dict, eda_sheets: dict) -> pd.DataFram
                                           '（data/processed/job_details_unique.parquet）'},
         {'项目': '公司标签字段实际列名', '结论': f'{schema.COMPANY_TAG_LIST_FIELD}（Stage 12 宽表）'},
         {'项目': '公司认证原子标签全集', '结论': atom_list},
-        {'项目': '公司认证互斥四类（分析口径）', '结论': '、'.join(eda_analysis.CERT_CLASS_ORDER)},
+        {'项目': '公司认证互斥四类（分析范围）', '结论': '、'.join(eda_analysis.CERT_CLASS_ORDER)},
         {'项目': '29 号表公司因素列表（修正后）', '结论': '、'.join(factors)},
         {'项目': '是否仍存在「公司认证标签」显示名',
          '结论': '否（已改为公司认证 / 公司标签（福利标签）两个独立因素）'
@@ -91,7 +91,7 @@ def build_field_semantics_sheet(semantic: dict, eda_sheets: dict) -> pd.DataFram
 
 
 def build_before_after_sheet(eda_sheets: dict, metrics: dict) -> pd.DataFrame:
-    """04_Stage13修正前后：三阶段审计链（显示名错误 → 语义拆分 → 统计推断最终口径）。"""
+    """04_Stage13修正前后：三阶段审计链（显示名错误 → 语义拆分 → 统计推断最终方法）。"""
     company = eda_sheets['06_公司因素薪资']
     statistics = eda_sheets['11_统计检验']
     kruskal = statistics[statistics['检验方法'].astype(str).str.startswith('Kruskal')]
@@ -118,7 +118,7 @@ def build_before_after_sheet(eda_sheets: dict, metrics: dict) -> pd.DataFrame:
                   f"（合计 {EXPECTED_MODEL_SAMPLE:,}）；"
                   f"公司标签原子标签 {metrics.get('company_tag_atoms', 0):,} 个",
          '是否进入正式结论': '是（语义层面）'},
-        {'阶段': '阶段 3：统计推断最终口径（本轮）',
+        {'阶段': '阶段 3：统计推断最终方法（本轮）',
          '内容': f"公司认证 → {int(float(cert['参与检验组数'].iloc[0]))} 类 Kruskal–Wallis；"
                f"公司标签 → 描述性统计 + 单标签 present vs absent 二元比较",
          '结果/状态': f"公司认证 epsilon² = {cert['效应量'].iloc[0]}（保持不变）；"
@@ -126,7 +126,7 @@ def build_before_after_sheet(eda_sheets: dict, metrics: dict) -> pd.DataFrame:
                   f"BH-FDR q < 0.05 的 {tag_analysis.get('fdr_significant')} 个；"
                   f"11 号表是否残留标签整体 KW："
                   f"{'是' if not tag_kw_left.empty else '否'}",
-         '是否进入正式结论': '是（最终封版口径）'},
+         '是否进入正式结论': '是（最终封版统计范围）'},
         {'阶段': '阶段 3 前后差异（公司认证）',
          '内容': '公司认证四分类统计保持不变（计数 / H / epsilon² 全部一致）',
          '结果/状态': f"无认证 {int(cert_rows[cert_rows['取值'].eq('无认证')]['样本数'].iloc[0]):,}、"
@@ -241,7 +241,7 @@ def build_tag_sheet(semantic: dict, eda_sheets: dict, metrics_13: dict) -> pd.Da
          '取值': f"369 个福利标签整体 Kruskal–Wallis，"
                f"epsilon² ≈ {deprecated.get('epsilon_squared', eda_analysis.DEPRECATED_TAG_KW_VALUE)}"},
         {'分区': 'D 已废止推断', '项目': '废止原因', '取值': deprecated.get('reason', '')},
-        {'分区': 'D 已废止推断', '项目': '现行替代口径', '取值': deprecated.get('replacement', '')},
+        {'分区': 'D 已废止推断', '项目': '现行替代统计范围', '取值': deprecated.get('replacement', '')},
         {'分区': 'D 已废止推断', '项目': '是否可进入正式因素比较',
          '取值': '否（不再进入正式因素比较、效应量排名与论文主结论；仅作历史追溯）'},
         {'分区': 'D 已废止推断', '项目': '追溯位置',
@@ -251,15 +251,15 @@ def build_tag_sheet(semantic: dict, eda_sheets: dict, metrics_13: dict) -> pd.Da
 
 
 def build_shap_legacy_sheet(shap_sheets: dict) -> pd.DataFrame:
-    """05_技能SHAP旧口径（全局 mean(SHAP) 方向，历史结果保留未删除）。"""
+    """05_技能SHAP旧统计范围（全局 mean(SHAP) 方向，历史结果保留未删除）。"""
     table = shap_sheets['08_技能SHAP']
     columns = ['排名', '技能', '岗位数', '岗位频率', 'mean_abs_SHAP', 'mean_SHAP', '方向性',
-               '低频标记', '频率口径', '说明']
+               '低频标记', '频率统计方式', '说明']
     return table[[column for column in columns if column in table.columns]].copy()
 
 
 def build_shap_presence_sheet(shap_sheets: dict) -> pd.DataFrame:
-    """06_技能SHAP_presence口径（新口径，论文与图表优先）。"""
+    """06_技能SHAP_presence 统计方式（新统计范围，论文与图表优先）。"""
     table = shap_sheets['08_技能SHAP']
     columns = ['排名', '技能', 'model_job_count', 'model_job_frequency', 'test_present_n',
                'test_absent_n', 'mean_SHAP_present', 'median_SHAP_present', 'mean_SHAP_absent',
@@ -394,7 +394,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
     gates = audit['08_全阶段门禁']
     tests = audit['09_测试结果'].set_index('项目')['取值']
     lines = [
-        '# 记录 24：最终解释封版（公司字段语义修正 + 技能 SHAP presence 口径）',
+        '# 记录 24：最终解释封版（公司字段语义修正 + 技能 SHAP presence 统计方式）',
         '',
         '> 本记录由 `scripts/ch5_factors/17_final_interpretation_audit.py` 自动生成，数字全部来自真实产物。',
         '> 本轮**未重训模型、未修改样本、未修改技能词典、未重新选模**，只做解释层与 Stage 13 '
@@ -429,7 +429,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '| Stage | 是否重跑 | 原因 |',
         '| --- | --- | --- |',
         '| Stage 12 | 否 | 宽表数据与模型特征未变化 |',
-        '| Stage 13 | 是 | 公司因素字段引用/显示名修正（记录 23） + 公司标签统计推断口径修正（本轮） |',
+        '| Stage 13 | 是 | 公司因素字段引用/显示名修正（记录 23） + 公司标签统计推断方法修正（本轮） |',
         '| Stage 14 | 否 | 主模型特征/样本/超参数未变化，禁止重训 |',
         '| Stage 15 | 否（本轮未重跑） | 技能 SHAP / 消融 / Group Split 结果保持不变 |',
         '| Stage 16 | 否（本轮未重跑） | 只读取证表（32 号表）作为历史证据保留 |',
@@ -444,7 +444,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         lines.append(f"| {row['层级']} | {row['项目']} | {row['取值']} |")
     lines += [
         '',
-        '## 4. 公司标签（福利标签）统计推断最终口径',
+        '## 4. 公司标签（福利标签）统计推断最终方法',
         '',
         '| 分区 | 项目 | 取值 |',
         '| --- | --- | --- |',
@@ -456,12 +456,12 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '> 公司认证（最佳雇主 / 行业认证）与公司标签（福利标签）字段不同、取值范围与规模不同、'
         '语义不同（公司标签中仅字符串层面存在个别重叠），禁止互相替代。',
         '',
-        '**公司标签正式口径**：',
+        '**公司标签正式统计范围**：',
         '',
         '- 369 组整体 KW：`DEPRECATED_INFERENCE`（已废止推断）——多值标签组相互重叠，'
         '不满足普通多组独立性比较的解释前提，epsilon² ≈ 0.471492 不再进入正式因素比较、'
         '效应量排名与论文主结论（仅保留追溯：29 号表 16_已废止推断、32 号表、记录 20/23/24）；',
-        '- 正式口径：① 描述性频率/薪资统计（标签 / 岗位数 / 岗位占比 / 薪资样本数 / 薪资中位数 / '
+        '- 正式统计范围：① 描述性频率/薪资统计（标签 / 岗位数 / 岗位占比 / 薪资样本数 / 薪资中位数 / '
         'IQR / P25 / P75，正文只展示 Top20~Top30）；② 高频单标签 present vs absent 二元比较'
         '（Mann–Whitney U + Cliff\'s delta + BH-FDR，present_n / absent_n ≥ 50，'
         'present ∩ absent = ∅）；',
@@ -486,13 +486,13 @@ def write_record(metrics: dict, audit: dict) -> Path:
             else '无'
         ),
         '',
-        '## 5. 技能 SHAP 解释口径',
+        '## 5. 技能 SHAP 解释方式',
         '',
-        '| 口径 | 定义 | 用途 |',
+        '| 统计范围 | 定义 | 用途 |',
         '| --- | --- | --- |',
-        '| `global_mean_SHAP_direction`（旧口径，保留） | mean(SHAP) 在全部解释样本上的正负 | '
+        '| `global_mean_SHAP_direction`（旧统计范围，保留） | mean(SHAP) 在全部解释样本上的正负 | '
         '历史结果，未删除，仅作对比 |',
-        '| `presence_direction`（新口径，论文与图表优先） | 技能存在时（技能列 = 1）的 '
+        '| `presence_direction`（新统计范围，论文与图表优先） | 技能存在时（技能列 = 1）的 '
         'mean_SHAP_present；> 1e-8 正向预测贡献，< -1e-8 负向预测贡献，否则中性/弱影响 | '
         '对 0/1 技能特征更直观 |',
         '',
@@ -505,8 +505,8 @@ def write_record(metrics: dict, audit: dict) -> Path:
                      f"{row['presence_direction']} |")
     lines += [
         '',
-        f"- 分母口径：模型样本频率 = 岗位数 / {metrics['model_sample']:,}；"
-        f"presence 口径 = test 现技能岗位数 / {metrics['shap_rows']:,}（原 test 子集），两者不混用；",
+        f"- 分母范围：模型样本频率 = 岗位数 / {metrics['model_sample']:,}；"
+        f"presence 统计方式 = test 现技能岗位数 / {metrics['shap_rows']:,}（原 test 子集），两者不混用；",
         f"- SHAP 加性一致性最大误差 {metrics['shap_reconstruction_max_error']:.2e}（< 1e-6）；"
         f"仍使用 Stage 14 正式 artifact、原 test set、原 320 维特征空间；",
         '- 方向表示「该技能存在时」的平均 SHAP 贡献方向，**不代表技能的因果薪资效应**。',
@@ -540,8 +540,8 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '',
         '- `EXPERIMENT_FREEZE`：不再改样本、不再改技能词典、不再改特征组、'
         '不再重新选模型、不再根据 test 迭代（Stage 14/15 结果冻结）；',
-        '- `ANALYSIS_FREEZE`：不再改 EDA / 统计推断口径'
-        '（公司认证四分类与公司标签二元口径均为最终版）；',
+        '- `ANALYSIS_FREEZE`：不再改 EDA / 统计推断方法'
+        '（公司认证四分类与公司标签二元统计范围均为最终版）；',
         '- 公司标签 369 组整体 KW 永久标记 `DEPRECATED_INFERENCE`，不得再作为论文主结论；',
         '- 后续只进行论文正文、图表筛选、结论与摘要、答辩 PPT。',
         '',
@@ -578,8 +578,8 @@ def main() -> int:
         '02_公司认证统计': build_certification_sheet(semantic, eda_sheets),
         '03_公司标签统计': build_tag_sheet(semantic, eda_sheets, metrics_13),
         '04_Stage13修正前后': build_before_after_sheet(eda_sheets, metrics_13),
-        '05_技能SHAP旧口径': build_shap_legacy_sheet(shap_sheets),
-        '06_技能SHAP_presence口径': build_shap_presence_sheet(shap_sheets),
+        '05_技能SHAP旧统计范围': build_shap_legacy_sheet(shap_sheets),
+        '06_技能SHAP_presence 统计方式': build_shap_presence_sheet(shap_sheets),
         '07_关键结果一致性': build_consistency_sheet(model_frame, metrics_14, metrics_15,
                                                 metrics_13),
     }
@@ -600,8 +600,8 @@ def main() -> int:
 
     semantics = base_sheets['01_字段语义最终确认'].set_index('项目')['结论']
     consistency = base_sheets['07_关键结果一致性']
-    presence = base_sheets['06_技能SHAP_presence口径']
-    legacy = base_sheets['05_技能SHAP旧口径']
+    presence = base_sheets['06_技能SHAP_presence 统计方式']
+    legacy = base_sheets['05_技能SHAP旧统计范围']
     company_tests = eda_sheets['11_统计检验']
     kruskal_rows = company_tests[
         company_tests['检验方法'].astype(str).str.startswith('Kruskal')]
@@ -625,8 +625,8 @@ def main() -> int:
                 .isin(['正向预测贡献', '负向预测贡献', '中性/弱影响']).all()
                 and set(legacy.columns) >= {'mean_abs_SHAP', 'mean_SHAP', '方向性'}
                 and bool(metrics_15.get('key_skills')),
-                f"技能 SHAP 同时保留旧口径（{len(legacy)} 行，含 mean_SHAP 与方向性）"
-                f"与 presence 口径（{len(presence)} 行 × {len(PRESENCE_COLUMNS)} 列）；"
+                f"技能 SHAP 同时保留旧统计范围（{len(legacy)} 行，含 mean_SHAP 与方向性）"
+                f"与 presence 统计方式（{len(presence)} 行 × {len(PRESENCE_COLUMNS)} 列）；"
                 f"presence 方向按 mean_SHAP_present（阈值 1e-8）判定，"
                 f"重点技能 {len(metrics_15.get('key_skills', []))} 个")
     gates.check('INTERPRETATION_MODEL_UNCHANGED',
@@ -655,7 +655,7 @@ def main() -> int:
                 and 'DEPRECATED_INFERENCE' in str(
                     metrics_13.get('deprecated_inference', {}).get('flag', '')),
                 'EXPERIMENT_FREEZE = TRUE（模型实验冻结）+ ANALYSIS_FREEZE = TRUE'
-                '（EDA/统计推断口径冻结）：公司标签 369 组整体 KW 已废止'
+                '（EDA/统计推断方法冻结）：公司标签 369 组整体 KW 已废止'
                 f'（11 号表残留 {len(tag_kw_left)} 行），'
                 f'正式改为描述性统计 + 单标签 present vs absent 二元检验'
                 f'（{len(tag_binary)} 个标签，统一 BH-FDR）')
@@ -667,7 +667,7 @@ def main() -> int:
         payload = {
             'experiment_freeze': True,
             'analysis_freeze': True,
-            'analysis_scope': 'EDA / 统计推断口径（公司认证四分类 + 公司标签二元口径）',
+            'analysis_scope': 'EDA / 统计推断方法（公司认证四分类 + 公司标签二元统计范围）',
             'final_sheet_order': FINAL_SHEET_ORDER,
             'sheet_count': len(sheets),
             'gate_sheet_count': sum(1 for name in sheets if name.endswith('门禁')),

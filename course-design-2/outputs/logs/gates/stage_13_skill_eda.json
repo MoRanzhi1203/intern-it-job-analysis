@@ -1,0 +1,29 @@
+{
+  "stage": "stage_13_skill_eda",
+  "gates": {
+    "SKILL_EDA_SCOPE_SAMPLE": {
+      "status": "PASS",
+      "note": "三种统计范围岗位数合计 17144 = 全部岗位 17144；主统计范围 8822 / fallback 7556 / 空文本 766；扩展统计范围（可用文本）16378"
+    },
+    "SKILL_EDA_LAYER_SPLIT": {
+      "status": "PASS",
+      "note": "4 个层级覆盖全部 145 个技能标准名（办公工具 6、业务能力 7、技术领域 23、具体技术技能 109）；层级来自 skills.yml rank_layers，未新建技能分类字典"
+    },
+    "SKILL_EDA_GROUP_DEDUP": {
+      "status": "PASS",
+      "note": "办公工具组岗位数（intern_id 去重）2620 < 组内技能岗位数简单相加 4489，重复计数差额 1869；全部组级统计均按 intern_id 去重"
+    },
+    "SKILL_EDA_ROBUSTNESS": {
+      "status": "PASS",
+      "note": "Top10 overlap 8/10、Top20 overlap 17/20、Spearman 0.973113（共有技能 144 个）→ 技能需求结论对文本结构识别方式稳健"
+    },
+    "SKILL_EDA_SALARY_SCOPE": {
+      "status": "PASS",
+      "note": "正式薪资样本 14883 = 解析成功 14899 − 逻辑异常 16（非面议 + 解析成功 + 中点有效 + 无逻辑异常）；主统计范围检验达标技能 46 个，已输出 Mann–Whitney U / Cliff's delta / BH-FDR；全部为描述性关联，禁止因果解读"
+    },
+    "SKILL_EDA_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "12 张技能 EDA 子表已写出（两种统计范围 + 四层榜单 + 共现 + 薪资 + 稳健性）"
+    }
+  }
+}

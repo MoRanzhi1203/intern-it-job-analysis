@@ -263,7 +263,7 @@ def main() -> int:
                 and bool((events['旧值'] != events['新值']).all()),
                 f'变化字段数合计 {int(expectations)} 与变化事件行数一致，且旧值 != 新值')
 
-    # 2) 同岗位历史字段多值统计（与旧口径一致，用于回归核验）
+    # 2) 同岗位历史字段多值统计（与旧统计范围一致，用于回归核验）
     field_table = versioning.field_multi_value_stats(snapshots, schema.BUSINESS_FIELDS)
     conflict_fields = field_table[field_table['同岗位多值岗位数'] > 0]
     key_conflict_ids = set()

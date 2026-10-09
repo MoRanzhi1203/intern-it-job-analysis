@@ -1,0 +1,37 @@
+{
+  "stage": "stage_14_model",
+  "gates": {
+    "MODEL_SPLIT": {
+      "status": "PASS",
+      "note": "train 10,418 / validation 2,232 / test 2,233（random_state=42，按薪资分位分层）"
+    },
+    "MODEL_SPLIT_DISJOINT": {
+      "status": "PASS",
+      "note": "三个子集互不相交且并集等于 14,883 个正式样本；公司 Group Split 已另存备用"
+    },
+    "MODEL_VALIDATION_SELECTION": {
+      "status": "PASS",
+      "note": "按 validation MAE 选出主模型 LightGBM（36.206167）；排序前 3：LightGBM、CatBoost、RandomForest；选择只用 train/validation"
+    },
+    "MODEL_TRAIN_ONLY_PREPROCESS": {
+      "status": "PASS",
+      "note": "预处理器（填补 / 编码 / Scaler / 技能列 / SVD）只在 train（10,418 行）上 fit；估计器在 train+validation（12,650 行）上重拟合；test（2,233 行）从未参与拟合"
+    },
+    "MODEL_SKILL_THRESHOLD_TRAIN_ONLY": {
+      "status": "PASS",
+      "note": "技能列集合 = train 频率 ≥ 100 的技能（44 个），与产出中 skill_columns 完全一致；验证/测试岗位未参与频率统计"
+    },
+    "MODEL_TEST_SINGLE_EVAL": {
+      "status": "PASS",
+      "note": "test 仅在锁定配置后评估一次（n = 2,233，MAE 35.651021），技能阈值/文本维度/超参数/模型族均在 train+validation 上确定，未据 test 调整"
+    },
+    "MODEL_ARTIFACT_EXPORT": {
+      "status": "PASS",
+      "note": "模型产出目录 outputs\\models\\salary_model 含 8 个文件：pipeline + feature manifest + skill columns + category encoder schema + text reducer + model params（非裸 estimator）"
+    },
+    "MODEL_COMPARISON_EXPORT": {
+      "status": "PASS",
+      "note": "30 号审计表含 13 张子表（划分 / 特征维度 / 各模型网格 / validation 比较 / test 最终结果 / 预测残差 / 阈值与维度选择 / 门禁）"
+    }
+  }
+}

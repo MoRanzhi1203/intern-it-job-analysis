@@ -522,7 +522,7 @@ def build_record_lines(metrics: dict, audit: dict) -> list:
         f'| 歧义上下文规则 | {metrics["context_rule_count"]} 条 |',
         f'| 别名冲突数 | {metrics["alias_conflicts"]} |',
         '',
-        '## 2. 提取口径与覆盖',
+        '## 2. 提取范围与覆盖',
         '',
         '| 项 | 数值 |',
         '| --- | --- |',

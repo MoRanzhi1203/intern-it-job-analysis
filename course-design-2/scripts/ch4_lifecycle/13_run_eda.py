@@ -5,7 +5,7 @@
     data/processed/job_analysis_dataset.parquet     全量分析集（17,144）
     data/processed/job_salary_model_dataset.parquet 薪资建模集（14,883）
     data/features/job_skill_membership.parquet      岗位 × 规范技能 long-format
-    outputs/tables/ch6/19_skill_eda_scope_audit.xlsx    技能口径审计（复用，不重新设计口径）
+    outputs/tables/ch6/19_skill_eda_scope_audit.xlsx    技能统计范围审计（复用，不重新设计统计范围）
 
 输出：
     outputs/tables/ch4/21_eda_statistical_analysis.xlsx 13 张子表（描述统计 / 因素检验 / 技能 / 共现 / 稳健性）
@@ -13,8 +13,8 @@
     docs/records/20_formal_eda_record.md            正式 EDA 记录
     outputs/logs/metrics/stage_13_eda.json
 
-口径（封版）：EDA 单元 = 唯一岗位实体；薪资样本 = 14,883；
-技能主口径 = REQUIREMENT_SECTION（8,822）/ 扩展口径 = ALL_USABLE（16,378）/ EMPTY_TEXT 单独报告；
+统计范围（封版）：EDA 单元 = 唯一岗位实体；薪资样本 = 14,883；
+技能主统计范围 = REQUIREMENT_SECTION（8,822）/ 扩展统计范围 = ALL_USABLE（16,378）/ EMPTY_TEXT 单独报告；
 两组比较 Mann–Whitney U + Cliff's delta；多组 Kruskal–Wallis；批量比较 BH-FDR。
 
 用法：
@@ -61,7 +61,7 @@ def build_statistics_sheet(factor_tests: dict, skill_count_test: dict) -> pd.Dat
             '统计量': test.get('H统计量'),
             'p值': test.get('p值'),
             '效应量': test.get('epsilon平方'),
-            '效应量口径': 'epsilon²（Kruskal–Wallis）',
+            '效应量计算方式': 'epsilon²（Kruskal–Wallis）',
             '说明': test.get('说明', ''),
         })
     rows.append({
@@ -72,7 +72,7 @@ def build_statistics_sheet(factor_tests: dict, skill_count_test: dict) -> pd.Dat
         '统计量': skill_count_test.get('H统计量'),
         'p值': skill_count_test.get('p值'),
         '效应量': skill_count_test.get('epsilon平方'),
-        '效应量口径': 'epsilon²（Kruskal–Wallis）',
+        '效应量计算方式': 'epsilon²（Kruskal–Wallis）',
         '说明': skill_count_test.get('说明', ''),
     })
     return pd.DataFrame(rows)
@@ -121,7 +121,7 @@ def build_causal_check_table(audit_sheets: dict, figure_captions) -> tuple:
 
 
 def write_record(metrics: dict, audit: dict) -> Path:
-    """20 号记录：样本口径 / 统计方法 / FDR / 效应量 / 主图选择 / 双口径结论。"""
+    """20 号记录：样本统计范围 / 统计方法 / FDR / 效应量 / 主图选择 / 两种统计范围结论。"""
     salary_stats = audit['02_薪资描述统计'].set_index('指标')['数值']
     robustness = audit['12_稳健性'].set_index('项目')['数值']
     lines = [
@@ -130,7 +130,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '> 本记录由 `scripts/ch4_lifecycle/13_run_eda.py` 自动生成，数字全部来自真实运行结果。',
         '> 本轮只做探索性分析与统计检验：**未训练模型、未调参、未执行 SHAP、未做测试集性能比较**。',
         '',
-        '## 1. 样本口径',
+        '## 1. 样本统计范围',
         '',
         '| 项 | 数值 |',
         '| --- | --- |',
@@ -138,8 +138,8 @@ def write_record(metrics: dict, audit: dict) -> Path:
         f'| 正式薪资分析样本 | {metrics["salary_sample"]:,}（非面议 + 解析成功 + 中点有效 + 无逻辑异常） |',
         f'| 面议岗位 | {metrics["negotiable"]:,} |',
         f'| 薪资逻辑异常 | {metrics["anomaly"]:,} |',
-        f'| 技能主口径 REQUIREMENT_SECTION | {metrics["main_scope"]:,} |',
-        f'| 技能扩展口径 ALL_USABLE | {metrics["all_usable"]:,} |',
+        f'| 技能主统计范围 REQUIREMENT_SECTION | {metrics["main_scope"]:,} |',
+        f'| 技能扩展统计范围 ALL_USABLE | {metrics["all_usable"]:,} |',
         f'| EMPTY_TEXT（单独报告） | {metrics["empty_scope"]:,} |',
         '',
         '## 2. 薪资总体分布（主目标 = 薪资中点）',
@@ -210,9 +210,9 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '（369 组即样本数 ≥ 30 的福利标签数），该显示与字段引用错误已在本轮修正'
         '（取证见记录 23，32 号审计表）。',
         '',
-        '### 4.2 公司标签（福利标签）统计推断最终口径',
+        '### 4.2 公司标签（福利标签）统计推断最终方法',
         '',
-        '| 阶段 | 口径 | 状态 |',
+        '| 阶段 | 统计范围 | 状态 |',
         '| --- | --- | --- |',
         f"| 历史（已废止） | 369 个福利标签整体 Kruskal–Wallis，"
         f"epsilon² ≈ {metrics['deprecated_inference']['epsilon_squared']} | "
@@ -265,16 +265,16 @@ def write_record(metrics: dict, audit: dict) -> Path:
                      f"{row['median_diff_A_minus_B']} | {row['FDR显著']} |")
     lines += [
         '',
-        '## 5. 技能需求（主口径分母 8,822；扩展口径分母 16,378）',
+        '## 5. 技能需求（主统计范围分母 8,822；扩展统计范围分母 16,378）',
         '',
         '| 榜单 | 前 5 名（岗位数 / 占比） |',
         '| --- | --- |',
     ]
-    for title in ['核心技术技能 Top20（主口径，分母 8,822）',
-                  '技术领域 Top15（主口径，分母 8,822）',
-                  '业务能力（主口径，分母 8,822）',
-                  '办公工具（主口径，分母 8,822）',
-                  '扩展口径 Top20（分母 16,378）']:
+    for title in ['核心技术技能 Top20（主统计范围，分母 8,822）',
+                  '技术领域 Top15（主统计范围，分母 8,822）',
+                  '业务能力（主统计范围，分母 8,822）',
+                  '办公工具（主统计范围，分母 8,822）',
+                  '扩展统计范围 Top20（分母 16,378）']:
         block = audit['07_技能需求']
         block = block[block['榜单'] == title].head(5)
         summary = '、'.join(f'{row.技能标准名}（{int(row.岗位数)} / {row.岗位占比:.1%}）'
@@ -301,7 +301,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
         '措辞规范：**「明确要求 Python 的岗位薪资中位数高于未明确要求 Python 的岗位」**，',
         '不得写成「Python 导致薪资提高」；同岗位细分类内部对比见 09_岗位内技能薪资。',
         '',
-        '## 7. 双口径稳健性（复用 27 号审计口径，未重新设计）',
+        '## 7. 两种统计范围稳健性（复用 27 号审计统计范围，未重新设计）',
         '',
         '| 指标 | 数值 |',
         '| --- | --- |',
@@ -328,17 +328,17 @@ def write_record(metrics: dict, audit: dict) -> Path:
         f"（H ≈ {metrics['company_certification']['H']}，"
         f"epsilon² ≈ {metrics['company_certification']['epsilon_squared']}），"
         f"不同认证组合的薪资分布存在差异；",
-        f"- 公司标签（福利标签）为高基数多值字段，正式口径为描述性统计 + "
+        f"- 公司标签（福利标签）为高基数多值字段，正式统计范围为描述性统计 + "
         f"单标签 present vs absent 二元比较：{metrics['company_tag_analysis']['binary_rows']} 个标签"
         f"样本量达标，统一 BH-FDR 后 {metrics['company_tag_analysis']['fdr_significant']} 个标签"
         f"与薪资分布存在统计差异（描述性关联），"
         f"原「369 组整体 KW（epsilon² ≈ {metrics['deprecated_inference']['epsilon_squared']}）」"
         f"已标记 {metrics['deprecated_inference']['flag']}；",
-        '- 技能需求主口径下，具体技术技能以 Python（1,264）、SQL（870）、Java（452）为主，',
+        '- 技能需求主统计范围下，具体技术技能以 Python（1,264）、SQL（870）、Java（452）为主，',
         '  技术领域以数据分析（1,641）、人工智能（1,314）、大模型（469）为主；',
         '- 明确要求 Python / Java / SQL / C++ 等技能的岗位薪资中位数高于未明确要求的岗位，',
         '  该差异在控制岗位细分类后依然存在但幅度下降，说明部分差异来自岗位类别结构；',
-        '- 双口径排名高度一致（Top20 overlap 17/20，Spearman 0.973），技能需求结论稳健；',
+        '- 两种统计范围排名高度一致（Top20 overlap 17/20，Spearman 0.973），技能需求结论稳健；',
         '- 以上均为**描述性关联**，不构成因果结论；技能信息对薪资预测的增益需在 Stage 14/15 用',
         '  消融与模型比较验证。',
         '',
@@ -353,7 +353,7 @@ def write_record(metrics: dict, audit: dict) -> Path:
     lines += [
         '',
         f"- 核心锚点：全量岗位 {metrics['jobs']:,}；薪资样本 {metrics['salary_sample']:,}；"
-        f"主口径 {metrics['main_scope']:,}；扩展口径 {metrics['all_usable']:,}；"
+        f"主统计范围 {metrics['main_scope']:,}；扩展统计范围 {metrics['all_usable']:,}；"
         f"EMPTY_TEXT {metrics['empty_scope']:,}；",
         f"- 产物：`{metrics['audit_path']}`、图目录 `outputs/figures/eda/`；",
         '- 本轮未训练模型、未调参、未执行 SHAP、未使用测试集、未提交 git。',
@@ -484,7 +484,7 @@ def main() -> int:
 
     # ---- 公司标签（福利标签）：废止整体 KW（门禁在 11 号子表组装后按真实产物判定） ----
 
-    # ---- 技能需求（复用封版口径） ----
+    # ---- 技能需求（复用封版统计范围） ----
     demand, main_rank, ext_rank, layers = eda_analysis.build_skill_demand(membership, universe,
                                                                          config)
     main_count = len(universe[skill_eda.SCOPE_MAIN])
@@ -493,7 +493,7 @@ def main() -> int:
     gates.check('EDA_SKILL_SCOPE_DENOMINATOR',
                 main_count == EXPECTED_MAIN_SCOPE and all_usable == EXPECTED_ALL_USABLE
                 and empty_count == EXPECTED_EMPTY_SCOPE,
-                f'主口径分母 {main_count:,}（REQUIREMENT_SECTION）／扩展口径 {all_usable:,}'
+                f'主统计范围分母 {main_count:,}（REQUIREMENT_SECTION）／扩展统计范围 {all_usable:,}'
                 f'／EMPTY_TEXT {empty_count:,}（单独报告）；榜单占比按对应分母计算')
     gates.check('EDA_SKILL_LAYER_SPLIT',
                 len(layers) == 4
@@ -529,7 +529,7 @@ def main() -> int:
     registry: list = []
     figure_specs = [
         (lambda: eda_analysis.figure_sample_structure(overview, registry),
-         '样本口径与技能口径结构'),
+         '样本统计范围与技能统计范围结构'),
         (lambda: eda_analysis.figure_salary_distribution(model, registry),
          '薪资中点分布是否右偏、极端值规模'),
         (lambda: eda_analysis.figure_category_salary(factor_tables['sub_category'], registry),
@@ -553,7 +553,7 @@ def main() -> int:
         (lambda: eda_analysis.figure_skill_salary(per_skill, count_table, registry),
          '技能与薪资的描述性关联强度'),
         (lambda: eda_analysis.figure_scope_robustness(main_rank, ext_rank, summary, registry),
-         '技能结论对文本口径是否稳健'),
+         '技能结论对文本统计范围是否稳健'),
     ]
     for builder, question in figure_specs:
         diagnostics = builder()
@@ -578,13 +578,13 @@ def main() -> int:
                               '（历史值，保留追溯）'},
         {'项目': '废止原因', '结论': '公司标签列表为高基数多值字段，同一岗位可同时命中多个标签，'
                                 '标签组之间不独立，不满足普通多组独立性比较的解释前提'},
-        {'项目': '现行正式口径', '结论': '描述性统计（06 号子表）+ 单标签 present vs absent '
+        {'项目': '现行正式统计范围', '结论': '描述性统计（06 号子表）+ 单标签 present vs absent '
                                  '二元比较（11 号子表：Mann–Whitney U + Cliff\'s delta + '
                                  'BH-FDR，present_n / absent_n ≥ '
                                  f'{eda_analysis.MIN_BINARY_GROUP_SIZE}）'},
         {'项目': '进入正式二元比较的标签数', '结论': f'{len(tag_binary)}'},
         {'项目': '是否可再进入正式因素比较', '结论': '否（仅作历史追溯与审计链证据）'},
-        {'项目': '结论口径', '结论': eda_analysis.NO_CAUSAL_NOTE},
+        {'项目': '结论表述', '结论': eda_analysis.NO_CAUSAL_NOTE},
     ])
     audit_sheets = {
         '01_样本概况': overview,

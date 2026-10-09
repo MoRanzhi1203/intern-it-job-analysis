@@ -48,7 +48,7 @@ METHOD_CONFIDENCE = {
 METHOD_EXCLUDE_REASON = {
     METHOD_MULTI_LOCATION_AMBIGUOUS: '同名跨地域，所在地不足以作为自动拆分正式实体的充分条件，需人工确认',
     METHOD_HIGH_CONFIDENCE_MATCH: '不同名称但公司简介指纹一致，未经人工确认不得合并',
-    METHOD_EXACT_NAME_LOCATION: '旧口径按「名称+所在地」拆分，本轮不再作为正式进入条件',
+    METHOD_EXACT_NAME_LOCATION: '旧统计范围按「名称+所在地」拆分，本轮不再作为正式进入条件',
     METHOD_UNRESOLVED: '公司名称为空，无法解析',
 }
 
@@ -271,7 +271,7 @@ def resolve_formal_entities(entity_map: pd.DataFrame,
                             require_review_ok: bool = True) -> pd.DataFrame:
     """返回允许进入正式公司简介时序的实体映射行。
 
-    Refinement R1 起正式口径只允许 ``EXACT_NORMALIZED_NAME`` / ``APPROVED_ALIAS``，
+    Refinement R1 起正式统计范围只允许 ``EXACT_NORMALIZED_NAME`` / ``APPROVED_ALIAS``，
     且默认要求「无需人工复核」。
     """
     formal = entity_map[entity_map['映射方式'].isin(FORMAL_MAPPING_METHODS)].copy()

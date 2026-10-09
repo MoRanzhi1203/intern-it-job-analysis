@@ -1,6 +1,6 @@
 {
- "输入": "data/processed/job_strict_episode_26_1.parquet（7 个日历天阈值严格口径）",
- "口径": "W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；A_t = Σ I(p_e = t)；C_t = Σ I(d_e = t − 1)",
+ "输入": "data/processed/job_strict_episode_26_1.parquet（7 个日历天阈值严格统计范围）",
+ "统计范围": "W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；A_t = Σ I(p_e = t)；C_t = Σ I(d_e = t − 1)",
  "时间轴": "2022-06-17 ~ 2028-11-22（2351 天）",
  "可展开周期数": 17131,
  "两序列 Spearman": 0.9914660914552654,

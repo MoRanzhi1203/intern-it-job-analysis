@@ -3,7 +3,7 @@
 
 本脚本只做**新增**计算与**新增**文件输出，严格只读既有产物：
 
-1. **任务 1（核心）**：`岗位大类集合` / `岗位细分类集合` 为多值列表字段，既有正式口径把多值
+1. **任务 1（核心）**：`岗位大类集合` / `岗位细分类集合` 为多值列表字段，既有正式统计范围把多值
    标签 explode 成重叠组后做 Kruskal–Wallis（`src/eda_analysis.py:build_group_salary`），
    违反组间独立性前提，故原 `岗位大类 ε² = 0.082114（12 组）` 与
    `岗位细分类 ε² = 0.115633（80 组）` 不再作为正式结论。本项目不存在唯一主类别字段
@@ -49,7 +49,7 @@ from src import (eda_analysis, figure_finalize, io_utils, model_training,  # noq
                  plot_style, project_paths, schema, skill_eda)
 from src.script_support import sha256_of  # noqa: E402
 
-# ---------------------------------------------------------------- 常量与口径
+# ---------------------------------------------------------------- 常量与统计范围
 SEED = 42                       # 与项目既有划分一致（本脚本的检验本身无随机性）
 MIN_BINARY_GROUP = eda_analysis.MIN_BINARY_GROUP_SIZE      # 50（复用既有两组检验门槛）
 CATEGORY_FIELD = '岗位大类集合'
@@ -66,7 +66,7 @@ MW_MIN_GROUP_NOTE = (
     f'样本量门槛：present 与 absent 两组岗位数均 ≥ {MIN_BINARY_GROUP}'
     f'（复用项目既有两组比较门槛 `eda_analysis.MIN_BINARY_GROUP_SIZE`，未新造阈值）'
 )
-CALIBER_NOTE = (
+SCOPE_NOTE = (
     '这些 δ 是「命中 / 未命中该类别」的薪资分布差异，不等于多组整体效应量，'
     '不能与其它因素的 ε² 直接并列比较（量纲与含义均不同）。'
 )
@@ -202,8 +202,8 @@ def binary_multivalue_tests(frame: pd.DataFrame, column: str, label: str) -> pd.
 
 
 def summarize_field(tested: pd.DataFrame, pool: pd.DataFrame, label: str,
-                    extra_caliber: str = '') -> dict:
-    """任务 1.2 的完整汇总口径（进入类别数 / q<0.05 / |δ| 极值 / 四档分布）。"""
+                    extra_scope: str = '') -> dict:
+    """任务 1.2 的完整汇总统计范围（进入类别数 / q<0.05 / |δ| 极值 / 四档分布）。"""
     if tested.empty:
         return {'因素': label, '进入检验类别数': 0}
     abs_delta = tested['Cliff_delta'].abs()
@@ -230,8 +230,8 @@ def summarize_field(tested: pd.DataFrame, pool: pd.DataFrame, label: str,
         '四档_中等(0.330~0.474)': int(tiers[eda_analysis.CLIFF_EFFECT_LABELS[2]]),
         '四档_大(>=0.474)': int(tiers[eda_analysis.CLIFF_EFFECT_LABELS[3]]),
     }
-    if extra_caliber:
-        summary['补充口径'] = extra_caliber
+    if extra_scope:
+        summary['补充统计范围'] = extra_scope
     return summary
 
 
@@ -242,7 +242,7 @@ def run_task1(frame: pd.DataFrame) -> dict:
         '岗位大类': verify_cliff_implementation(frame, CATEGORY_FIELD),
         '岗位细分类': verify_cliff_implementation(frame, SUB_CATEGORY_FIELD),
     }
-    # 两个字段合并后统一 BH-FDR（作为口径稳健性补充，不是主报表口径）
+    # 两个字段合并后统一 BH-FDR（作为统计范围稳健性补充，不是主报表统计范围）
     pooled = pd.concat([category[['类别', 'p值']].assign(字段='岗位大类'),
                         sub_category[['类别', 'p值']].assign(字段='岗位细分类')],
                        ignore_index=True)
@@ -260,9 +260,9 @@ def run_task1(frame: pd.DataFrame) -> dict:
                                  '说明': label + '多值字段逐个类别的 present/absent 二元比较'})
     summary_rows += [
         {'项目': '合并统一校正｜进入检验类别数', '数值': int(len(pooled)),
-         '说明': '两个字段全部进入检验的类别合并为一个检验族后再次做 BH-FDR（补充口径）'},
+         '说明': '两个字段全部进入检验的类别合并为一个检验族后再次做 BH-FDR（补充统计范围）'},
         {'项目': '合并统一校正｜q<0.05数量', '数值': pooled_significant,
-         '说明': '合并族校正后 q < 0.05 的类别数（补充口径，主报表按字段各自校正）'},
+         '说明': '合并族校正后 q < 0.05 的类别数（补充统计范围，主报表按字段各自校正）'},
         {'项目': '样本量门槛', '数值': MIN_BINARY_GROUP, '说明': MW_MIN_GROUP_NOTE},
         {'项目': '检验样本', '数值': int(len(frame)),
          '说明': '正式薪资样本（与 Stage13 正式 EDA 同一分析框：'
@@ -273,7 +273,7 @@ def run_task1(frame: pd.DataFrame) -> dict:
         {'项目': '效应量分级阈值',
          '数值': '可忽略 <0.147；小 0.147~0.330；中等 0.330~0.474；大 ≥0.474',
          '说明': 'Romano et al. 2006 通行阈值，复用 eda_analysis.cliff_effect_label'},
-        {'项目': '口径说明', '数值': CALIBER_NOTE,
+        {'项目': '统计范围说明', '数值': SCOPE_NOTE,
          '说明': '禁止把该 δ 与 ε² 并列比较或机械合成总分'},
         {'项目': 'Cliff 实现对拍', '数值': str(calibration),
          '说明': '向量化 δ 与项目原有 skill_eda.cliff_delta 在真实数据上逐值一致（偏差 < 1e-12）'},
@@ -294,7 +294,7 @@ def run_task2(model_frame: pd.DataFrame, splits: pd.DataFrame) -> dict:
     if set(split_map.index) != set(salary.index):
         raise ValueError('划分文件与建模样本的 intern_id 集合不一致，禁止继续')
     if salary.isna().any():
-        raise ValueError('建模样本存在缺失薪资中点，与正式口径（14,883 全部非空）不符')
+        raise ValueError('建模样本存在缺失薪资中点，与正式统计范围（14,883 全部非空）不符')
     y = salary.reindex(split_map.index)
     y_train = y[split_map.eq('train').to_numpy()].to_numpy('float64')
     y_valid = y[split_map.eq('validation').to_numpy()].to_numpy('float64')
@@ -694,11 +694,11 @@ def main() -> int:
         '04_中位数基线': pd.concat([task2['sheet'], task2['reproduction_rows']],
                                 ignore_index=True, sort=False),
         '05_分组预测误差': task3['sheet'],
-        '06_方法与口径说明': pd.DataFrame([
+        '06_方法与统计范围说明': pd.DataFrame([
             {'项目': '脚本路径', '内容': 'scripts/ch5_factors/25_stage25_factor_revision.py'},
             {'项目': '随机种子', '内容': f'{SEED}（与项目既有划分 random_state 一致；'
                                    '本次检验为确定性方法，不涉及随机抽样）'},
-            {'项目': '任务 1 样本口径',
+            {'项目': '任务 1 样本统计范围',
              '内容': f'正式薪资样本 {len(model_frame):,} 个具备有效薪资的岗位，'
                      '来源 data/processed/job_salary_model_dataset.parquet'
                      '（与 Stage13 正式 EDA 完全同一分析框）'},
@@ -707,8 +707,8 @@ def main() -> int:
                      "做 Mann–Whitney U（双侧）+ Cliff's δ，并对同一字段全部进入检验的类别"
                      '统一做 Benjamini–Hochberg FDR 校正（输出 q 值）'},
             {'项目': '任务 1 样本量门槛', '内容': MW_MIN_GROUP_NOTE},
-            {'项目': '任务 1 口径说明', '内容': CALIBER_NOTE},
-            {'项目': '任务 1 与原口径的关系',
+            {'项目': '任务 1 统计范围说明', '内容': SCOPE_NOTE},
+            {'项目': '任务 1 与原统计范围的关系',
              '内容': '原「岗位大类 ε²=0.082114（12 组）」「岗位细分类 ε²=0.115633（80 组）」'
                      '基于多值标签 explode 后的重叠组做 Kruskal–Wallis，组间不独立，'
                      '不再作为正式结论；本表取代其岗位类别部分的结论地位'},
@@ -725,7 +725,7 @@ def main() -> int:
             {'项目': '任务 3 薪资区间划分',
              '内容': '三分位：测试集 y_true 的 33.3% / 66.7% 分位点；四分位：25% / 50% / 75% '
                      '分位点；区间为左开右闭（并列值按边界计入下界档）'},
-            {'项目': '任务 3 岗位大类口径',
+            {'项目': '任务 3 岗位大类统计范围',
              '内容': f'{CATEGORY_FIELD} 为多值字段，按「命中即计入」展开，'
                      '同一岗位可计入多个大类，各组样本数之和大于测试集总体 n；'
                      '未命中任何大类的岗位数为 0'},
@@ -799,7 +799,7 @@ def main() -> int:
         '输入文件清单': [input_record(path) for path in inputs],
         '任务1_多值岗位类别二元检验': {
             '样本': int(len(model_frame)),
-            '样本口径': '正式薪资样本（与 Stage13 正式 EDA 同一分析框）',
+            '样本统计范围': '正式薪资样本（与 Stage13 正式 EDA 同一分析框）',
             '样本量门槛': MIN_BINARY_GROUP,
             '方法': "Mann–Whitney U（双侧）+ Cliff's δ + BH-FDR",
             '汇总': task1['summaries'],
@@ -814,7 +814,7 @@ def main() -> int:
                     task1['category_pool']['Cliff_delta'].isna()]['类别'].tolist(),
                 '岗位细分类': task1['sub_category_pool'][
                     task1['sub_category_pool']['Cliff_delta'].isna()]['类别'].tolist()},
-            '口径说明': CALIBER_NOTE,
+            '统计范围说明': SCOPE_NOTE,
         },
         '任务2_常数基线': {
             '划分来源': 'data/processed/model_splits.parquet',

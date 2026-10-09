@@ -93,11 +93,11 @@ GOVERNANCE_FEATURES = {
     '是否需人工复核': ('公司实体映射治理', '映射复核流程标记，属数据治理审计元数据'),
     '是否跨地域': ('公司实体映射治理', '映射过程中的跨地域标记，属数据治理审计元数据'),
     '是否存在同名跨地域歧义': ('公司实体映射治理', '同名跨地域歧义标记，属数据治理审计元数据'),
-    '岗位方向_与平台分类一致标志': ('数据来源质量', '表头口径与平台分类的一致性检查标记，属数据质量元数据'),
+    '岗位方向_与平台分类一致标志': ('数据来源质量', '表头统计范围与平台分类的一致性检查标记，属数据质量元数据'),
     '文本是否为空': ('数据来源质量', '岗位描述文本的可用性标记，属数据质量元数据'),
     '是否有技能': ('数据来源质量', '技能命中情况的数据可用性标记，属数据质量元数据'),
     '文本向量是否可用': ('数据来源质量', '文本向量可用性标记，属数据质量元数据'),
-    '技能提取范围': ('技能匹配状态', '技能抽取时的匹配口径标记，属技能匹配状态元数据'),
+    '技能提取范围': ('技能匹配状态', '技能抽取时的匹配统计范围标记，属技能匹配状态元数据'),
     '岗位描述分段状态': ('文本清洗标记', '岗位描述分段处理的清洗状态标记，属清洗过程元数据'),
 }
 REMOVED_FINAL = list(REMOVED_STAGE26_3) + list(GOVERNANCE_FEATURES)
@@ -150,12 +150,12 @@ PURPOSE = {
     '实习时长要求': '岗位标注的实习时长要求类别',
     '岗位方向_文本': '从岗位描述文本推断的岗位方向类别',
     '岗位描述分段状态': '岗位描述分段处理结果的状态标记',
-    '工作城市': '岗位标注的工作城市（原始口径）',
+    '工作城市': '岗位标注的工作城市（原始统计范围）',
     '工作城市_规范': '岗位工作城市的规范化取值',
     '所属行业': '公司所属行业类别',
     '公司性质': '公司性质类别',
     '公司规模': '公司规模区间类别',
-    '技能提取范围': '技能抽取所用匹配口径的标记',
+    '技能提取范围': '技能抽取所用匹配统计范围的标记',
     '岗位大类集合': '岗位命中的平台岗位大类（多值）',
     '岗位细分类集合': '岗位命中的平台岗位细分类（多值）',
     '公司标签列表': '岗位命中的公司福利标签集合（高基数多值）',
@@ -245,7 +245,7 @@ def paired_bootstrap(y_true, pred_without, pred_with, rounds: int = BOOTSTRAP_RO
 
 
 # ============================================================================
-# 一、图 4-4：严格口径招聘周期持续时长（图S50）
+# 一、图 4-4：严格统计范围招聘周期持续时长（图S50）
 # ============================================================================
 def duration_block(values) -> dict:
     array = np.asarray(values, dtype='float64')
@@ -259,7 +259,7 @@ def duration_block(values) -> dict:
 
 
 def figure_duration_strict(episodes: pd.DataFrame) -> dict:
-    """图 4-4：严格口径招聘周期持续时长分布与累积分布（2×1，图内文字极简）。"""
+    """图 4-4：严格统计范围招聘周期持续时长分布与累积分布（2×1，图内文字极简）。"""
     import matplotlib.pyplot as plt  # noqa: PLC0415
 
     unique = episodes.drop_duplicates(subset=['intern_id', 'episode_id_strict'])
@@ -315,11 +315,11 @@ def figure_duration_strict(episodes: pd.DataFrame) -> dict:
         fig, SUPP_DIR, FIG_DURATION,
         subfigures=[('a', '招聘周期计划持续时长分布', axes[0]),
                     ('b', '招聘周期计划持续时长经验累积分布', axes[1])],
-        meta={'数据来源': 'job_strict_episode_26_1.parquet（严格口径，周期层去重）',
-              '口径': '计划持续天数 = 末次观测截止日 − 发布时间（日历差）+ 1；'
+        meta={'数据来源': 'job_strict_episode_26_1.parquet（严格统计范围，周期层去重）',
+              '统计范围': '计划持续天数 = 末次观测截止日 − 发布时间（日历差）+ 1；'
                       '属计划窗口，不等于实际招满所需时间',
               'seed': SEED,
-              '用途': '第4章 图 4-4（与表 4-2 及正文严格口径一致）'})
+              '用途': '第4章 图 4-4（与表 4-2 及正文严格范围一致）'})
     plt.close(fig)
     return diagnostics
 
@@ -414,7 +414,7 @@ def figure_generalization_new(unified: pd.DataFrame) -> dict:
 
 
 # ============================================================================
-# 三、多变量中位数回归（multi-hot 口径 + 1000 次 bootstrap）
+# 三、多变量中位数回归（multi-hot 统计范围 + 1000 次 bootstrap）
 # ============================================================================
 def build_median_design(frame: pd.DataFrame):
     """设计矩阵：单值互斥类别含参照类别；多值重叠类别按命中指示列全量进入。"""
@@ -913,7 +913,7 @@ def run_compute() -> int:  # noqa: C901
                    train_only_frame[schema.SALARY_MID_FIELD].to_numpy('float64'))
     base_pred = np.asarray(base_model.predict(base_matrix_test), dtype='float64')
     base_metrics = model_training.regression_metrics(truth_test, base_pred)
-    robustness_rows.append({'检查项': '对照基准', '口径': '真实薪资，主口径未缩尾',
+    robustness_rows.append({'检查项': '对照基准', '统计范围': '真实薪资，主统计范围未缩尾',
                             'MAE': base_metrics['MAE'], 'RMSE': base_metrics['RMSE'],
                             'R²': base_metrics['R2'],
                             '说明': 'A+B+C+D+E，仅用训练集拟合'})
@@ -925,18 +925,18 @@ def run_compute() -> int:  # noqa: C901
     winsor_pred = np.asarray(winsor_model.predict(base_matrix_test), dtype='float64')
     winsor_metrics = model_training.regression_metrics(truth_test, winsor_pred)
     robustness_rows.append({
-        '检查项': '极端值敏感性', '口径': '训练目标 winsorize 1%/99%',
+        '检查项': '极端值敏感性', '统计范围': '训练目标 winsorize 1%/99%',
         'MAE': winsor_metrics['MAE'], 'RMSE': winsor_metrics['RMSE'],
         'R²': winsor_metrics['R2'],
         '说明': f'训练目标裁剪至 {lower_bound:.0f} 至 {upper_bound:.0f} 元/天，'
                 f'评估仍用真实测试薪资'})
-    for name, field in [('目标口径 薪资下限', schema.SALARY_MIN_FIELD),
-                        ('目标口径 薪资上限', schema.SALARY_MAX_FIELD)]:
+    for name, field in [('目标定义 薪资下限', schema.SALARY_MIN_FIELD),
+                        ('目标定义 薪资上限', schema.SALARY_MAX_FIELD)]:
         model = model_training.make_model('LightGBM', best_params, random_state=SEED)
         model.fit(base_matrix_train, train_only_frame[field].to_numpy('float64'))
         metrics = model_training.regression_metrics(
             truth_test, np.asarray(model.predict(base_matrix_test), dtype='float64'))
-        robustness_rows.append({'检查项': name, '口径': field, 'MAE': metrics['MAE'],
+        robustness_rows.append({'检查项': name, '统计范围': field, 'MAE': metrics['MAE'],
                                 'RMSE': metrics['RMSE'], 'R²': metrics['R2'],
                                 '说明': '仅比较趋势，不作为新的主任务'})
     gain_base = np.asarray(
@@ -950,7 +950,7 @@ def run_compute() -> int:  # noqa: C901
 
     gain_spearman = float(scipy_stats.spearmanr(gain_base, gain_winsor).statistic)
     robustness_rows.append({
-        '检查项': '特征重要性方向', '口径': 'winsorize 与主模型 gain 排名的 Spearman',
+        '检查项': '特征重要性方向', '统计范围': 'winsorize 与主模型 gain 排名的 Spearman',
         'MAE': None, 'RMSE': None, 'R²': None,
         '说明': f'{gain_spearman:.6f}，共有特征 {len(base_assembler.feature_names())} 个'})
     shap_spearman = None
@@ -982,7 +982,7 @@ def run_compute() -> int:  # noqa: C901
         shap_spearman = correlations
         robustness_rows.append({
             '检查项': '解释稳定性',
-            '口径': '三种随机种子 42、7、2024 与主模型平均绝对SHAP值排名的 Spearman',
+            '统计范围': '三种随机种子 42、7、2024 与主模型平均绝对SHAP值排名的 Spearman',
             'MAE': None, 'RMSE': None, 'R²': None,
             '说明': '；'.join(f'{value:.6f}' for value in correlations)
                     + f'（共同特征 {len(base_assembler.feature_names())} 个）'})
@@ -1083,13 +1083,13 @@ def run_compute() -> int:  # noqa: C901
         '14_技能SHAP': shap_skill_table,
         '15_图4-4新旧数据对照': pd.DataFrame([
             {'统计量': key, '旧图（候选段层，n = %d）' % duration_old['n']: duration_old[key],
-             '重算（严格口径周期层，n = %d）' % duration_new['n']: duration_new[key]}
+             '重算（严格统计范围周期层，n = %d）' % duration_new['n']: duration_new[key]}
             for key in ('n', 'P10', 'P25', 'Median', 'P75', 'P90', 'IQR', 'max')]),
     })
     write_excel(TABLE_MEDIAN, {
         '01_代表性系数': representative,
         '02_全系数': median_table,
-        '03_口径说明': median_meta,
+        '03_统计范围说明': median_meta,
     })
 
     payload = {
@@ -1116,11 +1116,11 @@ def run_compute() -> int:  # noqa: C901
         '技能SHAP': shap_skill_table.to_dict('records'),
         'SHAP解释摘要': shap_note, 'SHAP稳定性': shap_status,
         'SHAP排名Spearman': shap_spearman,
-        '中位数回归': {'口径': median_meta.to_dict('records'),
+        '中位数回归': {'统计范围': median_meta.to_dict('records'),
                    '代表性系数': representative.to_dict('records'),
                    'bootstrap 次数': MEDIAN_BOOTSTRAP_ROUNDS,
                    '设计矩阵列数': int(design.shape[1])},
-        '图4-4数据对照': {'旧图（候选段层）': duration_old, '严格口径周期层': duration_new},
+        '图4-4数据对照': {'旧图（候选段层）': duration_old, '严格统计范围周期层': duration_new},
         '图件': {'图4-4': duration_figure.get('png_path'),
                  '图8-1': ablation_figure.get('png_path'),
                  '图8-3': generalize_figure.get('png_path')},
@@ -1177,12 +1177,12 @@ AUDIT_PATTERNS = [
     ('61.5% 显著表述', r'61\.5%|61\.5 ?%'),
     ('旧维度 320/322', r'320 维|322 维'),
     ('保留特征名 mean\|SHAP\|', r'mean\|SHAP\|'),
-    ('presence 口径', r'presence 口径'),
+    ('presence 统计方式', r'presence 统计方式'),
 ]
 COUNTED_KEYS = [label for label, _ in AUDIT_PATTERNS
                 if label not in ('章首机械总起段', '长英文变量', '测试集一次评估表述',
                                  '61.5% 显著表述', '旧维度 320/322',
-                                 '保留特征名 mean|SHAP|', 'presence 口径')]
+                                 '保留特征名 mean|SHAP|', 'presence 统计方式')]
 
 
 def strip_html_comments(text: str) -> str:
@@ -1455,7 +1455,7 @@ def figure_robustness(robust: pd.DataFrame) -> dict:
     import matplotlib.pyplot as plt  # noqa: PLC0415
 
     block = robust[robust['MAE'].notna()].reset_index(drop=True)
-    labels = ['主口径', '极端值截断', '目标：薪资下限', '目标：薪资上限']
+    labels = ['主统计范围', '极端值截断', '目标：薪资下限', '目标：薪资上限']
     positions = np.arange(len(block))
     fig, axes = plt.subplots(2, 1, figsize=(5.85, 6.0))
     ax = axes[0]
@@ -1467,7 +1467,7 @@ def figure_robustness(robust: pd.DataFrame) -> dict:
                 ha='center', va='bottom', fontsize=plot_style.FONT_SIZES['annotation'])
     ax.set_xticks(positions)
     ax.set_xticklabels(labels, rotation=12, ha='right')
-    ax.set_xlabel('稳健性检查口径')
+    ax.set_xlabel('稳健性检查统计范围')
     ax.set_ylabel('测试集 MAE（元/天）')
     ax.set_ylim(0, span * 1.28)
     ax.legend(loc='upper left', frameon=False, fontsize=plot_style.FONT_SIZES['legend'])
@@ -1484,7 +1484,7 @@ def figure_robustness(robust: pd.DataFrame) -> dict:
                 ha='center', va='bottom', fontsize=plot_style.FONT_SIZES['annotation'])
     ax.set_xticks(positions)
     ax.set_xticklabels(labels, rotation=12, ha='right')
-    ax.set_xlabel('稳健性检查口径')
+    ax.set_xlabel('稳健性检查统计范围')
     ax.set_ylabel('测试集 R²')
     ax.set_ylim(0, span * 1.24)
     ax.legend(loc='upper right', frameon=False, fontsize=plot_style.FONT_SIZES['legend'])
@@ -1495,7 +1495,7 @@ def figure_robustness(robust: pd.DataFrame) -> dict:
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, 'fig_s54_robustness_check_comparison', subfigures=[],
         meta={'数据来源': 'ch7/52_stage26_4_metrics_final.xlsx / 12_稳健性对照',
-              '口径': '下限与上限口径的预测目标与主任务不同，只比较趋势',
+              '统计范围': '下限与上限统计范围的预测目标与主任务不同，只比较趋势',
               '用途': '第8章 图 8-4（随正式特征集更新重绘）'})
     plt.close(fig)
     return diagnostics

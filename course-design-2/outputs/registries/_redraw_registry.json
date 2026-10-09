@@ -203,7 +203,7 @@
     {
       "组别": "eda",
       "文件名": "01_sample_structure",
-      "Stage23正式图题": "图 4-1 正式分析样本与技能提取口径结构",
+      "Stage23正式图题": "图 4-1 正式分析样本与技能提取统计范围结构",
       "论文去向": "正文 图 4-1（4.1 节）",
       "论文版路径": "outputs\\figures\\eda\\01_sample_structure.png",
       "展示版路径": "outputs\\figures\\eda\\01_sample_structure_display.png",
@@ -391,7 +391,7 @@
     {
       "组别": "eda",
       "文件名": "05_tech_skill_top20",
-      "Stage23正式图题": "图 6-1 核心技术技能需求 Top20（技能主口径，分母 8,822）",
+      "Stage23正式图题": "图 6-1 核心技术技能需求 Top20（技能主统计范围，分母 8,822）",
       "论文去向": "正文 图 6-1（6.2 节）",
       "论文版路径": "outputs\\figures\\eda\\05_tech_skill_top20.png",
       "展示版路径": "outputs\\figures\\eda\\05_tech_skill_top20_display.png",
@@ -626,7 +626,7 @@
     {
       "组别": "eda",
       "文件名": "10_scope_robustness",
-      "Stage23正式图题": "附图 A-2 技能提取双口径稳健性",
+      "Stage23正式图题": "附图 A-2 技能提取两种统计范围稳健性",
       "论文去向": "附录",
       "论文版路径": "outputs\\figures\\eda\\10_scope_robustness.png",
       "展示版路径": "outputs\\figures\\eda\\10_scope_robustness_display.png",

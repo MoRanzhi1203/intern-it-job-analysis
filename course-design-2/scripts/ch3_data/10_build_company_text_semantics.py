@@ -396,7 +396,7 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
         f"- 跨歧义快照的变化事件数：{int(overview['跨歧义快照的变化事件数'])}；",
         f"- 未能映射到正式实体的观测行数：{int(overview['未能映射到正式实体的行数'])}。",
         '',
-        '## 4. 相似度口径与阈值',
+        '## 4. 相似度计算方式与阈值',
         '',
         f"- 深层语义：`{embedding.model_name}`（状态 {embedding.status}，"
         f"维度 {int(embedding.dimension) if embedding.available else 'NOT_RUN'}）；",

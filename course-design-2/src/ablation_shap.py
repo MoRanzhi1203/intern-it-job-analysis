@@ -12,7 +12,7 @@
 
 公平性：**同一 split、同一模型族（LightGBM）、同一超参数、同一随机种子**，只改变特征组。
 
-## 口径
+## 统计范围
 
 - 技能组 D = `job_skill_membership`（ALL_USABLE）multi-hot（阈值 = Stage 14 选定值）+ 技能聚合计数列 +
   `技能提取范围` / 文本可用性控制列；
@@ -167,7 +167,7 @@ def presence_direction(mean_present: float, tolerance: float = 1e-8) -> str:
 
 
 def global_direction(mean_value: float) -> str:
-    """整体 mean(SHAP) 方向（历史口径，保留用于对比）。"""
+    """整体 mean(SHAP) 方向（历史统计范围，保留用于对比）。"""
     if mean_value > 0:
         return '正向（提高预测薪资）'
     if mean_value < 0:
@@ -195,7 +195,7 @@ def shap_skill_table(shap_matrix: np.ndarray, feature_names, membership: pd.Data
                        & membership['intern_id'].isin(set(universe_ids))]
     frequency = frame.groupby('canonical_skill')['intern_id'].nunique()
     denominator = len(set(universe_ids))
-    frequency_basis = f'Stage 12 建模样本 {denominator:,} 个岗位（ALL_USABLE 技能口径）'
+    frequency_basis = f'Stage 12 建模样本 {denominator:,} 个岗位（ALL_USABLE 技能统计范围）'
     presence = np.asarray(presence_matrix.todense()) if hasattr(presence_matrix, 'todense') \
         else np.asarray(presence_matrix)
     test_rows = int(shap_matrix.shape[0])
@@ -239,8 +239,8 @@ def shap_skill_table(shap_matrix: np.ndarray, feature_names, membership: pd.Data
             'global_mean_SHAP_direction': global_direction(mean_value),
             '方向性': global_direction(mean_value),
             '低频标记': '低频（岗位数 < 30，解释需谨慎）' if jobs < 30 else '',
-            '频率口径': frequency_basis,
-            'SHAP presence 口径': f'原 test 子集 {test_rows:,} 行；present = 技能列 = 1 的岗位',
+            '频率统计方式': frequency_basis,
+            'SHAP presence 统计方式': f'原 test 子集 {test_rows:,} 行；present = 技能列 = 1 的岗位',
             '说明': NO_CAUSAL_NOTE,
         })
     table = (pd.DataFrame(rows).sort_values('mean_abs_SHAP', ascending=False)

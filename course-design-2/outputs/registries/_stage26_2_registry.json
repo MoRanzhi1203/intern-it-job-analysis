@@ -3,9 +3,9 @@
   "seed": 42,
   "图件": [
     {
-      "stem": "图S28_特征组消融对比",
-      "png_path": "outputs\\figures\\supplementary\\图S28_特征组消融对比.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S28_特征组消融对比.pdf",
+      "stem": "fig_s28_feature_group_ablation_comparison",
+      "png_path": "outputs\\figures\\supplementary\\fig_s28_feature_group_ablation_comparison.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s28_feature_group_ablation_comparison.pdf",
       "png_pixel_size": [
         9131,
         3032
@@ -14,16 +14,16 @@
         599.9988,
         599.9988
       ],
-      "png_size_bytes": 483058,
-      "pdf_size_bytes": 53315,
+      "png_size_bytes": 478261,
+      "pdf_size_bytes": 53304,
       "no_infigure_caption": true,
       "subfigure_caption_visible": true,
       "failed_paper_gates": []
     },
     {
-      "stem": "图S29_招聘周期持续时长分布与累积分布",
-      "png_path": "outputs\\figures\\supplementary\\图S29_招聘周期持续时长分布与累积分布.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S29_招聘周期持续时长分布与累积分布.pdf",
+      "stem": "fig_s29_recruitment_duration_distribution",
+      "png_path": "outputs\\figures\\supplementary\\fig_s29_recruitment_duration_distribution.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s29_recruitment_duration_distribution.pdf",
       "png_pixel_size": [
         9525,
         3295
@@ -39,9 +39,9 @@
       "failed_paper_gates": []
     },
     {
-      "stem": "图S30_样本计划招聘覆盖每日活跃与新增结束",
-      "png_path": "outputs\\figures\\supplementary\\图S30_样本计划招聘覆盖每日活跃与新增结束.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S30_样本计划招聘覆盖每日活跃与新增结束.pdf",
+      "stem": "fig_s30_planned_coverage_daily_active",
+      "png_path": "outputs\\figures\\supplementary\\fig_s30_planned_coverage_daily_active.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s30_planned_coverage_daily_active.pdf",
       "png_pixel_size": [
         10004,
         3320
@@ -57,9 +57,9 @@
       "failed_paper_gates": []
     },
     {
-      "stem": "图S31_主要岗位大类计划覆盖",
-      "png_path": "outputs\\figures\\supplementary\\图S31_主要岗位大类计划覆盖.png",
-      "pdf_path": "outputs\\figures\\supplementary\\图S31_主要岗位大类计划覆盖.pdf",
+      "stem": "fig_s31_main_category_planned_coverage",
+      "png_path": "outputs\\figures\\supplementary\\fig_s31_main_category_planned_coverage.png",
+      "pdf_path": "outputs\\figures\\supplementary\\fig_s31_main_category_planned_coverage.pdf",
       "png_pixel_size": [
         10003,
         3294

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Stage 08：岗位描述语义时序（双语义口径：完整文本 / 去薪资安全文本）。
+"""Stage 08：岗位描述语义时序（双语义统计范围：完整文本 / 去薪资安全文本）。
 
 处理路线：
 
@@ -8,8 +8,8 @@ data/processed/job_version_history.parquet     岗位版本时序层
 data/processed/job_change_events.parquet       字段变化事件层
         ↓  同一岗位相邻核心版本 V(k-1) → V(k) 的文本对
         ↓  字面/词面指标：字符数、词数、Token Jaccard、编辑相似度
-        ↓  **完整口径**：语义分析版全文 → TF-IDF 余弦 / BGE 余弦 / 语义距离
-        ↓  **去薪资口径**：模型安全版全文 → TF-IDF 余弦 / BGE 余弦 / 语义距离（正式主判据）
+        ↓  **完整文本统计范围**：语义分析版全文 → TF-IDF 余弦 / BGE 余弦 / 语义距离
+        ↓  **去薪资统计范围**：模型安全版全文 → TF-IDF 余弦 / BGE 余弦 / 语义距离（正式主判据）
         ↓  完整减去薪资安全语义距离差（仅作诊断，禁止解释为「薪资文本贡献率」）
         ↓  分段语义距离：职责 / 任职要求 / 技能段（不做人为加权综合）
         ↓  BGE 真实 tokenizer 的 token 长度与截断审计（禁止用字符数近似）
@@ -45,7 +45,7 @@ from src import (io_utils, project_paths, quality, refinement, schema,  # noqa: 
                  skill_extraction, text_semantics, text_utils)
 
 STAGE = 'stage_08'
-TITLE = 'Stage 08 岗位描述语义时序（完整 / 去薪资双口径）'
+TITLE = 'Stage 08 岗位描述语义时序（完整 / 去薪资两种统计范围）'
 
 # 分段文本 → 语义指标列名（严格对应提示词字段命名）
 SECTION_SPECS = {
@@ -86,7 +86,7 @@ REVIEW_SAMPLE_PER_QUANTILE = 6
 # 显著 / 极端变化候选阈值分位
 SIGNIFICANT_QUANTILE = 0.90
 EXTREME_QUANTILE = 0.95
-# 双口径向量一致性容差（完整文本 == 安全文本时两套 Embedding 必须逐行一致）
+# 两种统计范围向量一致性容差（完整文本 == 安全文本时两套 Embedding 必须逐行一致）
 VECTOR_ATOL = 1e-6
 
 
@@ -296,7 +296,7 @@ def _pair_values(matrix, row_index: dict, pairs) -> np.ndarray:
 def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd.DataFrame,
                  matcher: skill_extraction.SkillMatcher,
                  embedding: text_semantics.EmbeddingResult, artifacts: dict) -> tuple:
-    """构建岗位文本语义变化事件表（完整口径 + 去薪资口径）。"""
+    """构建岗位文本语义变化事件表（完整文本统计范围 + 去薪资统计范围）。"""
     id_field = schema.ID_FIELD
     version_field = schema.CORE_VERSION_FIELD
     pairs = build_pairs(versions)
@@ -324,7 +324,7 @@ def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd
         degree_changes = {(record[id_field], int(record['新核心版本号']))
                           for record in degree_rows.to_dict('records')}
 
-    # ---- TF-IDF 词面基线：完整口径与去薪资口径分别拟合 ----
+    # ---- TF-IDF 词面基线：完整文本统计范围与去薪资统计范围分别拟合 ----
     full_texts = corpus[schema.JD_SEMANTIC_FIELD].fillna('').astype(str).tolist()
     safe_texts = corpus[schema.JD_SAFE_FIELD].fillna('').astype(str).tolist()
     vectorizer_full, matrix_full = text_semantics.build_tfidf_matrix(full_texts, text_utils.tokenize)
@@ -495,7 +495,7 @@ def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd
 
     events = pd.DataFrame(rows)
 
-    # ---- 阈值必须来自真实分布（双口径分别统计） ----
+    # ---- 阈值必须来自真实分布（两种统计范围分别统计） ----
     thresholds: dict = {}
     thresholds.update(text_semantics.quantile_thresholds(
         events[schema.JD_DISTANCE_FULL_FIELD], prefix=schema.JD_DISTANCE_FULL_FIELD))
@@ -509,10 +509,10 @@ def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd
     p95_full = thresholds[f'{schema.JD_DISTANCE_FULL_FIELD}P95']
     p90_safe = thresholds[f'{schema.JD_DISTANCE_SAFE_FIELD}P90']
     p95_safe = thresholds[f'{schema.JD_DISTANCE_SAFE_FIELD}P95']
-    events[schema.SIGNIFICANT_FULL_CALIBER_FIELD] = (
+    events[schema.SIGNIFICANT_FULL_SCOPE_FIELD] = (
         events[schema.JD_DISTANCE_FULL_FIELD].ge(p90_full)
         & events[schema.JD_DISTANCE_FULL_FIELD].notna()).astype(int)
-    events[schema.EXTREME_FULL_CALIBER_FIELD] = (
+    events[schema.EXTREME_FULL_SCOPE_FIELD] = (
         events[schema.JD_DISTANCE_FULL_FIELD].ge(p95_full)
         & events[schema.JD_DISTANCE_FULL_FIELD].notna()).astype(int)
     events[schema.SIGNIFICANT_FIELD] = (
@@ -538,11 +538,11 @@ def build_events(corpus: pd.DataFrame, versions: pd.DataFrame, change_events: pd
         'tfidf_vocabulary': (int(len(vectorizer_full.vocabulary_)) if matrix_full is not None else 0),
         'tfidf_vocabulary_safe': (int(len(vectorizer_safe.vocabulary_))
                                   if matrix_safe is not None else 0),
-        'significant_full_caliber': int(events[schema.SIGNIFICANT_FULL_CALIBER_FIELD].sum()),
-        'extreme_full_caliber': int(events[schema.EXTREME_FULL_CALIBER_FIELD].sum()),
-        'dropped_by_salary_text': int(((events[schema.SIGNIFICANT_FULL_CALIBER_FIELD] == 1)
+        'significant_full_scope': int(events[schema.SIGNIFICANT_FULL_SCOPE_FIELD].sum()),
+        'extreme_full_scope': int(events[schema.EXTREME_FULL_SCOPE_FIELD].sum()),
+        'dropped_by_salary_text': int(((events[schema.SIGNIFICANT_FULL_SCOPE_FIELD] == 1)
                                        & (events[schema.SIGNIFICANT_FIELD] == 0)).sum()),
-        'entered_by_safe_caliber': int(((events[schema.SIGNIFICANT_FULL_CALIBER_FIELD] == 0)
+        'entered_by_safe_scope': int(((events[schema.SIGNIFICANT_FULL_SCOPE_FIELD] == 0)
                                         & (events[schema.SIGNIFICANT_FIELD] == 1)).sum()),
         'identical_text_versions': int(events['文本完全一致标志'].sum()),
         'truncated_pairs': int(events['版本对是否存在截断'].sum()),
@@ -570,7 +570,7 @@ def _distribution_stats(series) -> dict:
 def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
                        embedding: text_semantics.EmbeddingResult,
                        matcher: skill_extraction.SkillMatcher) -> dict:
-    """构建 17 号岗位文本语义审计表（双口径 + token 截断审计，共 21 张子表）。"""
+    """构建 17 号岗位文本语义审计表（两种统计范围 + token 截断审计，共 21 张子表）。"""
     id_field = schema.ID_FIELD
     thresholds = statistics['thresholds']
     total = len(events)
@@ -593,16 +593,16 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
         {'指标': '技能集合完全不变的版本切换数', '数值': int((events['技能变化数'] == 0).sum())},
         {'指标': '显著语义变化候选数（去薪资 ≥P90）', '数值': int(events[schema.SIGNIFICANT_FIELD].sum())},
         {'指标': '极端语义变化候选数（去薪资 ≥P95）', '数值': int(events[schema.EXTREME_FIELD].sum())},
-        {'指标': '旧口径显著候选数（完整 ≥P90）',
-         '数值': int(events[schema.SIGNIFICANT_FULL_CALIBER_FIELD].sum())},
-        {'指标': '旧口径极端候选数（完整 ≥P95）',
-         '数值': int(events[schema.EXTREME_FULL_CALIBER_FIELD].sum())},
+        {'指标': '旧统计范围显著候选数（完整 ≥P90）',
+         '数值': int(events[schema.SIGNIFICANT_FULL_SCOPE_FIELD].sum())},
+        {'指标': '旧统计范围极端候选数（完整 ≥P95）',
+         '数值': int(events[schema.EXTREME_FULL_SCOPE_FIELD].sum())},
         {'指标': '因薪资文本影响退出显著候选的事件数',
          '数值': int(statistics['dropped_by_salary_text'])},
-        {'指标': '因新口径进入显著候选的事件数',
-         '数值': int(statistics['entered_by_safe_caliber'])},
-        {'指标': 'TF-IDF 词表规模（完整口径）', '数值': statistics['tfidf_vocabulary']},
-        {'指标': 'TF-IDF 词表规模（去薪资口径）', '数值': statistics['tfidf_vocabulary_safe']},
+        {'指标': '因新统计范围进入显著候选的事件数',
+         '数值': int(statistics['entered_by_safe_scope'])},
+        {'指标': 'TF-IDF 词表规模（完整文本统计范围）', '数值': statistics['tfidf_vocabulary']},
+        {'指标': 'TF-IDF 词表规模（去薪资统计范围）', '数值': statistics['tfidf_vocabulary_safe']},
         {'指标': '去薪资语义距离缺失数', '数值': int(safe_distance.isna().sum())},
         {'指标': '完整语义距离缺失数', '数值': int(full_distance.isna().sum())},
         {'指标': '版本对存在截断数', '数值': int(events['版本对是否存在截断'].sum())},
@@ -612,16 +612,16 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
         {'指标': '模型最大 token 数', '数值': int(artifacts.get('model_max_tokens', 0))},
     ])
 
-    # ---- 02 语义距离分布（双口径共用同一组区间边界） ----
+    # ---- 02 语义距离分布（两种统计范围共用同一组区间边界） ----
     def _histogram(edges) -> pd.DataFrame:
         rows = []
         for left, right in zip(edges[:-1], edges[1:]):
             full_count = int(((full_distance >= left) & (full_distance < right)).sum())
             safe_count = int(((safe_distance >= left) & (safe_distance < right)).sum())
             rows.append({'区间下限': round(float(left), 4), '区间上限': round(float(right), 4),
-                         '完整口径版本切换数': full_count,
+                         '完整文本统计范围版本切换数': full_count,
                          '完整占比': round(full_count / max(total, 1), 6),
-                         '去薪资口径版本切换数': safe_count,
+                         '去薪资统计范围版本切换数': safe_count,
                          '去薪资占比': round(safe_count / max(total, 1), 6)})
         return pd.DataFrame(rows)
     distance_max = max(1.0, float(pd.concat([full_distance, safe_distance]).max()))
@@ -636,14 +636,14 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
          if key.startswith(schema.JD_DISTANCE_SAFE_FIELD)},
         extra={'显著语义变化候选阈值分位': SIGNIFICANT_QUANTILE,
                '极端语义变化候选阈值分位': EXTREME_QUANTILE,
-               '阈值确定方式': '先统计真实分布分位数，再结合人工复核样本确认（去薪资口径为正式主判据）'})
+               '阈值确定方式': '先统计真实分布分位数，再结合人工复核样本确认（去薪资统计范围为正式主判据）'})
 
     # ---- 04 / 21 显著与极端候选 ----
     significant_columns = [id_field, '旧核心版本号', '新核心版本号',
                            schema.JD_DISTANCE_SAFE_FIELD, schema.JD_DISTANCE_FULL_FIELD,
                            schema.DISTANCE_GAP_FIELD, schema.TFIDF_SAFE_FIELD,
                            '新增技能集合', '删除技能集合', schema.CANDIDATE_TYPE_FIELD,
-                           schema.SIGNIFICANT_FULL_CALIBER_FIELD, '岗位标题']
+                           schema.SIGNIFICANT_FULL_SCOPE_FIELD, '岗位标题']
     significant = (events[events[schema.SIGNIFICANT_FIELD] == 1]
                    .sort_values(schema.JD_DISTANCE_SAFE_FIELD, ascending=False)
                    [significant_columns])
@@ -675,7 +675,7 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
         for name, flag in (('薪资变化版本', 1), ('薪资稳定版本', 0)):
             subset = frame[frame['是否同时薪资变化'] == flag]
             stats = _distribution_stats(subset[distance_column])
-            rows.append({'口径': label, '分组': name, '版本切换数': int(len(subset)),
+            rows.append({'统计范围': label, '分组': name, '版本切换数': int(len(subset)),
                          '语义距离均值': stats['均值'], '标准差': stats['标准差'],
                          '中位数': stats['中位数'], 'P75': stats['P75'],
                          'P90': stats['P90'], 'P95': stats['P95'],
@@ -683,29 +683,29 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
                          '新增技能事件数': int(subset['新增技能数'].sum())})
         return rows
 
-    salary_old = pd.DataFrame(_salary_table(schema.JD_DISTANCE_FULL_FIELD, '完整口径（旧）', events))
-    salary_old['说明'] = '旧口径，仅作回归对照，不作为正式结论'
+    salary_old = pd.DataFrame(_salary_table(schema.JD_DISTANCE_FULL_FIELD, '完整文本统计范围（旧）', events))
+    salary_old['说明'] = '旧统计范围，仅作回归对照，不作为正式结论'
     nontruncated = events[events['版本对是否存在截断'] == 0]
-    salary_new = pd.DataFrame(_salary_table(schema.JD_DISTANCE_SAFE_FIELD, '去薪资口径（全样本）', events)
-                              + _salary_table(schema.JD_DISTANCE_SAFE_FIELD, '去薪资口径（非截断样本）',
+    salary_new = pd.DataFrame(_salary_table(schema.JD_DISTANCE_SAFE_FIELD, '去薪资统计范围（全样本）', events)
+                              + _salary_table(schema.JD_DISTANCE_SAFE_FIELD, '去薪资统计范围（非截断样本）',
                                               nontruncated))
-    salary_new['说明'] = '正式口径：仅描述性关联统计，不做因果推断，不执行统计显著性检验'
+    salary_new['说明'] = '正式统计范围：仅描述性关联统计，不做因果推断，不执行统计显著性检验'
 
     # ---- 14 完整 vs 去薪资语义距离 ----
-    caliber_rows = []
+    scope_rows = []
     for group_name, subset in (('总体', events),
                                ('薪资变化版本', events[events['是否同时薪资变化'] == 1]),
                                ('薪资稳定版本', events[events['是否同时薪资变化'] == 0])):
         full_stats = _distribution_stats(subset[schema.JD_DISTANCE_FULL_FIELD])
         safe_stats = _distribution_stats(subset[schema.JD_DISTANCE_SAFE_FIELD])
         gap_stats = _distribution_stats(subset[schema.DISTANCE_GAP_FIELD])
-        caliber_rows.append({
+        scope_rows.append({
             '分组': group_name,
             '有效样本数': safe_stats['样本数'],
-            '完整口径均值': full_stats['均值'], '完整口径中位数': full_stats['中位数'],
-            '完整口径P90': full_stats['P90'], '完整口径P95': full_stats['P95'],
-            '去薪资口径均值': safe_stats['均值'], '去薪资口径中位数': safe_stats['中位数'],
-            '去薪资口径P90': safe_stats['P90'], '去薪资口径P95': safe_stats['P95'],
+            '完整文本统计范围均值': full_stats['均值'], '完整文本统计范围中位数': full_stats['中位数'],
+            '完整文本统计范围P90': full_stats['P90'], '完整文本统计范围P95': full_stats['P95'],
+            '去薪资统计范围均值': safe_stats['均值'], '去薪资统计范围中位数': safe_stats['中位数'],
+            '去薪资统计范围P90': safe_stats['P90'], '去薪资统计范围P95': safe_stats['P95'],
             '完整减去薪资安全语义距离差_均值': gap_stats['均值'],
             '完整减去薪资安全语义距离差_中位数': gap_stats['中位数'],
             '完整减去薪资安全语义距离差_P90': gap_stats['P90'],
@@ -715,8 +715,8 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
             '差值大于0比例': (round(float((subset[schema.DISTANCE_GAP_FIELD] > 0).mean()), 6)
                         if subset[schema.DISTANCE_GAP_FIELD].notna().any() else np.nan),
         })
-    caliber_table = pd.DataFrame(caliber_rows)
-    caliber_table['说明'] = ('Embedding 距离不是可加性分解，该差值仅作诊断，'
+    scope_table = pd.DataFrame(scope_rows)
+    scope_table['说明'] = ('Embedding 距离不是可加性分解，该差值仅作诊断，'
                         '禁止解释为「薪资文本贡献率」')
 
     # ---- 16 / 17 token 长度与截断 ----
@@ -727,11 +727,11 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
     sensitivity_rows = []
     for scope, subset in (('全样本', events), ('非截断样本', nontruncated),
                           ('至少一侧被截断', events[events['版本对是否存在截断'] == 1])):
-        for column, label in ((schema.JD_DISTANCE_SAFE_FIELD, '去薪资口径'),
-                              (schema.JD_DISTANCE_FULL_FIELD, '完整口径')):
+        for column, label in ((schema.JD_DISTANCE_SAFE_FIELD, '去薪资统计范围'),
+                              (schema.JD_DISTANCE_FULL_FIELD, '完整文本统计范围')):
             stats = _distribution_stats(subset[column])
             sensitivity_rows.append({
-                '样本口径': scope, '语义口径': label, '版本切换数': int(len(subset)),
+                '样本统计范围': scope, '语义统计范围': label, '版本切换数': int(len(subset)),
                 '有效样本数': stats['样本数'], '均值': stats['均值'],
                 '中位数': stats['中位数'], 'P90': stats['P90'], 'P95': stats['P95'],
                 '显著语义变化候选数': int(subset[schema.SIGNIFICANT_FIELD].sum()),
@@ -792,13 +792,13 @@ def build_audit_tables(events: pd.DataFrame, statistics: dict, artifacts: dict,
         '05_新增技能统计': _skill_table(statistics['added_skill_counter'], '新增版本切换数'),
         '06_删除技能统计': _skill_table(statistics['removed_skill_counter'], '删除版本切换数'),
         '07_大模型技能新增统计': llm_table,
-        '08_薪资变化vs完整语义_旧口径': salary_old,
+        '08_薪资变化vs完整语义_旧统计范围': salary_old,
         '09_职责语义变化': _section_table('职责语义距离', '职责语义距离'),
         '10_要求语义变化': _section_table('任职要求语义距离', '任职要求语义距离'),
         '11_技能段语义变化': _section_table('技能段语义距离', '技能段语义距离'),
         '12_语义变化候选类型': candidate_table,
         '13_人工复核样本': review_table,
-        '14_完整vs去薪资语义距离': caliber_table,
+        '14_完整vs去薪资语义距离': scope_table,
         '15_去薪资语义距离分位数': safe_threshold_table,
         '16_BGE_Token长度分布': token_table,
         '17_BGE_截断统计': truncation_table,
@@ -816,23 +816,23 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
     quantiles = audit['15_去薪资语义距离分位数']
     counters = artifacts.get('counters', {})
     lines = [
-        '# 阶段记录：Stage 08 岗位描述语义时序（完整 / 去薪资双口径）',
+        '# 阶段记录：Stage 08 岗位描述语义时序（完整 / 去薪资两种统计范围）',
         '',
         '> 本文件由 `scripts/ch3_data/08_build_job_text_semantics.py` 生成，全部数字来自真实运行结果。',
         '',
-        '## 1. 时序口径',
+        '## 1. 时序设定',
         '',
         '- 观测单位：同一岗位的**相邻核心版本**文本对 `V(k-1) → V(k)`；',
         '- 事件时间：新核心版本的**版本首次观测时间**（不使用发布时间替代）；',
-        '- 口径名称：非平衡多时点文本观测（岗位版本文本语义时序）；',
+        '- 统计范围名称：非平衡多时点文本观测（岗位版本文本语义时序）；',
         '- 一次核心版本切换最多记作一条文本语义变化事件，不因搜索分类命中数重复计数。',
         '',
-        '## 2. 双语义口径（Refinement R1 核心变更）',
+        '## 2. 双语义统计范围（Refinement R1 核心变更）',
         '',
-        '| 口径 | 输入文本 | 用途 |',
+        '| 统计范围 | 输入文本 | 用途 |',
         '| --- | --- | --- |',
-        '| 完整口径 `_完整` | 岗位描述_语义分析版 | 页面整体变化辅助指标、与旧结果对照 |',
-        '| 去薪资口径 `_去薪资` | 岗位描述_模型安全版 | **正式主判据**：职责/要求/技能真实语义变化、薪资关联分析 |',
+        '| 完整文本统计范围 `_完整` | 岗位描述_语义分析版 | 页面整体变化辅助指标、与旧结果对照 |',
+        '| 去薪资统计范围 `_去薪资` | 岗位描述_模型安全版 | **正式主判据**：职责/要求/技能真实语义变化、薪资关联分析 |',
         '',
         '> 完整减去薪资安全语义距离差仅作诊断：Embedding 距离不是可加性分解，'
         '禁止解释为「薪资文本贡献率」。',
@@ -856,8 +856,8 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
         '',
         f"- 句向量模型：`{embedding.model_name}`；状态 {embedding.status}；"
         f"维度 {int(embedding.dimension) if embedding.available else 'NOT_RUN'}；",
-        f"- TF-IDF 词表规模：完整口径 {int(overview['TF-IDF 词表规模（完整口径）'])}、"
-        f"去薪资口径 {int(overview['TF-IDF 词表规模（去薪资口径）'])}。",
+        f"- TF-IDF 词表规模：完整文本统计范围 {int(overview['TF-IDF 词表规模（完整文本统计范围）'])}、"
+        f"去薪资统计范围 {int(overview['TF-IDF 词表规模（去薪资统计范围）'])}。",
         '',
         '## 5. 安全文本 Embedding 复用策略',
         '',
@@ -899,20 +899,20 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
     lines += [
         '',
         f"- 显著语义变化候选：去薪资语义距离 ≥ P90；极端候选：≥ P95；",
-        f"- 候选数量（去薪资口径）：P90 候选 {metrics['significant_events']} 条、"
+        f"- 候选数量（去薪资统计范围）：P90 候选 {metrics['significant_events']} 条、"
         f"P95 候选 {metrics['extreme_events']} 条；",
-        f"- 旧口径候选数（完整语义距离）：P90 {metrics['significant_full_caliber']} 条、"
-        f"P95 {metrics['extreme_full_caliber']} 条；",
+        f"- 旧统计范围候选数（完整语义距离）：P90 {metrics['significant_full_scope']} 条、"
+        f"P95 {metrics['extreme_full_scope']} 条；",
         f"- 因薪资文本影响退出显著候选：{metrics['dropped_by_salary_text']} 条；"
-        f"因新口径进入显著候选：{metrics['entered_by_safe_caliber']} 条。",
+        f"因新统计范围进入显著候选：{metrics['entered_by_safe_scope']} 条。",
         '',
-        '## 8. 薪资变化 vs JD 语义变化（正式口径）',
+        '## 8. 薪资变化 vs JD 语义变化（正式统计范围）',
         '',
-        '| 口径 | 分组 | 版本切换数 | 均值 | 标准差 | 中位数 | P90 | P95 | 显著候选数 |',
+        '| 统计范围 | 分组 | 版本切换数 | 均值 | 标准差 | 中位数 | P90 | P95 | 显著候选数 |',
         '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ]
     for row in audit['18_薪资变化vs去薪资语义'].itertuples(index=False):
-        lines.append(f'| {row.口径} | {row.分组} | {int(row.版本切换数)} | {row.语义距离均值} | '
+        lines.append(f'| {row.统计范围} | {row.分组} | {int(row.版本切换数)} | {row.语义距离均值} | '
                      f'{row.标准差} | {row.中位数} | {row.P90} | {row.P95} | '
                      f'{int(row.显著语义变化候选数)} |')
     lines += [
@@ -950,11 +950,11 @@ def build_record_lines(metrics: dict, audit: dict, embedding: text_semantics.Emb
         '',
         '## 11. 版本历史摘要回写',
         '',
-        '| 字段 | 口径 |',
+        '| 字段 | 统计范围 |',
         '| --- | --- |',
-        '| 相对上一版本JD语义距离 | **兼容字段，口径已切换为去薪资语义距离** |',
-        '| 相对上一版本JD语义距离_完整 | 完整文本口径 |',
-        '| 相对上一版本JD语义距离_去薪资 | 去薪资口径（与兼容字段数值相同） |',
+        '| 相对上一版本JD语义距离 | **兼容字段，统计范围已切换为去薪资语义距离** |',
+        '| 相对上一版本JD语义距离_完整 | 完整文本统计范围 |',
+        '| 相对上一版本JD语义距离_去薪资 | 去薪资统计范围（与兼容字段数值相同） |',
         '| 相对上一版本新增/删除技能数 | 相邻核心版本技能集合差 |',
         '| 是否显著JD语义变化候选 | 去薪资语义距离是否 ≥ P90 |',
         '',
@@ -1117,7 +1117,7 @@ def main() -> int:
     salary_only_changed = 0
     if embedding.available and not salary_changed.empty:
         # 真实可验证的不变量：去薪资文本完全相同的版本对，去薪资语义距离必须为 0
-        # （即纯薪资文字调整在正式口径下不再产生语义距离）
+        # （即纯薪资文字调整在正式统计范围下不再产生语义距离）
         version_text = {(record[schema.ID_FIELD], int(record[schema.CORE_VERSION_FIELD])):
                         (record[schema.JD_SAFE_FIELD] or '', record[schema.JD_SEMANTIC_FIELD] or '')
                         for record in corpus.to_dict('records')}
@@ -1168,12 +1168,12 @@ def main() -> int:
 
     sensitivity_table = audit_tables['19_非截断样本敏感性']
     truncated_pairs = int(events['版本对是否存在截断'].sum())
-    full_scope_rows = int(sensitivity_table.loc[sensitivity_table['样本口径'] == '全样本',
+    full_scope_rows = int(sensitivity_table.loc[sensitivity_table['样本统计范围'] == '全样本',
                                                 '版本切换数'].iloc[0] * 2)
     gates.check('TRUNCATION_SENSITIVITY',
                 not sensitivity_table.empty
                 and full_scope_rows == len(events) * 2
-                and int(sensitivity_table.loc[sensitivity_table['样本口径'] == '至少一侧被截断',
+                and int(sensitivity_table.loc[sensitivity_table['样本统计范围'] == '至少一侧被截断',
                                               '版本切换数'].iloc[0]) == truncated_pairs,
                 f'全样本 {len(events)} 条 / 非截断 {len(events) - truncated_pairs} 条 / '
                 f'至少一侧截断 {truncated_pairs} 条，两套描述性对照均已输出（未删除样本）')
@@ -1224,7 +1224,7 @@ def main() -> int:
                 and compat_ok,
                 f'版本历史新增摘要字段 {list(schema.VERSION_TEXT_SUMMARY_FIELDS)}，'
                 f'共 {versions_enriched.shape[1]} 列；兼容字段「相对上一版本JD语义距离」'
-                '口径已切换到去薪资语义距离')
+                '统计范围已切换到去薪资语义距离')
 
     # ---- 句向量落盘与复现记录 ----
     if embedding.available and artifacts['index_rows']:
@@ -1256,7 +1256,7 @@ def main() -> int:
                 and {'14_完整vs去薪资语义距离', '15_去薪资语义距离分位数', '16_BGE_Token长度分布',
                      '17_BGE_截断统计', '18_薪资变化vs去薪资语义',
                      '19_非截断样本敏感性', '13_人工复核样本'} <= set(audit_tables),
-                f'文本事件表与 {len(audit_tables)} 张语义审计子表已写出（含双口径与截断审计）')
+                f'文本事件表与 {len(audit_tables)} 张语义审计子表已写出（含两种统计范围与截断审计）')
 
     metrics = {
         'corpus_rows': int(len(corpus)),
@@ -1267,10 +1267,10 @@ def main() -> int:
         'version_columns': int(versions_enriched.shape[1]),
         'significant_events': int(events[schema.SIGNIFICANT_FIELD].sum()),
         'extreme_events': int(events[schema.EXTREME_FIELD].sum()),
-        'significant_full_caliber': int(statistics['significant_full_caliber']),
-        'extreme_full_caliber': int(statistics['extreme_full_caliber']),
+        'significant_full_scope': int(statistics['significant_full_scope']),
+        'extreme_full_scope': int(statistics['extreme_full_scope']),
         'dropped_by_salary_text': int(statistics['dropped_by_salary_text']),
-        'entered_by_safe_caliber': int(statistics['entered_by_safe_caliber']),
+        'entered_by_safe_scope': int(statistics['entered_by_safe_scope']),
         'identical_text_versions': int(statistics['identical_text_versions']),
         'safe_identical_pairs': int(same_safe_pairs),
         'salary_only_changed_pairs': int(salary_only_changed),
@@ -1301,7 +1301,7 @@ def main() -> int:
         'embeddings_meta': artifacts['saved']['meta'],
         'embedding_shapes': {name: list(array.shape)
                              for name, array in artifacts['arrays'].items()},
-        'caliber_summary': audit_tables['14_完整vs去薪资语义距离'].to_dict('records'),
+        'scope_summary': audit_tables['14_完整vs去薪资语义距离'].to_dict('records'),
         'safe_thresholds': audit_tables['15_去薪资语义距离分位数'].to_dict('records'),
         'token_stats': audit_tables['17_BGE_截断统计'].to_dict('records'),
         'salary_alignment': audit_tables['18_薪资变化vs去薪资语义'].to_dict('records'),

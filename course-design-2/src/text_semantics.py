@@ -36,8 +36,8 @@ TEXT_TYPE_REQUIRE = 'require_text'
 TEXT_TYPE_SKILL = 'skill_text'
 TEXT_TYPE_COMPANY = 'company_profile'
 TEXT_TYPE_LABELS = {
-    TEXT_TYPE_JOB_FULL: '岗位描述_语义分析版（完整口径）',
-    TEXT_TYPE_JOB_SAFE: '岗位描述_模型安全版（去薪资口径）',
+    TEXT_TYPE_JOB_FULL: '岗位描述_语义分析版（完整文本统计范围）',
+    TEXT_TYPE_JOB_SAFE: '岗位描述_模型安全版（去薪资统计范围）',
     TEXT_TYPE_DUTY: '职责文本',
     TEXT_TYPE_REQUIRE: '任职要求文本',
     TEXT_TYPE_SKILL: '技能要求文本',
@@ -455,7 +455,7 @@ def classify_job_text_change(row: dict, thresholds: dict,
                              distance_field: str = schema.JD_DISTANCE_SAFE_FIELD) -> str:
     """岗位文本变化候选类型（规则可解释，未人工确认前一律为「候选」）。
 
-    正式主判据为**去薪资语义距离**；完整口径只作页面整体变化对照。
+    正式主判据为**去薪资语义距离**；完整文本统计范围只作页面整体变化对照。
     """
     distance = _value(row, distance_field)
     added = _value(row, '新增技能数', 0.0)
@@ -543,5 +543,5 @@ def build_threshold_source(thresholds: dict, extra: dict | None = None) -> pd.Da
     if extra:
         for key, value in extra.items():
             rows.append({'指标': key, '阈值': value, '样本数': np.nan,
-                         '来源': '人工复核与业务口径', '用途': '候选类型规则'})
+                         '来源': '人工复核与业务统计范围', '用途': '候选类型规则'})
     return pd.DataFrame(rows)

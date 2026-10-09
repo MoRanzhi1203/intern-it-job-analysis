@@ -111,7 +111,7 @@ def main() -> int:
             'test MAE': result['test']['MAE'], 'test RMSE': result['test']['RMSE'],
             'test R²': result['test']['R2'],
             'validation MAE': result['validation']['MAE'],
-            '与随机划分同口径 MAE 之差': result['test']['MAE'] - RANDOM_SPLIT_BASELINE,
+            '与随机划分同统计范围 MAE 之差': result['test']['MAE'] - RANDOM_SPLIT_BASELINE,
             '是否高于随机划分基准': '是' if result['test']['MAE'] > RANDOM_SPLIT_BASELINE else '否',
         })
         print('[E2] seed %d: test MAE %.6f（随机划分基准 %.6f）'
@@ -127,7 +127,7 @@ def main() -> int:
         {'指标': '测试集 MAE 中位数', '取值': float(mae.median())},
         {'指标': '测试集 MAE 最小值', '取值': float(mae.min())},
         {'指标': '测试集 MAE 最大值', '取值': float(mae.max())},
-        {'指标': '随机划分同口径 MAE 基准', '取值': RANDOM_SPLIT_BASELINE},
+        {'指标': '随机划分同统计范围 MAE 基准', '取值': RANDOM_SPLIT_BASELINE},
         {'指标': '与随机划分基准的平均差值', '取值': float((mae - RANDOM_SPLIT_BASELINE).mean())},
         {'指标': '全部划分均高于随机划分基准', '取值': '是' if (mae > RANDOM_SPLIT_BASELINE).all()
          else '否'},

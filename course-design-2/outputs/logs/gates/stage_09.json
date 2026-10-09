@@ -1,0 +1,25 @@
+{
+  "stage": "stage_09",
+  "gates": {
+    "COMPANY_IDENTITY_BUILD": {
+      "status": "PASS",
+      "note": "4495 行名称映射 → 4377 个正式实体，映射方式取值合法"
+    },
+    "COMPANY_IDENTITY_AMBIGUITY_CHECK": {
+      "status": "PASS",
+      "note": "同名多实体 0 个（本轮已不再按所在地自动拆分，多对一映射 0 条），无法解析 0 行，置信度均在 [0,1] 区间"
+    },
+    "MULTI_LOCATION_COMPANY_CHECK": {
+      "status": "PASS",
+      "note": "同名跨地域 77 行（规范名称 33 个）全部标记 MULTI_LOCATION_AMBIGUOUS 与人工复核，且不再生成「名称@所在地」实体"
+    },
+    "FORMAL_COMPANY_IDENTITY_FILTER": {
+      "status": "PASS",
+      "note": "正式公司时序仅使用 ['APPROVED_ALIAS', 'EXACT_NORMALIZED_NAME']，实体数 4377，排除 MULTI_LOCATION_AMBIGUOUS / HIGH_CONFIDENCE_MATCH / UNRESOLVED"
+    },
+    "COMPANY_IDENTITY_AUDIT_EXPORT": {
+      "status": "PASS",
+      "note": "映射表 4495 行、审计表 14 张子表已写出"
+    }
+  }
+}

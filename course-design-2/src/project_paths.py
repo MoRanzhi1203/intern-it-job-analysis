@@ -147,7 +147,7 @@ COMPANY_ATTRIBUTE_ANOMALY_TABLE_PATH = TABLES_DIR / TABLE_COMPANY_ATTRIBUTE_ANOM
 TABLE_PREPROCESSING_CLEANUP = 'ch3/17_preprocessing_refactor_cleanup_audit.xlsx'
 # ---- Stage 07 技能提取审计表（技能需求分析专用，与 16 号文本预处理审计分开） ----
 TABLE_JOB_SKILL_AUDIT = 'ch3/18_job_skill_extraction_audit.xlsx'
-# ---- Stage 13 技能 EDA 口径审计表（双口径 + 分层榜单 + 稳健性） ----
+# ---- Stage 13 技能 EDA 统计范围审计表（两种统计范围 + 分层榜单 + 稳健性） ----
 TABLE_SKILL_EDA_SCOPE = 'ch6/19_skill_eda_scope_audit.xlsx'
 # ---- Stage 12 建模数据集与泄漏审计表 ----
 TABLE_MODELING_DATASET_AUDIT = 'ch3/20_modeling_dataset_audit.xlsx'
@@ -159,7 +159,7 @@ TABLE_MODEL_COMPARISON = 'ch7/22_model_comparison.xlsx'
 TABLE_ABLATION_SHAP = 'ch8/23_ablation_robustness_shap.xlsx'
 # ---- Stage 16 公司字段语义核查（只读取证：公司认证 vs 公司标签） ----
 TABLE_COMPANY_FIELD_SEMANTIC = 'ch5/24_company_field_semantic_audit.xlsx'
-# ---- Stage 17 最终解释审计（字段语义修正 + 技能 SHAP presence 口径） ----
+# ---- Stage 17 最终解释审计（字段语义修正 + 技能 SHAP presence 统计方式） ----
 TABLE_FINAL_INTERPRETATION = 'ch5/25_final_interpretation_audit.xlsx'
 # ---- Stage26.7 业务时间维度分析（原 33_* 与 33_final_interpretation_audit 编号冲突，统一改为 75） ----
 TABLE_BUSINESS_TIME_DIMENSION = 'ch4/59_business_time_dimension_analysis.xlsx'
@@ -192,7 +192,7 @@ RECORD_COMPANY_ATTRIBUTE_ANOMALY = '15_company_attribute_semantic_anomaly_record
 RECORD_PREPROCESSING_CLEANUP = '16_preprocessing_refactor_cleanup_record.md'
 # ---- Stage 07 技能需求提取记录 ----
 RECORD_JOB_SKILL_EXTRACTION = '17_job_skill_extraction_record.md'
-# ---- Stage 06 薪资泄漏修补 + 技能 EDA 双口径封版记录 ----
+# ---- Stage 06 薪资泄漏修补 + 技能 EDA 两种统计范围封版记录 ----
 RECORD_SKILL_EDA_SCOPE = '18_skill_eda_scope_and_leakage_fix_record.md'
 # ---- Stage 12 建模数据集记录 ----
 RECORD_MODELING_DATASET = '19_modeling_dataset_record.md'

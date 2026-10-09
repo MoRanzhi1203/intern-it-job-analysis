@@ -78,8 +78,8 @@ TOKEN_LENGTH_AUDIT,NOT_RUN,句向量模型不可用，无法进行真实 token �
 TRUNCATION_SENSITIVITY,PASS,全样本 440 条 / 非截断 440 条 / 至少一侧截断 0 条，两套描述性对照均已输出（未删除样本）
 JOB_TEXT_EVENT_BUILD,PASS,"440 条文本语义事件 == sum(max(核心版本数-1,0)) = 440，候选类型标注全部保留「候选」字样"
 JOB_TEXT_VERSION_RECONCILE,PASS,语料 17584 行与版本历史 17584 行一一对应，岗位数一致（17144）
-JOB_TEXT_VERSION_SUMMARY,PASS,"版本历史新增摘要字段 ['相对上一版本JD语义距离', '相对上一版本JD语义距离_完整', '相对上一版本JD语义距离_去薪资', '相对上一版本新增技能数', '相对上一版本删除技能数', '是否显著JD语义变化候选']，共 48 列；兼容字段「相对上一版本JD语义距离」口径已切换到去薪资语义距离"
-JOB_TEXT_AUDIT_EXPORT,PASS,文本事件表与 21 张语义审计子表已写出（含双口径与截断审计）
+JOB_TEXT_VERSION_SUMMARY,PASS,"版本历史新增摘要字段 ['相对上一版本JD语义距离', '相对上一版本JD语义距离_完整', '相对上一版本JD语义距离_去薪资', '相对上一版本新增技能数', '相对上一版本删除技能数', '是否显著JD语义变化候选']，共 48 列；兼容字段「相对上一版本JD语义距离」统计范围已切换到去薪资语义距离"
+JOB_TEXT_AUDIT_EXPORT,PASS,文本事件表与 21 张语义审计子表已写出（含两种统计范围与截断审计）
 COMPANY_IDENTITY_BUILD,PASS,4495 行名称映射 → 4377 个正式实体，映射方式取值合法
 COMPANY_IDENTITY_AMBIGUITY_CHECK,PASS,"同名多实体 0 个（本轮已不再按所在地自动拆分，多对一映射 0 条），无法解析 0 行，置信度均在 [0,1] 区间"
 MULTI_LOCATION_COMPANY_CHECK,PASS,同名跨地域 77 行（规范名称 33 个）全部标记 MULTI_LOCATION_AMBIGUOUS 与人工复核，且不再生成「名称@所在地」实体

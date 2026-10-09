@@ -243,7 +243,7 @@ VERSION_FLAG_TO_ENTITY_FIELD = {
     '是否岗位描述变化': '历史是否发生岗位描述变化',
 }
 
-# ---- 版本变化字段 → 观察字段的映射（用于变化事件与一致性口径） ----
+# ---- 版本变化字段 → 观察字段的映射（用于变化事件与一致性统计范围） ----
 CHANGE_FLAG_FIELDS = {
     '是否标题变化': ['岗位标题'],
     '是否薪资变化': ['薪资信息'],
@@ -395,7 +395,7 @@ JOB_TEXT_FEATURE_COLUMNS = [
     ENTITY_CORE_VERSION_COUNT_FIELD, ENTITY_FINAL_VERSION_FIELD,
 ]
 
-# ---- 岗位文本语义双口径字段（Refinement R1：正式主口径 = 去薪资） ----
+# ---- 岗位文本语义两种统计范围字段（Refinement R1：正式主统计范围 = 去薪资） ----
 JD_SIMILARITY_FULL_FIELD = '岗位描述语义相似度_完整'
 JD_DISTANCE_FULL_FIELD = '岗位描述语义距离_完整'
 TFIDF_FULL_FIELD = 'TFIDF余弦相似度_完整'
@@ -406,8 +406,8 @@ TFIDF_SAFE_FIELD = 'TFIDF余弦相似度_去薪资'
 DISTANCE_GAP_FIELD = '完整减去薪资安全语义距离差'
 SIGNIFICANT_FIELD = '是否显著语义变化候选'
 EXTREME_FIELD = '是否极端语义变化候选'
-SIGNIFICANT_FULL_CALIBER_FIELD = '是否显著语义变化候选_完整口径'
-EXTREME_FULL_CALIBER_FIELD = '是否极端语义变化候选_完整口径'
+SIGNIFICANT_FULL_SCOPE_FIELD = '是否显著语义变化候选_完整文本统计范围'
+EXTREME_FULL_SCOPE_FIELD = '是否极端语义变化候选_完整文本统计范围'
 CANDIDATE_TYPE_FIELD = '语义变化候选类型'
 
 # ---- BGE token 截断审计字段 ----
@@ -444,7 +444,7 @@ JOB_TEXT_EVENT_COLUMNS = [
     '旧文本是否截断_完整', '新文本是否截断_完整',
     '旧文本是否截断_去薪资', '新文本是否截断_去薪资', '版本对是否存在截断',
     CANDIDATE_TYPE_FIELD, SIGNIFICANT_FIELD, EXTREME_FIELD,
-    SIGNIFICANT_FULL_CALIBER_FIELD, EXTREME_FULL_CALIBER_FIELD,
+    SIGNIFICANT_FULL_SCOPE_FIELD, EXTREME_FULL_SCOPE_FIELD,
 ]
 # 岗位版本历史表允许追加的文本摘要字段（详细明细由文本事件表承载）
 VERSION_TEXT_SUMMARY_FIELDS = [

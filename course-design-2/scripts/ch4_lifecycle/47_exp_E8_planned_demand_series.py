@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """E8：计划招聘需求时间序列（发布—截止日窗口的日级展开）。
 
-定义（与论文 4.5 节统一口径一致）：
+定义（与论文 4.5 节统一统计范围一致）：
     W_e = [p_e, d_e]，p_e 为该重构招聘周期的发布时间，d_e 为投递截止日期，端点均包含；
     N_t = Σ_e I(p_e ≤ t ≤ d_e) 为业务日期 t 的计划招聘需求窗口覆盖量，单位是「岗位周期数」；
     A_t = Σ_e I(p_e = t) 为流入，C_t = Σ_e I(d_e = t − 1) 为计划退出（截止日当天仍计入窗口）。
 
-口径与边界：
-    1. 输入为 3.4.3 节识别的重构招聘周期（7 个日历天阈值下的严格口径）；
+统计范围与边界：
+    1. 输入为 3.4.3 节识别的重构招聘周期（7 个日历天阈值下的严格统计范围）；
     2. 时间轴只用业务日期（发布时间、投递截止日期），不使用任何采集时间；
     3. 缺失日期、d_e < p_e 的记录先出审计表，不静默填补或删除；
     4. 异常长窗口保留原值，另做「剔除窗口长度最高 1%」的敏感性对照；
@@ -75,7 +75,7 @@ def main() -> int:
     unique = episode.drop_duplicates(subset=['episode_id_strict']).copy()
     unique['p_date'] = pd.to_datetime(unique['episode_start']).dt.normalize()
     unique['d_date'] = pd.to_datetime(unique['final_observed_deadline']).dt.normalize()
-    print('严格口径招聘周期（去重后）:', len(unique))
+    print('严格统计范围招聘周期（去重后）:', len(unique))
 
     missing = unique['p_date'].isna() | unique['d_date'].isna()
     reversed_order = (~missing) & (unique['d_date'] < unique['p_date'])
@@ -85,7 +85,7 @@ def main() -> int:
                                         expandable.sum()))
 
     audit_rows = [
-        {'项目': '输入周期总数（严格口径）', '取值': int(len(unique))},
+        {'项目': '输入周期总数（严格统计范围）', '取值': int(len(unique))},
         {'项目': '日期缺失周期数', '取值': int(missing.sum())},
         {'项目': '截止日期早于发布日期的逆序周期数', '取值': int(reversed_order.sum())},
         {'项目': '可展开周期数', '取值': int(expandable.sum())},
@@ -132,22 +132,22 @@ def main() -> int:
                                   timeline)
     merged = series[['date', 'planned_demand_coverage_N']].merge(
         trimmed_series[['date', 'planned_demand_coverage_N']], on='date',
-        suffixes=('_主口径', '_剔除最高1%'))
-    spearman = float(merged['planned_demand_coverage_N_主口径'].corr(
+        suffixes=('_主统计范围', '_剔除最高1%'))
+    spearman = float(merged['planned_demand_coverage_N_主统计范围'].corr(
         merged['planned_demand_coverage_N_剔除最高1%'], method='spearman'))
     sensitivity = pd.DataFrame([
-        {'指标': '周期数', '主口径': int(len(unique)), '剔除窗口长度最高 1%': int(len(trimmed))},
-        {'指标': 'Σ N_t（窗口日数合计）', '主口径': int(series['planned_demand_coverage_N'].sum()),
+        {'指标': '周期数', '主统计范围': int(len(unique)), '剔除窗口长度最高 1%': int(len(trimmed))},
+        {'指标': 'Σ N_t（窗口日数合计）', '主统计范围': int(series['planned_demand_coverage_N'].sum()),
          '剔除窗口长度最高 1%': int(trimmed_series['planned_demand_coverage_N'].sum())},
-        {'指标': 'N_t 均值', '主口径': float(series['planned_demand_coverage_N'].mean()),
+        {'指标': 'N_t 均值', '主统计范围': float(series['planned_demand_coverage_N'].mean()),
          '剔除窗口长度最高 1%': float(trimmed_series['planned_demand_coverage_N'].mean())},
-        {'指标': 'N_t 中位数', '主口径': float(series['planned_demand_coverage_N'].median()),
+        {'指标': 'N_t 中位数', '主统计范围': float(series['planned_demand_coverage_N'].median()),
          '剔除窗口长度最高 1%': float(trimmed_series['planned_demand_coverage_N'].median())},
-        {'指标': 'N_t 最大值', '主口径': int(series['planned_demand_coverage_N'].max()),
+        {'指标': 'N_t 最大值', '主统计范围': int(series['planned_demand_coverage_N'].max()),
          '剔除窗口长度最高 1%': int(trimmed_series['planned_demand_coverage_N'].max())},
-        {'指标': '两序列 Spearman 相关系数', '主口径': round(spearman, 6),
+        {'指标': '两序列 Spearman 相关系数', '主统计范围': round(spearman, 6),
          '剔除窗口长度最高 1%': '—'},
-        {'指标': '窗口长度 99% 分位阈值（日历天）', '主口径': round(cutoff, 1),
+        {'指标': '窗口长度 99% 分位阈值（日历天）', '主统计范围': round(cutoff, 1),
          '剔除窗口长度最高 1%': '—'},
     ])
     sensitivity.to_csv(project_paths.RESULTS_E8 / 'planned_recruitment_demand_sensitivity.csv', index=False,
@@ -165,7 +165,7 @@ def main() -> int:
                          'legend.fontsize': 11.0}):
         fig, ax = plt.subplots(figsize=(15.5 / 2.54 * 11 / 12, 3.4))
         ax.plot(series['date'], series['planned_demand_coverage_N'],
-                color='#1F4E79', linewidth=1.5, label='日级覆盖量 N_t（主口径）')
+                color='#1F4E79', linewidth=1.5, label='日级覆盖量 N_t（主统计范围）')
         ax.plot(trimmed_series['date'], trimmed_series['planned_demand_coverage_N'],
                 color=plot_style.ACCENT_COLOR, linestyle='--', linewidth=1.2,
                 label='N_t（剔除窗口长度最高 1%）')
@@ -178,7 +178,7 @@ def main() -> int:
             subfigures=[],
             meta={'数据来源': 'outputs/results/E8/planned_recruitment_demand_daily.csv；'
                              '敏感性对照取自 planned_recruitment_demand_sensitivity.csv',
-                  '口径': 'W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；'
+                  '统计范围': 'W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；'
                           '剔除窗口长度最高 1%% 后两序列 Spearman = %.4f' % spearman,
                   '解释边界': 'N_t 只表示样本中可重构的计划招聘需求窗口覆盖量，'
                               '不是历史市场真实岗位存量、招聘人数或实际新增岗位数，'
@@ -215,7 +215,7 @@ def main() -> int:
                     color=color, linewidth=1.4,
                     label='%s（%s 个周期）' % (label, f'{size:,}'))
         ax.set_xlabel('业务日期')
-        # 纵轴只留量名；「14 日滚动均值」这个图级口径参数按论文惯例移到图题
+        # 纵轴只留量名；「14 日滚动均值」这个图级统计范围参数按论文惯例移到图题
         ax.set_ylabel('计划招聘需求窗口覆盖量')
         # 图例放到坐标区上方：6 条标签在区内会占掉 91% 宽度、24% 高度并压住运营的峰值
         ax.legend(loc='lower center', bbox_to_anchor=(0.5, 1.01), ncol=2,
@@ -225,7 +225,7 @@ def main() -> int:
             fig, FIGURES, 'fig_4_6_planned_demand_by_job_category',
             subfigures=[],
             meta={'数据来源': 'job_strict_episode_26_1.parquet × 岗位大类集合',
-                  '口径': '各方向 N_t 的 14 日滚动均值；分档 = 周期数前 5 个大类 + 其他',
+                  '统计范围': '各方向 N_t 的 14 日滚动均值；分档 = 周期数前 5 个大类 + 其他',
                   '方向分档': {label: int(size) for label, size, _ in rows},
                   '解释边界': 'N_t 只表示样本中可重构的计划招聘需求窗口覆盖量，'
                               '不是历史市场真实岗位存量、招聘人数或实际新增岗位数，'
@@ -234,8 +234,8 @@ def main() -> int:
     print('图 4-7 门禁未通过项:', figure_finalize.failed_paper_gates(diagnostics) or '无')
 
     meta = {
-        '输入': 'data/processed/job_strict_episode_26_1.parquet（7 个日历天阈值严格口径）',
-        '口径': 'W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；'
+        '输入': 'data/processed/job_strict_episode_26_1.parquet（7 个日历天阈值严格统计范围）',
+        '统计范围': 'W_e = [p_e, d_e] 端点均包含；N_t = Σ I(p_e ≤ t ≤ d_e)；'
                 'A_t = Σ I(p_e = t)；C_t = Σ I(d_e = t − 1)',
         '时间轴': '%s ~ %s（%d 天）' % (timeline[0].date(), timeline[-1].date(), len(timeline)),
         '可展开周期数': int(expandable.sum()),

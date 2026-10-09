@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Stage26.1：招聘生命周期与时序口径收紧（数据与建模实测部分）。
+"""Stage26.1：招聘生命周期与时序设定收紧（数据与建模实测部分）。
 
 本脚本只做**新增**计算与**新增**文件输出，严格只读既有产物
 （`data/raw`、`data/interim`、`data/processed` 既有文件、`outputs/**` 既有文件、
@@ -10,16 +10,16 @@
     Observation → 全页面 Version → Candidate Publish Segment
                 → Strict / Relaxed Recruitment Episode → Entity
 
-业务时间口径（硬性）：
+业务时间设定（硬性）：
 - **业务时间轴** = `发布时间`（周期开始）/ `投递截止日期`（计划结束）；
 - **爬取时间**（`观测时间` / `数据创建时间` / `数据更新时间`）只用于版本排序与审计，
   不进入任何 F 组特征、不进入 Temporal Split。
 
-三档转换口径（严格主口径）：
+三档转换设定（严格主统计范围）：
 - `start > current_episode_end` 且 `gap >= 7` 天 → **T1_CONFIRMED**，新建正式 Episode；
-- `0 < gap < 7` 天 → **T2_SUSPECTED**，严格主口径**不新建** Episode（与当前 Episode 归并）；
+- `0 < gap < 7` 天 → **T2_SUSPECTED**，严格主统计范围**不新建** Episode（与当前 Episode 归并）；
 - `start <= current_episode_end` → **T3_CONFLICT**，**不生成**独立正式 Episode（归并）；
-- 敏感性口径 Relaxed = T1 + T2（T3 仍不拆分）。
+- 敏感性统计范围 Relaxed = T1 + T2（T3 仍不拆分）。
 
 新增输出（不覆盖任何既有文件）::
 
@@ -61,7 +61,7 @@ from src import (ablation_shap, eda_analysis, figure_finalize, io_utils,  # noqa
 from src.script_support import build_assembler, project_manifest, sha256_of  # noqa: E402
 
 # ============================================================================
-# 常量与口径
+# 常量与统计范围
 # ============================================================================
 SEED = 42
 BOOTSTRAP_ROUNDS = ablation_shap.BOOTSTRAP_ROUNDS          # 1000
@@ -95,7 +95,7 @@ FIG_STEMS = [
     'fig_s24_planned_coverage_daily_active_count',
     'fig_s25_main_category_planned_coverage',
     'fig_s26_active_cycle_salary_median_iqr',
-    'fig_s27_strict_relaxed_caliber_comparison',
+    'fig_s27_strict_relaxed_scope_comparison',
 ]
 # ---- Stage26 只读产物（前后 SHA-256 比对用） ----
 STAGE26_FILES = (
@@ -153,16 +153,16 @@ MODEL_GRIDS = {
 }
 SCALE_FOR = {'Ridge'}
 
-CALIBER_ACTIVE = ('按业务日期重构的样本活跃计划周期数量：由当前样本岗位的『发布时间 → 投递截止日期』'
+SCOPE_ACTIVE = ('按业务日期重构的样本活跃计划周期数量：由当前样本岗位的『发布时间 → 投递截止日期』'
                   '计划区间展开得到，曲线只反映本样本的计划招聘覆盖结构，'
                   '不等同于当日完整市场存量，也不构成市场时序。')
-CALIBER_T2 = ('T2（疑似重开，0 < gap < 7 天）高度集中于 1 天，极可能是平台发布时间 / '
-              '投递截止日期被重置造成的伪影，只作为敏感性 / 对照口径，'
+SCOPE_T2 = ('T2（疑似重开，0 < gap < 7 天）高度集中于 1 天，极可能是平台发布时间 / '
+              '投递截止日期被重置造成的伪影，只作为敏感性 / 对照统计范围，'
               '不得表述为真实重新招聘，也不得据此估计总体重招率。')
-CALIBER_T3 = ('T3（时间冲突，start ≤ 当前 Episode 结束日）不做重新招聘解释、'
+SCOPE_T3 = ('T3（时间冲突，start ≤ 当前 Episode 结束日）不做重新招聘解释、'
               '不生成独立正式 Episode、不进入主日级面板的重复周期计数，'
               '仅保留审计记录与人工抽查样例。')
-CALIBER_INITIAL = ('因采集并非从岗位真实发布日连续观察，`initial_observed_deadline` 只是'
+SCOPE_INITIAL = ('因采集并非从岗位真实发布日连续观察，`initial_observed_deadline` 只是'
                    '「该 Candidate Segment 在本数据中首次被观测时看到的投递截止日期」，'
                    '**不等于**真实发布时的初始截止日期；对 2025 年及更早发布的岗位，'
                    '研究者并未在其真实发布时持续观察页面，因此 2026 年集中采集回溯得到的'
@@ -179,7 +179,7 @@ def input_record(path: Path) -> dict:
 
 
 def load_stage11_salary_parser():
-    """只读加载既有 Stage11 薪资解析实现（与官方薪资目标口径完全一致）。"""
+    """只读加载既有 Stage11 薪资解析实现（与官方薪资目标定义完全一致）。"""
     spec = importlib.util.spec_from_file_location(
         '_stage11_salary_parser', PROJECT_ROOT / 'scripts' / 'ch3_data' / '11_clean_structured_fields.py')
     module = importlib.util.module_from_spec(spec)
@@ -300,7 +300,7 @@ def build_version_layer(obs: pd.DataFrame, salary_parser, salary_config) -> pd.D
         previous = versions.groupby(schema.ID_FIELD, sort=False)[field].shift(1)
         changed = versions[field].fillna('').astype(str).ne(previous.fillna('').astype(str))
         versions[flag] = np.where(previous.isna(), 0, changed.astype(int))
-    # 业务截止日期的岗位级前向填充（与 Stage26 口径一致）；缺失来源单独留档
+    # 业务截止日期的岗位级前向填充（与 Stage26 统计范围一致）；缺失来源单独留档
     versions['截止日期_观测值'] = versions['投递截止日期']
     versions['截止日期_前向'] = versions.groupby(schema.ID_FIELD, sort=False)[
         '投递截止日期'].ffill()
@@ -385,7 +385,7 @@ def build_candidate_segments(versions: pd.DataFrame, analysis: pd.DataFrame,
 
 
 def assign_episodes(segments: pd.DataFrame) -> pd.DataFrame:
-    """按严格 / 敏感性两套口径逐岗位顺序合并 Candidate Segment，生成 Episode 归属。"""
+    """按严格 / 敏感性两套统计范围逐岗位顺序合并 Candidate Segment，生成 Episode 归属。"""
     frame = segments.sort_values(['intern_id', 'segment_first_observed', 'segment_no'],
                                  kind='stable').reset_index(drop=True)
     job_ids = frame['intern_id'].to_numpy()
@@ -669,7 +669,7 @@ def leakage_audit(frame: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
          '是否可用于发布时预测': '是（此前周期已发生，且其截止日期在数据中先于本次发布被观测）',
          '最终决定': '保留（实质近常量：99.99% 取 1）',
          '理由': '只统计『本次发布之前』已确认发生的正式周期数，不编码本次发布之后的任何变化；'
-                 '但因严格口径下重招极少，该特征几乎恒定，实际贡献有限。'},
+                 '但因严格统计范围下重招极少，该特征几乎恒定，实际贡献有限。'},
         {'特征': 'is_confirmed_reopen', '来源': 'Strict Episode 层（本次发布是否 T1 确认重招）',
          '使用时点': '本周期发布时',
          '数据中首次可观测时点': '本次发布即刻（等于 episode_no_strict > 1）',
@@ -695,22 +695,22 @@ def leakage_audit(frame: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
          '数据中首次可观测时点': '本 Episode 末次观测之后（采集期内才可见最终截止日）',
          '是否可用于发布时预测': '否', '最终决定': '删除',
          '理由': '最终截止日可能在企业后续延期 / 缩短后才出现，发布时不可知。'},
-        {'特征': 'episode_no（Stage26 旧口径）', '来源': 'Stage26 Episode 层（含 T3 冲突周期）',
+        {'特征': 'episode_no（Stage26 旧统计范围）', '来源': 'Stage26 Episode 层（含 T3 冲突周期）',
          '使用时点': '本周期发布时',
          '数据中首次可观测时点': '含 T3 时间冲突周期 → 与业务时间语义不一致',
-         '是否可用于发布时预测': '否（口径已被收紧替换）', '最终决定': '删除（替换）',
+         '是否可用于发布时预测': '否（统计范围已被收紧替换）', '最终决定': '删除（替换）',
          '理由': 'Stage26 把 T3 时间冲突也计入周期序号，序号含义不纯；'
                  '本轮替换为 episode_no_strict。'},
-        {'特征': 'is_reopened（Stage26 旧口径）', '来源': 'Stage26 Episode 层（T1 定义）',
+        {'特征': 'is_reopened（Stage26 旧统计范围）', '来源': 'Stage26 Episode 层（T1 定义）',
          '使用时点': '本周期发布时', '数据中首次可观测时点': '本周期发布即刻',
          '是否可用于发布时预测': '是', '最终决定': '保留（改名 is_confirmed_reopen）',
-         '理由': '定义未变，仅按新层级改名以明确为 Strict 口径。'},
+         '理由': '定义未变，仅按新层级改名以明确为 Strict 统计范围。'},
         {'特征': 'previous_episode_end_days', '来源': 'Stage26 上一 Episode 截止日的绝对日期编码',
          '使用时点': '本周期发布时',
-         '数据中首次可观测时点': 'Stage26 口径下 2,392 个岗位非缺失，其中历史岗位的上一周期'
+         '数据中首次可观测时点': 'Stage26 统计范围下 2,392 个岗位非缺失，其中历史岗位的上一周期'
                           '截止日只在 2026 年集中采集时被观测到',
          '是否可用于发布时预测': '不可证明（对历史发布岗位）', '最终决定': '删除',
-         '理由': '严格口径下非缺失仅 2 个岗位，且与 episode_no_strict + '
+         '理由': '严格统计范围下非缺失仅 2 个岗位，且与 episode_no_strict + '
                  'previous_reopen_gap_days 完全冗余（信息量相同）；'
                  '为避免把「2026 年集中采集后才回溯得到的绝对日期」当作发布时已知信息，删除。'},
         {'特征': 'historical_salary_change_flag',
@@ -734,18 +734,18 @@ def leakage_audit(frame: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
         {'特征': '观测时间 / 数据创建时间 / 数据更新时间（爬取时间）',
          '来源': '采集元数据', '使用时点': '任意',
          '数据中首次可观测时点': '采集时点（由研究者安排决定）',
-         '是否可用于发布时预测': '否（口径禁止）', '最终决定': '删除',
+         '是否可用于发布时预测': '否（统计范围禁止）', '最终决定': '删除',
          '理由': '采集时间是研究设计产物，不代表业务时间，禁止进入特征与 Temporal Split。'},
         {'特征': '核心版本数 / 完整页面版本数 / 是否多版本岗位（A 组既有字段）',
          '来源': 'Stage25 一岗一行宽表（版本治理层）',
          '使用时点': 'Stage25 横截面预测设定（无严格发布时点语义）',
          '数据中首次可观测时点': '2026 年集中采集后回溯得到',
-         '是否可用于发布时预测': '存疑（严格时点语义下不可用）', '最终决定': '保留但标注（Stage25 既有口径，本轮不在授权范围内改动）',
+         '是否可用于发布时预测': '存疑（严格时点语义下不可用）', '最终决定': '保留但标注（Stage25 既有统计范围，本轮不在授权范围内改动）',
          '理由': '这 3 个字段属 Stage25 已封版 A 组，不是本轮 F 组审计对象；'
                  '在严格「发布时预测」语义下其时点存疑，作为已披露限制记录，供论文不足部分说明。'},
     ]
     table = pd.DataFrame(rows)
-    table['缺失数（14,883 建模样本口径）'] = table['特征'].map(
+    table['缺失数（14,883 建模样本统计范围）'] = table['特征'].map(
         lambda name: nonnull(name) if name in frame.columns else '—')
     return table
 
@@ -760,7 +760,7 @@ def stage26_f_comparison() -> pd.DataFrame:
         'is_reopened': ('纳入', '保留（改名 is_confirmed_reopen）', '—', '定义未变。'),
         'historical_episode_count': ('纳入', '保留', '—', '仅用历史周期数。'),
         'previous_episode_end_days': ('纳入', '删除', '删除',
-                                  '严格口径下非缺失仅 2 个岗位，且与 episode_no_strict + '
+                                  '严格统计范围下非缺失仅 2 个岗位，且与 episode_no_strict + '
                                   'previous_reopen_gap_days 冗余；绝对日期在历史岗位上'
                                   '只在 2026 年集中采集时才被观测到。'),
         'previous_reopen_gap_days': ('纳入', '保留', '—',
@@ -901,7 +901,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
                        random_metrics: dict) -> dict:
     axis = model_frame[schema.ID_FIELD].map(entity_publish)
     if axis.isna().any():
-        raise ValueError('存在无业务发布时间的建模样本，禁止无口径回填')
+        raise ValueError('存在无业务发布时间的建模样本，禁止无统计范围回填')
     frame = model_frame.assign(_business_date=axis.dt.normalize().to_numpy())
     date_counts = frame.groupby('_business_date').size().sort_index()
     cumulative = date_counts.cumsum()
@@ -987,7 +987,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
         fit = model_training.fit_and_predict(matrix_train, y_train, matrix_valid, None,
                                              reference_model, reference_params)
         metrics = model_training.regression_metrics(y_valid, fit['valid_pred'])
-        threshold_rows.append({'阈值口径': f'>= {resolved}', '阈值': resolved,
+        threshold_rows.append({'阈值设定': f'>= {resolved}', '阈值': resolved,
                                '技能列数': len(assembler.schema.skill_columns),
                                '特征维度': assembler.schema.dimension,
                                'validation_MAE': metrics['MAE']})
@@ -1162,7 +1162,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
     def row(label, metrics, note, reference=None):
         block = {'划分方式': label, '数据子集': 'test', 'n': metrics['n'],
                  'MAE': metrics['MAE'], 'RMSE': metrics['RMSE'], 'R²': metrics['R2'],
-                 '口径': note}
+                 '统计范围': note}
         if reference is None:
             block['与既有正式结果差异（MAE）'] = ''
             block['是否复现既有一致'] = ''
@@ -1291,7 +1291,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
             {'项目': '说明', '数值': '预测单位为「一岗一行」，同一岗位只出现在一个子集，因此 '
                               'intern_id 跨子集数应为 0；公司可能跨子集，属跨发布日期区间泛化的'
                               '真实情形，需在正文披露'}]),
-        '11_方法与口径': method_rows,
+        '11_方法与统计范围': method_rows,
     }
     return {'sheets': sheets, 'split_table': split_table, 'comparison': comparison,
             'comparison_table': comparison_table, 'test_metrics': test_metrics,
@@ -1366,7 +1366,7 @@ def figure_s23(episodes: pd.DataFrame, registry: list) -> dict:
             transform=ax.transAxes, ha='right', va='top',
             fontsize=plot_style.FONT_SIZES['annotation'], linespacing=1.45)
     plot_style.apply_sci_axis(ax, grid_axis='y')
-    plot_style.add_subfigure_caption(ax, 'b', 'Strict 口径下单周期与多周期岗位构成')
+    plot_style.add_subfigure_caption(ax, 'b', 'Strict 统计范围下单周期与多周期岗位构成')
 
     ax = axes[2]
     bars = pd.Series({
@@ -1374,7 +1374,7 @@ def figure_s23(episodes: pd.DataFrame, registry: list) -> dict:
         'T2 疑似重开': int(episodes['t2_events'].sum()),
         'T3 时间冲突': int(episodes['t3_events'].sum())})
     plot_style.bar_ranked(ax, bars, xlabel='Candidate Segment 转换类型', ylabel='事件数')
-    ax.text(0.97, 0.94, 'T2/T3 在严格口径下归并、\n不新建正式 Episode',
+    ax.text(0.97, 0.94, 'T2/T3 在严格统计范围下归并、\n不新建正式 Episode',
             transform=ax.transAxes, ha='right', va='top',
             fontsize=plot_style.FONT_SIZES['annotation'], linespacing=1.45)
     plot_style.apply_sci_axis(ax, grid_axis='y')
@@ -1384,7 +1384,7 @@ def figure_s23(episodes: pd.DataFrame, registry: list) -> dict:
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_STEMS[0],
         subfigures=[('a', 'Strict Episode 计划持续天数分布（横轴截断至 P99）', axes[0]),
-                    ('b', 'Strict 口径下单周期与多周期岗位构成', axes[1]),
+                    ('b', 'Strict 统计范围下单周期与多周期岗位构成', axes[1]),
                     ('c', 'T1 / T2 / T3 转换事件数', axes[2])],
         meta={'数据来源': 'job_strict_episode_26_1.parquet / job_candidate_segment_26_1.parquet',
               'seed': SEED, '用途': '第4章 4.5.1 招聘周期总体特征'})
@@ -1429,7 +1429,7 @@ def figure_s24(daily: pd.DataFrame, registry: list) -> dict:
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_STEMS[1],
         subfigures=[('a', panels[0][1], axes[0]), ('b', panels[1][1], axes[1])],
-        meta={'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级聚合', '口径': CALIBER_ACTIVE,
+        meta={'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级聚合', '统计范围': SCOPE_ACTIVE,
               '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
               '采集窗口标识': f'首次采集日 {COLLECT_FIRST.date()} / '
                         f'最后采集日 {COLLECT_LAST.date()}',
@@ -1472,7 +1472,7 @@ def figure_s25(category_daily: dict, daily: pd.DataFrame, registry: list) -> dic
         subfigures=[('a', 'N(c,t) 样本活跃计划周期数（原始日序列）', axes[0]),
                     ('b', 'N(c,t) 样本活跃计划周期数（7 日滚动中位数）', axes[1])],
         meta={'数据来源': 'job_strict_daily_panel_26_1.parquet × 岗位大类集合',
-              '口径': CALIBER_ACTIVE,
+              '统计范围': SCOPE_ACTIVE,
               '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
               '采集窗口标识': f'首次采集日 {COLLECT_FIRST.date()} / '
                         f'最后采集日 {COLLECT_LAST.date()}',
@@ -1503,7 +1503,7 @@ def figure_s26(daily: pd.DataFrame, registry: list) -> dict:
     ax.legend(handles, [h.get_label() for h in handles], loc='lower center',
               bbox_to_anchor=(0.5, 1.005), ncol=3, frameon=False)
     plot_style.apply_sci_axis(ax, grid_axis='y')
-    plot_style.add_subfigure_caption(ax, 'a', '活跃计划周期薪资中位数与 IQR（Strict 口径）')
+    plot_style.add_subfigure_caption(ax, 'a', '活跃计划周期薪资中位数与 IQR（Strict 统计范围）')
 
     ax = axes[1]
     _window_marks(ax, date_min, date_max, legend=False)
@@ -1520,10 +1520,10 @@ def figure_s26(daily: pd.DataFrame, registry: list) -> dict:
     fig.subplots_adjust(left=0.075, right=0.99, bottom=0.24, top=0.85, wspace=0.22)
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_STEMS[3],
-        subfigures=[('a', '活跃计划周期薪资中位数与 IQR（Strict 口径）', axes[0]),
+        subfigures=[('a', '活跃计划周期薪资中位数与 IQR（Strict 统计范围）', axes[0]),
                     ('b', '每日参与薪资统计的活跃计划周期数（读图可靠性）', axes[1])],
         meta={'数据来源': 'job_strict_daily_panel_26_1.parquet 的日级薪资聚合',
-              '口径': CALIBER_ACTIVE,
+              '统计范围': SCOPE_ACTIVE,
               '图注声明': '曲线由当前样本岗位的业务日期重构，不等同于当日完整市场存量',
               '采集窗口标识': f'首次采集日 {COLLECT_FIRST.date()} / '
                         f'最后采集日 {COLLECT_LAST.date()}',
@@ -1555,7 +1555,7 @@ def figure_s27(daily_strict: pd.DataFrame, daily_relaxed: pd.DataFrame, rounds_s
     ax.legend(handles, [h.get_label() for h in handles], loc='lower center',
               bbox_to_anchor=(0.5, 1.005), ncol=2, frameon=False)
     plot_style.apply_sci_axis(ax, grid_axis='y')
-    plot_style.add_subfigure_caption(ax, 'a', 'Strict 与 Relaxed 口径的日活跃计划周期数量')
+    plot_style.add_subfigure_caption(ax, 'a', 'Strict 与 Relaxed 统计范围的日活跃计划周期数量')
 
     ax = axes[1]
     positions = np.arange(2)
@@ -1579,15 +1579,15 @@ def figure_s27(daily_strict: pd.DataFrame, daily_relaxed: pd.DataFrame, rounds_s
     ax.set_ylim(0, span * 1.18)
     ax.legend(loc='lower center', bbox_to_anchor=(0.5, 1.005), ncol=2, frameon=False)
     plot_style.apply_sci_axis(ax, grid_axis='y')
-    plot_style.add_subfigure_caption(ax, 'b', 'Strict 与 Relaxed 口径的单 / 多周期岗位构成')
+    plot_style.add_subfigure_caption(ax, 'b', 'Strict 与 Relaxed 统计范围的单 / 多周期岗位构成')
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.24, top=0.85, wspace=0.24)
     diagnostics = figure_finalize.save_paper_figure(
         fig, SUPP_DIR, FIG_STEMS[4],
-        subfigures=[('a', 'Strict 与 Relaxed 口径的日活跃计划周期数量', axes[0]),
-                    ('b', 'Strict 与 Relaxed 口径的单 / 多周期岗位构成', axes[1])],
-        meta={'数据来源': 'job_strict_episode_26_1.parquet（Strict / Relaxed 两套口径）',
-              '口径': CALIBER_T2, 'seed': SEED,
-              '用途': '第4章 4.5 口径对照'})
+        subfigures=[('a', 'Strict 与 Relaxed 统计范围的日活跃计划周期数量', axes[0]),
+                    ('b', 'Strict 与 Relaxed 统计范围的单 / 多周期岗位构成', axes[1])],
+        meta={'数据来源': 'job_strict_episode_26_1.parquet（Strict / Relaxed 两套统计范围）',
+              '统计范围': SCOPE_T2, 'seed': SEED,
+              '用途': '第4章 4.5 统计范围对照'})
     plt.close(fig)
     registry.append(diagnostics)
     return diagnostics
@@ -1596,7 +1596,7 @@ def figure_s27(daily_strict: pd.DataFrame, daily_relaxed: pd.DataFrame, rounds_s
 def main() -> int:  # noqa: C901
     started = time.time()
     print('=' * 96)
-    print('Stage26.1 招聘生命周期与时序口径收紧（数据与建模实测）')
+    print('Stage26.1 招聘生命周期与时序设定收紧（数据与建模实测）')
     print('=' * 96)
     manifest_before = project_manifest(PROJECT_ROOT, MANIFEST_SCOPE_DIRS, SKIP_DIRS, NEW_FILES)
     stage26_before = {str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'): sha256_of(path)
@@ -1650,40 +1650,40 @@ def main() -> int:  # noqa: C901
     # ---- Step 1：层级重构 ----
     versions = build_version_layer(obs, salary_parser, salary_config)
 
-    # ---- Stage26 基线复核（口径 A = 发布日期按日截断；口径 B = 精确发布时间）----
+    # ---- Stage26 基线复核（统计范围 A = 发布日期按日截断；统计范围 B = 精确发布时间）----
     base_a = versions.assign(_d=versions['发布时间'].dt.normalize()).drop_duplicates(
         [schema.ID_FIELD, '_d', '投递截止日期'])
     base_b = versions.drop_duplicates([schema.ID_FIELD, '发布时间', '投递截止日期'])
     coverage_a = base_a['投递截止日期'].dropna()
     coverage_b = base_b['投递截止日期'].dropna()
     baseline_check = {
-        '口径A_发布日期按日截断_组合数': int(len(base_a)),
-        '口径B_精确发布时间_组合数': int(len(base_b)),
+        '统计范围A_发布日期按日截断_组合数': int(len(base_a)),
+        '统计范围B_精确发布时间_组合数': int(len(base_b)),
         '唯一（岗位, 发布时间）组合数': int(versions.drop_duplicates(
             [schema.ID_FIELD, '发布时间']).shape[0]),
         '全页面版本数': int(len(versions)),
         '唯一投递截止日期取值数': int(versions['投递截止日期'].nunique()),
-        'Top20截止日期覆盖率_口径A': round(float(coverage_a.value_counts().head(20).sum()
+        'Top20截止日期覆盖率_统计范围A': round(float(coverage_a.value_counts().head(20).sum()
                                           / coverage_a.size), 6),
-        'Top20截止日期覆盖率_口径B': round(float(coverage_b.value_counts().head(20).sum()
+        'Top20截止日期覆盖率_统计范围B': round(float(coverage_b.value_counts().head(20).sum()
                                           / coverage_b.size), 6),
-        '截止日期>2026-12-31占比_口径A': round(float((coverage_a
+        '截止日期>2026-12-31占比_统计范围A': round(float((coverage_a
                                               > pd.Timestamp('2026-12-31')).mean()), 6),
-        '截止日期>2026-12-31占比_口径B': round(float((coverage_b
+        '截止日期>2026-12-31占比_统计范围B': round(float((coverage_b
                                               > pd.Timestamp('2026-12-31')).mean()), 6),
         '发布日期唯一日数': int(versions['发布时间'].dt.normalize().nunique()),
         '发布日期唯一秒级取值数': int(versions['发布时间'].nunique()),
         '投递截止日期非空版本数': int(versions['投递截止日期'].notna().sum()),
     }
     BASELINE_ROWS = [
-        {'复核项': '唯一（岗位×发布×截止）组合数（口径 A：发布日期按日截断）',
+        {'复核项': '唯一（岗位×发布×截止）组合数（统计范围 A：发布日期按日截断）',
          'Stage26 记录': '21,349',
-         '本轮实测': f"{baseline_check['口径A_发布日期按日截断_组合数']:,}",
+         '本轮实测': f"{baseline_check['统计范围A_发布日期按日截断_组合数']:,}",
          '结论': '差异 +2：本轮把 2 条「投递截止日期缺失」的组合也计入（版本层 21,588 中仅 2 条缺失），'
                  'Stage26 的 21,349 只计有效组合（21,586 条）'},
-        {'复核项': '唯一（岗位×发布×截止）组合数（口径 B：精确发布时间）',
+        {'复核项': '唯一（岗位×发布×截止）组合数（统计范围 B：精确发布时间）',
          'Stage26 记录': '21,539',
-         '本轮实测': f"{baseline_check['口径B_精确发布时间_组合数']:,}",
+         '本轮实测': f"{baseline_check['统计范围B_精确发布时间_组合数']:,}",
          '结论': '差异 +2：同上（含 2 条缺失截止日期的组合）'},
         {'复核项': 'Episode 数（唯一岗位×发布时间）', 'Stage26 记录': '20,556',
          '本轮实测': f"{baseline_check['唯一（岗位, 发布时间）组合数']:,}",
@@ -1693,15 +1693,15 @@ def main() -> int:  # noqa: C901
         {'复核项': '投递截止日期唯一取值数', 'Stage26 记录': '337',
          '本轮实测': f"{baseline_check['唯一投递截止日期取值数']:,}", '结论': '确认完全一致'},
         {'复核项': '投递截止日期 Top20 覆盖率', 'Stage26 记录': '59.9471%',
-         '本轮实测': f"口径 B（精确发布时间）= {baseline_check['Top20截止日期覆盖率_口径B']:.4%}；"
-                 f"口径 A（发布日期按日截断）= {baseline_check['Top20截止日期覆盖率_口径A']:.4%}",
-         '结论': '确认一致：Stage26 记录的 59.9471% 即口径 B 值，本轮精确复现；'
-                 '口径 A 因分母口径不同为 60.0075%（任务提示词中的 59.95% 指口径 B）'},
+         '本轮实测': f"统计范围 B（精确发布时间）= {baseline_check['Top20截止日期覆盖率_统计范围B']:.4%}；"
+                 f"统计范围 A（发布日期按日截断）= {baseline_check['Top20截止日期覆盖率_统计范围A']:.4%}",
+         '结论': '确认一致：Stage26 记录的 59.9471% 即统计范围 B 值，本轮精确复现；'
+                 '统计范围 A 因分母范围不同为 60.0075%（任务提示词中的 59.95% 指统计范围 B）'},
         {'复核项': '投递截止日期 > 2026-12-31 占比', 'Stage26 记录': '10.6969%',
-         '本轮实测': f"口径 B = {baseline_check['截止日期>2026-12-31占比_口径B']:.4%}；"
-                 f"口径 A = {baseline_check['截止日期>2026-12-31占比_口径A']:.4%}",
-         '结论': '确认一致：Stage26 记录的 10.6969% 即口径 B 值，本轮精确复现；'
-                 '任务提示词中的 10.70% 指口径 B'},
+         '本轮实测': f"统计范围 B = {baseline_check['截止日期>2026-12-31占比_统计范围B']:.4%}；"
+                 f"统计范围 A = {baseline_check['截止日期>2026-12-31占比_统计范围A']:.4%}",
+         '结论': '确认一致：Stage26 记录的 10.6969% 即统计范围 B 值，本轮精确复现；'
+                 '任务提示词中的 10.70% 指统计范围 B'},
         {'复核项': '采集日个数', 'Stage26 记录': '14',
          '本轮实测': f"{collect_summary['采集日个数']}", '结论': '确认一致（03-24 达 27,827 条）'},
         {'复核项': '发布时间非空率', 'Stage26 记录': '100%',
@@ -1711,7 +1711,7 @@ def main() -> int:  # noqa: C901
         {'复核项': '观测记录数 / 唯一岗位实体数', 'Stage26 记录': '172,055 / 17,144',
          '本轮实测': f"{collect_summary['观测记录数']:,} / 17,144", '结论': '确认一致'},
         {'复核项': 'Stage26 日级面板行数 / max N_t', 'Stage26 记录': '4,975,194 / 17,923',
-         '本轮实测': '见 Step5（本轮主口径改为 Strict 严格口径，不直接可比）',
+         '本轮实测': '见 Step5（本轮主统计范围改为 Strict 严格统计范围，不直接可比）',
          '结论': 'Stage26 记录值确认；本轮 Strict 面板规模见 Step5 严格日级面板'},
     ]
     baseline_table = pd.DataFrame(BASELINE_ROWS)
@@ -1807,7 +1807,7 @@ def main() -> int:  # noqa: C901
                                      'merged_into_previous_strict'].eq(0).sum())
     t2_new_strict = int(segments.loc[segments['transition_tier'].eq('T2_SUSPECTED'),
                                      'merged_into_previous_strict'].eq(0).sum())
-    # QA④ T2 只进入 Relaxed 口径
+    # QA④ T2 只进入 Relaxed 统计范围
     t2_new_relaxed = int(segments.loc[segments['transition_tier'].eq('T2_SUSPECTED'),
                                       'episode_no_relaxed'].gt(
         segments.loc[segments['transition_tier'].eq('T2_SUSPECTED'), 'episode_no_strict']).sum())
@@ -1853,7 +1853,7 @@ def main() -> int:  # noqa: C901
                  f"Strict Episode 数 = Candidate Segment 数 − T2 事件数 − T3 事件数 "
                  f"= {len(segments):,} − {t2_events:,} − {t3_events:,} = "
                  f"{len(segments) - t2_events - t3_events:,}（实测 {len(episodes):,}）"},
-        {'序号': 4, '检查项': 'T2 只进入 Relaxed 口径（计数验证）',
+        {'序号': 4, '检查项': 'T2 只进入 Relaxed 统计范围（计数验证）',
          '结果': '通过' if qa4_ok else '不通过',
          '数值': f"T2 事件 {t2_events:,} 个：新建 Strict Episode {t2_new_strict} 个（应为 0）；"
                  f"在 Relaxed 中成为新周期 {t2_new_relaxed:,} 个（应等于 T2 事件数）"},
@@ -1880,7 +1880,7 @@ def main() -> int:  # noqa: C901
          '数值': f"Safe-F {len(SAFE_F)} 个特征全部通过（见 46 号表 02_FutureLeakage审计）；"
                  f"Safe-F 未包含 planned_duration_days / historical_version_count / "
                  f"historical_salary_change_flag；A 组既有字段 核心版本数 / 完整页面版本数 / "
-                 f"是否多版本岗位 在严格「发布时预测」语义下时点存疑，属 Stage25 既有口径，"
+                 f"是否多版本岗位 在严格「发布时预测」语义下时点存疑，属 Stage25 既有统计范围，"
                  f"本轮不改动并作为已披露限制"},
         {'序号': 10, '检查项': 'Temporal split 无爬取时间字段',
          '结果': '通过',
@@ -1932,39 +1932,39 @@ def main() -> int:  # noqa: C901
     max_relaxed = int(relaxed_per_job.max())
 
     comparison_rows = [
-        {'指标': '上层输入规模', 'Stage26 旧口径（复核实测）':
+        {'指标': '上层输入规模', 'Stage26 旧统计范围（复核实测）':
             f"Candidate 层唯一 (发布, 截止) 组合 {int(versions.drop_duplicates([schema.ID_FIELD, '发布时间', '投递截止日期']).shape[0]):,}；"
             f"唯一 (发布) 组合 {len(segments):,}",
          'Stage26.1 Strict': f'Candidate Segment {len(segments):,}',
          'Stage26.1 Relaxed': f'Candidate Segment {len(segments):,}',
          '变化说明': '本轮新增 Candidate Publish Segment 层，不再把 Candidate 总数称为「招聘周期总数」'},
-        {'指标': '正式招聘周期（Episode）数', 'Stage26 旧口径（复核实测）': '20,556',
+        {'指标': '正式招聘周期（Episode）数', 'Stage26 旧统计范围（复核实测）': '20,556',
          'Stage26.1 Strict': f'{len(episodes):,}',
          'Stage26.1 Relaxed': f'{len(relaxed_episodes):,}',
          '变化说明': f'T3 合并前后 Episode 数变化：{t3_before:,} → {t3_after:,}'
                  f'（减少 {t3_before - t3_after:,} = T2 {t2_events:,} + T3 {t3_events:,}）'},
-        {'指标': '涉及岗位数', 'Stage26 旧口径（复核实测）': '17,144',
+        {'指标': '涉及岗位数', 'Stage26 旧统计范围（复核实测）': '17,144',
          'Stage26.1 Strict': f'{int(episodes["intern_id"].nunique()):,}',
          'Stage26.1 Relaxed': f'{int(relaxed_episodes["intern_id"].nunique()):,}',
          '变化说明': '岗位实体数不变'},
-        {'指标': '单周期岗位数', 'Stage26 旧口径（复核实测）': '14,745',
+        {'指标': '单周期岗位数', 'Stage26 旧统计范围（复核实测）': '14,745',
          'Stage26.1 Strict': f'{int((strict_per_job == 1).sum()):,}',
          'Stage26.1 Relaxed': f'{int((relaxed_per_job == 1).sum()):,}',
-         '变化说明': '严格口径下 T2/T3 被归并，多周期岗位大幅减少'},
-        {'指标': '多周期岗位数', 'Stage26 旧口径（复核实测）': '2,399',
+         '变化说明': '严格统计范围下 T2/T3 被归并，多周期岗位大幅减少'},
+        {'指标': '多周期岗位数', 'Stage26 旧统计范围（复核实测）': '2,399',
          'Stage26.1 Strict': f'{int((strict_per_job >= 2).sum()):,}',
          'Stage26.1 Relaxed': f'{int((relaxed_per_job >= 2).sum()):,}',
-         '变化说明': '严格口径多周期岗位仅 2 个（均为 T1 确认重招）'},
-        {'指标': 'episode_count 最大值', 'Stage26 旧口径（复核实测）': str(max_seg),
+         '变化说明': '严格统计范围多周期岗位仅 2 个（均为 T1 确认重招）'},
+        {'指标': 'episode_count 最大值', 'Stage26 旧统计范围（复核实测）': str(max_seg),
          'Stage26.1 Strict': str(max_strict), 'Stage26.1 Relaxed': str(max_relaxed),
          '变化说明': '最大值由 10 降为 2（Strict）/ 3（Relaxed）'},
-        {'指标': 'T1 / T2 / T3 事件数', 'Stage26 旧口径（复核实测）':
+        {'指标': 'T1 / T2 / T3 事件数', 'Stage26 旧统计范围（复核实测）':
             f'2 / {t2_events:,} / {2877:,}',
          'Stage26.1 Strict': f'{t1_events} / {t2_events:,} / {t3_events:,}（T2/T3 只标记不新建）',
          'Stage26.1 Relaxed': f'{t1_events} / {t2_events:,} / {t3_events:,}（T1+T2 新建）',
          '变化说明': f'T1/T2 事件数与 Stage26 一致；T3 事件数为 {t3_events:,}'
                  f'（Stage26 记录 2,877，本轮复核 {t3_events:,}）'},
-        {'指标': 'T1 / T2 / T3 涉及岗位数', 'Stage26 旧口径（复核实测）':
+        {'指标': 'T1 / T2 / T3 涉及岗位数', 'Stage26 旧统计范围（复核实测）':
             f'2 / 506 / 1,941',
          'Stage26.1 Strict': f'{t1_jobs} / {t2_jobs:,} / {t3_jobs:,}',
          'Stage26.1 Relaxed': f'{t1_jobs} / {t2_jobs:,} / {t3_jobs:,}',
@@ -2014,7 +2014,7 @@ def main() -> int:  # noqa: C901
                           '仍需人工确认是否同一岗位真实重招')
             elif record.transition_tier == 'T2_SUSPECTED':
                 reason = (f'与上一周期结束日间隔 {record.gap_days_calendar:.0f} 日历天'
-                          '（< 7 天），疑平台发布时间 / 截止日期被重置，严格口径归并')
+                          '（< 7 天），疑平台发布时间 / 截止日期被重置，严格统计范围归并')
             else:
                 reason = (f'本次发布时间早于上一周期结束日 '
                           f'{abs(record.gap_days_calendar):.0f} 日历天，按规则不判重招，'
@@ -2041,13 +2041,13 @@ def main() -> int:  # noqa: C901
         {'项目': '人工判定 / 备注', '数值': '本脚本不做人工判定，两列必须留空'},
     ])
 
-    caliber_rows = pd.DataFrame([
+    scope_rows = pd.DataFrame([
         {'项目': 'Version', '内容': '全页面版本：同一岗位内连续相同完整页面签名的观测快照压缩为 1 个版本'},
         {'项目': 'Candidate Publish Segment',
          '内容': '同一岗位内按观测时间排序后，连续相同「发布时间」的全页面版本归入同一段；'
                  '同一发布时间内的截止日期 / 薪资 / 描述变化只形成 Version，不形成新 Segment'},
-        {'项目': 'Strict Episode', '内容': 'T1 新建；T2 / T3 归并（严格主口径）'},
-        {'项目': 'Relaxed Episode', '内容': 'T1 + T2 新建；T3 归并（敏感性口径）'},
+        {'项目': 'Strict Episode', '内容': 'T1 新建；T2 / T3 归并（严格主统计范围）'},
+        {'项目': 'Relaxed Episode', '内容': 'T1 + T2 新建；T3 归并（敏感性统计范围）'},
         {'项目': 'T1_CONFIRMED', '内容': f'start > 当前 Episode 结束日且 gap ≥ {GAP_THRESHOLD_DAYS} 天'},
         {'项目': 'T2_SUSPECTED', '内容': 'start > 当前 Episode 结束日且 0 < gap < 7 天'},
         {'项目': 'T3_CONFLICT', '内容': 'start ≤ 当前 Episode 结束日'},
@@ -2055,12 +2055,12 @@ def main() -> int:  # noqa: C901
          '内容': '该 Segment 在本数据中**首次被观测**时看到的投递截止日期'},
         {'项目': 'final_observed_deadline',
          '内容': '该 Segment **最后一次观测**时看到的投递截止日期（Epstride 级取末段值）'},
-        {'项目': '时长口径',
+        {'项目': '时长定义',
          '内容': '计划持续天数 = (截止日 − 发布时间).normalize() 的日历差 + 1（含端点）；'
-                 'Stage26 使用 timedelta.days 截断口径，故本轮长度整体 +1 天'},
-        {'项目': '重要限制', '内容': CALIBER_INITIAL},
-        {'项目': 'T2 口径', '内容': CALIBER_T2},
-        {'项目': 'T3 口径', '内容': CALIBER_T3},
+                 'Stage26 使用 timedelta.days 截断设定，故本轮长度整体 +1 天'},
+        {'项目': '重要限制', '内容': SCOPE_INITIAL},
+        {'项目': 'T2 统计范围', '内容': SCOPE_T2},
+        {'项目': 'T3 统计范围', '内容': SCOPE_T3},
     ])
 
     sheets_44 = {
@@ -2077,7 +2077,7 @@ def main() -> int:  # noqa: C901
              'transition_tier', 'merged_into_previous_strict', 'episode_no_strict']
         ].head(300),
         '07_人工抽查': review_table,
-        '08_口径说明': pd.concat([caliber_rows, qa_table], ignore_index=True, sort=False),
+        '08_统计范围说明': pd.concat([scope_rows, qa_table], ignore_index=True, sort=False),
         '09_转换间隔分布': pd.concat([
             gap_calendar_dist.rename(columns={'transition_tier': '转换类型',
                                               'gap_days_calendar': 'gap（日历天）'}),
@@ -2108,9 +2108,9 @@ def main() -> int:  # noqa: C901
     relaxed_duration = (relaxed_duration['episode_end'].dt.normalize()
                         - relaxed_duration['episode_start'].dt.normalize()).dt.days + 1
     duration_rows = pd.DataFrame([
-        {'口径': 'Strict（final_observed_planned_duration_days）', **quantile_block(duration_final)},
-        {'口径': 'Strict（initial_observed_planned_duration_days）', **quantile_block(duration_initial)},
-        {'口径': 'Relaxed（final_observed_planned_duration_days）',
+        {'统计范围': 'Strict（final_observed_planned_duration_days）', **quantile_block(duration_final)},
+        {'统计范围': 'Strict（initial_observed_planned_duration_days）', **quantile_block(duration_initial)},
+        {'统计范围': 'Relaxed（final_observed_planned_duration_days）',
          **quantile_block(relaxed_duration.to_numpy())},
     ])
     duration_hist = pd.DataFrame({
@@ -2207,7 +2207,7 @@ def main() -> int:  # noqa: C901
             '是否达样本量门槛（present 与 absent 均 ≥ 50）':
                 '是' if qualified else '否（数据不足以回答，仅作个案描述）',
             '方法': "Mann–Whitney U（双侧）+ Cliff's δ",
-            '口径警示': CALIBER_T2 if 'Relaxed' in label else
+            '统计范围警示': SCOPE_T2 if 'Relaxed' in label else
                     'T1 为确认重招，样本极少时只作个案描述'})
     reopen_table = pd.DataFrame(reopen_rows)
     reopen_table['q值_BHFDR'] = bh_fdr(reopen_table['p值'].to_numpy('float64'))
@@ -2234,7 +2234,7 @@ def main() -> int:  # noqa: C901
     duration_table['档位边界（天）'] = [f'({bin_edges[index]:.2f}, {bin_edges[index + 1]:.2f}]'
                                for index in range(len(bin_edges) - 1)]
     duration_test = pd.DataFrame([{
-        '分组口径': '按真实分布四分位切分（qcut + duplicates="drop"），未预设 14/30/60 天',
+        '分组设定': '按真实分布四分位切分（qcut + duplicates="drop"），未预设 14/30/60 天',
         '档位区间': '；'.join(duration_table['档位边界（天）']),
         '方法': 'Kruskal–Wallis + ε²（互斥四分位组）；另做 Spearman 连续关联',
         'n': n_total, 'H统计量': round(float(h_stat), 4), 'p值': float(kw_p),
@@ -2269,7 +2269,7 @@ def main() -> int:  # noqa: C901
         round_test = pd.DataFrame([{
             '方法': '不适用（样本不足）',
             'n': '；'.join(f'{label} n = {item.size}' for label, item in round_groups.items()),
-            '结论': '数据不足以回答：Strict 口径下「2 个正式周期」岗位仅 '
+            '结论': '数据不足以回答：Strict 统计范围下「2 个正式周期」岗位仅 '
                   f'{int(rounds_strict.eq(2).sum())} 个，远低于最低样本量要求，'
                   '不进行显著性检验，只作个案描述'}])
 
@@ -2279,7 +2279,7 @@ def main() -> int:  # noqa: C901
         说明='T1 确认重招个案（不估计总体重招率、不作显著性推断）')
 
     sheets_45b = {
-        '01_严格口径持续时长': duration_rows,
+        '01_严格统计范围持续时长': duration_rows,
         '02_持续时长区间分布': duration_hist,
         '03_每岗位Segments分布': segment_job_dist,
         '04_每岗位StrictEpisodes分布': strict_job_dist,
@@ -2294,14 +2294,14 @@ def main() -> int:  # noqa: C901
         '13_生命周期与薪资_招聘轮次': round_table,
         '14_招聘轮次检验': round_test,
         '15_T1个案': t1_case_table,
-        '16_口径说明': pd.concat([
-            caliber_rows,
+        '16_统计范围说明': pd.concat([
+            scope_rows,
             pd.DataFrame([
                 {'项目': '薪资样本', '内容': f'正式薪资建模样本 {len(model_frame):,} 个岗位；'
                                         f'成功匹配代表 Strict Episode 的 {len(frame):,} 个'
                                         f'（未匹配 {n_missing} 个）'},
                 {'项目': '生命周期特征来源', '内容': '代表岗位对应的 Strict Episode（业务发布时间匹配）'},
-                {'项目': '多值 / 互斥口径',
+                {'项目': '多值 / 互斥处理方式',
                  '内容': '招聘轮次为互斥分组 → Kruskal–Wallis；'
                          '「是否重招」为二元 present / absent → Mann–Whitney U + Cliff\'s δ'},
                 {'项目': '多重比较校正', '内容': '是否重招的两次比较统一做 Benjamini–Hochberg FDR'},
@@ -2384,30 +2384,30 @@ def main() -> int:  # noqa: C901
     strict_reopen = reopen_table[reopen_table['检验对象'].str.startswith('Strict')].iloc[0]
     relaxed_reopen = reopen_table[reopen_table['检验对象'].str.startswith('Relaxed')].iloc[0]
     sensitivity_rows = [
-        {'对照项': '口径层级', 'Stage26 Candidate 口径': 'Version → Episode（唯一发布时间）',
+        {'对照项': '统计范围层级', 'Stage26 Candidate 统计范围': 'Version → Episode（唯一发布时间）',
          'Stage26.1 Strict': 'Version → Candidate Segment → Strict Episode',
          'Stage26.1 Relaxed': 'Version → Candidate Segment → Relaxed Episode'},
-        {'对照项': 'Episode / 周期数', 'Stage26 Candidate 口径': f"{stage26_step_b['episode_rows']:,}",
+        {'对照项': 'Episode / 周期数', 'Stage26 Candidate 统计范围': f"{stage26_step_b['episode_rows']:,}",
          'Stage26.1 Strict': f'{len(episodes):,}',
          'Stage26.1 Relaxed': f'{len(relaxed_episodes):,}'},
-        {'对照项': '多周期岗位数', 'Stage26 Candidate 口径':
+        {'对照项': '多周期岗位数', 'Stage26 Candidate 统计范围':
             f"{stage26_step_b['multi_episode_jobs']:,}",
          'Stage26.1 Strict': f'{int((strict_per_job >= 2).sum()):,}',
          'Stage26.1 Relaxed': f'{int((relaxed_per_job >= 2).sum()):,}'},
-        {'对照项': 'episode_count 最大值', 'Stage26 Candidate 口径':
+        {'对照项': 'episode_count 最大值', 'Stage26 Candidate 统计范围':
             f"{stage26_step_b['max_episode_count']}",
          'Stage26.1 Strict': f'{int(strict_per_job.max())}',
          'Stage26.1 Relaxed': f'{int(relaxed_per_job.max())}'},
-        {'对照项': '日级面板规模（行）', 'Stage26 Candidate 口径':
+        {'对照项': '日级面板规模（行）', 'Stage26 Candidate 统计范围':
             f"{stage26_metrics['StepD_日级面板']['行数']:,}",
          'Stage26.1 Strict': f"{panel_info['rows']:,}",
          'Stage26.1 Relaxed': f"{int(relaxed_duration.sum()):,}（未落盘，仅用于对照）"},
-        {'对照项': 'max N_t（活跃周期数）', 'Stage26 Candidate 口径':
+        {'对照项': 'max N_t（活跃周期数）', 'Stage26 Candidate 统计范围':
             f"{stage26_metrics['StepE_时序指标']['汇总'][0]['max']:,.0f}",
          'Stage26.1 Strict': f"{int(daily['N_t'].max()):,}",
          'Stage26.1 Relaxed': f"{int(relaxed_daily['N_t'].max()):,}"},
         {'对照项': '生命周期效应量（是否重招 vs 薪资，Cliff\'s δ）',
-         'Stage26 Candidate 口径': '-0.272748（T1+T2，present 405 / absent 14,478）',
+         'Stage26 Candidate 统计范围': '-0.272748（T1+T2，present 405 / absent 14,478）',
          'Stage26.1 Strict': (f"{strict_reopen['Cliff_delta']}"
                               f"（数据不足以回答：present {strict_reopen['present岗位数']} 个）"),
          'Stage26.1 Relaxed': (f"{relaxed_reopen['Cliff_delta']}"
@@ -2416,19 +2416,19 @@ def main() -> int:  # noqa: C901
                                f"q = {relaxed_reopen['q值_BHFDR']:.3e}，"
                                f"效应档 {relaxed_reopen['效应档']}）")},
         {'对照项': 'F 组特征数 / 编码后维度',
-         'Stage26 Candidate 口径': '10 个 / 333 维（A+B+C+D+E+F）',
+         'Stage26 Candidate 统计范围': '10 个 / 333 维（A+B+C+D+E+F）',
          'Stage26.1 Strict': f'{len(SAFE_F)} 个 / {safe_dim} 维（A+B+C+D+E+SafeF）',
          'Stage26.1 Relaxed': f'{len(SAFE_F)} 个 / {safe_dim} 维（同一 Safe-F）'},
         {'对照项': 'F / Safe-F 预测增量（ΔMAE，validation / test）',
-         'Stage26 Candidate 口径': (f"{stage26_f_increment[0]['ΔMAE（无该组 − 有该组）']} / "
+         'Stage26 Candidate 统计范围': (f"{stage26_f_increment[0]['ΔMAE（无该组 − 有该组）']} / "
                               f"{stage26_f_increment[1]['ΔMAE（无该组 − 有该组）']}"),
          'Stage26.1 Strict': (f"{safe_increment.iloc[0]['ΔMAE（无该组 − 有该组）']} / "
                               f"{safe_increment.iloc[1]['ΔMAE（无该组 − 有该组）']}"
                               f"（CI 是否跨 0：{safe_increment.iloc[0]['CI是否跨0']} / "
                               f"{safe_increment.iloc[1]['CI是否跨0']}）"),
-         'Stage26.1 Relaxed': '同 Strict（F 组不因 Relaxed 口径改变预测单位）'},
+         'Stage26.1 Relaxed': '同 Strict（F 组不因 Relaxed 统计范围改变预测单位）'},
         {'对照项': 'Temporal Split test MAE / RMSE / R²（仅 train 拟合）',
-         'Stage26 Candidate 口径': '31.789995 / 48.034516 / 0.650239',
+         'Stage26 Candidate 统计范围': '31.789995 / 48.034516 / 0.650239',
          'Stage26.1 Strict': (f"{step_j['train_only_metrics']['MAE']} / "
                               f"{step_j['train_only_metrics']['RMSE']} / "
                               f"{step_j['train_only_metrics']['R2']}"),
@@ -2438,7 +2438,7 @@ def main() -> int:  # noqa: C901
                                '（主实验 A+B+C+D+E 不依赖 F 组）')},
     ]
     sheets_48 = {
-        '01_口径并列表': pd.DataFrame(sensitivity_rows),
+        '01_统计范围并列表': pd.DataFrame(sensitivity_rows),
         '02_与Stage26复现对照': step_j['reproduction'],
         '03_三种划分并列表': step_j['comparison_table'],
         '04_SafeF补充对照': sheets_47['09_SafeF补充对照'],
@@ -2446,10 +2446,10 @@ def main() -> int:  # noqa: C901
             {'项目': '允许表述', '内容': '样本计划招聘覆盖序列；按业务日期重构的样本活跃计划周期数量；'
                                   '样本内招聘生命周期覆盖结构'},
             {'项目': '禁止表述', '内容': '市场时序 / 岗位供给趋势 / 市场规模 / 2022—2028 市场走势'},
-            {'项目': '重要限制', '内容': CALIBER_INITIAL},
-            {'项目': 'T2 口径', '内容': CALIBER_T2},
-            {'项目': 'T3 口径', '内容': CALIBER_T3},
-            {'项目': 'Temporal 口径',
+            {'项目': '重要限制', '内容': SCOPE_INITIAL},
+            {'项目': 'T2 统计范围', '内容': SCOPE_T2},
+            {'项目': 'T3 统计范围', '内容': SCOPE_T3},
+            {'项目': 'Temporal 统计范围',
              '内容': '回顾性按业务发布时间排序划分，用于跨发布时间区间泛化检验，'
                      '不等于严格的历史在线滚动预测；三种划分不排名谁更好'}]),
     }
@@ -2517,11 +2517,11 @@ def main() -> int:  # noqa: C901
         '随机种子': {'脚本种子': SEED, 'bootstrap种子': BOOTSTRAP_SEED,
                  'bootstrap轮数': BOOTSTRAP_ROUNDS,
                  '说明': '分层抽样、KMeans / SVD / 模型与 bootstrap 均固定种子，可复现'},
-        '时间口径': {
+        '时间设定': {
             '业务时间轴': '发布时间（周期开始）/ 投递截止日期（计划结束）',
             '爬取时间': '观测时间 / 数据创建时间 / 数据更新时间：仅用于版本排序与审计，'
                     '不进入任何特征、不进入 Temporal Split',
-            'initial_observed_* 的重要限制': CALIBER_INITIAL},
+            'initial_observed_* 的重要限制': SCOPE_INITIAL},
         '采集元数据核对': collect_summary,
         'Stage26基线复核': {'实测值': baseline_check, '逐项对照': BASELINE_ROWS},
         'Step1_层级规模': {
@@ -2539,7 +2539,7 @@ def main() -> int:  # noqa: C901
             '回溯率（Episode → Segment）':
                 round(float(episodes['source_segment_count'].sum() / len(segments)), 8)},
         'Step2_QA十项': qa_table.to_dict('records'),
-        'Step3_口径对照': comparison_table.to_dict('records'),
+        'Step3_统计范围对照': comparison_table.to_dict('records'),
         'Step4_T1T2T3': {
             'T1_events': t1_events, 'T1_jobs': t1_jobs,
             'T2_events': t2_events, 'T2_jobs': t2_jobs,
@@ -2568,7 +2568,7 @@ def main() -> int:  # noqa: C901
                 round(float(daily['salary_median'].max()), 4)],
             'Stage26 对照': {'行数': stage26_metrics['StepD_日级面板']['行数'],
                          'max N_t': stage26_metrics['StepE_时序指标']['汇总'][0]['max']},
-            '口径': CALIBER_ACTIVE},
+            '统计范围': SCOPE_ACTIVE},
         'Step6_生命周期统计': {
             '持续时长（Strict，final）': duration_rows.iloc[0].dropna().to_dict(),
             '持续时长（Strict，initial）': duration_rows.iloc[1].dropna().to_dict(),
@@ -2625,7 +2625,7 @@ def main() -> int:  # noqa: C901
         '输入文件清单': [input_record(path) for path in inputs],
         '本次新增文件': new_files,
         '本次新增文件说明': f'本脚本只新增 {len(NEW_FILES)} 个文件，不覆盖任何既有产物。',
-        '口径说明汇总': [CALIBER_ACTIVE, CALIBER_T2, CALIBER_T3, CALIBER_INITIAL,
+        '统计范围说明汇总': [SCOPE_ACTIVE, SCOPE_T2, SCOPE_T3, SCOPE_INITIAL,
                     '投递截止日期字段偏粗且含平台默认远日期（唯一值 '
                     f"{collect_summary['投递截止日期唯一值数']} 个，"
                     f"Top20 覆盖 {collect_summary['投递截止日期Top20覆盖率']}），"
