@@ -13,9 +13,9 @@
   "estimator_fit_rows": 12650,
   "test_rows_excluded_from_fit": 2233,
   "test_metrics": {
-    "MAE": 35.651021,
-    "RMSE": 65.020978,
-    "R2": 0.57948,
+    "MAE": 35.335506,
+    "RMSE": 64.623479,
+    "R2": 0.584606,
     "n": 2233
   },
   "random_state": 42,
