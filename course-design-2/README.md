@@ -156,7 +156,7 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 | `figures/ch3/` | 图 3.3 | `fig_3_3_acquisition_flow` |
 | `figures/ch4/` | 图 4.1~4.10 | `fig_4_1_formal_sample_jd_processing_result`、`fig_4_2_salary_midpoint_distribution`、`fig_4_3_main_subcategory_salary_quartile`、`fig_4_4_province_distribution`、`fig_4_5_recruitment_duration_distribution`、`fig_4_6_planned_demand_by_job_category`、`fig_4_7_active_cycle_salary_quartile`、`fig_4_8_publish_cohort_count`、`fig_4_9_salary_by_publish_time`、`fig_4_10_skill_or_category_time_structure` |
 | `figures/ch5/` | 图 5.4~5.7 | `fig_5_4_city_education_company_size_salary`、`fig_5_5_certification_salary_distribution`、`fig_5_6_high_effect_benefit_label_cluster`、`fig_5_7_median_regression_cluster_bootstrap` |
-| `figures/ch6/` | 图 6.1 / 6.3 / 6.4 | `fig_6_1_tech_skill_top20`、`fig_6_3_category_skill_hit_heatmap`（+ `_alt` 另一版）、`fig_6_4_skill_salary_control_dumbbell` |
+| `figures/ch6/` | 图 6.1 / 6.3 / 6.4 | `fig_6_1_tech_skill_top20`、`fig_6_3_category_skill_hit_heatmap`、`fig_6_4_skill_salary_control_dumbbell` |
 | `figures/ch7/` | 图 7.8 / 图 7-x | `fig_7_8_error_by_salary_quartile`、`fig_7_actual_vs_predicted_salary` |
 | `figures/ch8/` | 图 8.5/8.6/8.9/8.10/8.11 | `fig_8_5_lgbm_catboost_paired_difference`、`fig_8_6_company_split_mae_distribution`、`fig_8_9_shap_beeswarm`、`fig_8_10_skill_shap_contribution`、`fig_8_11_benefit_cluster_permutation` |
 

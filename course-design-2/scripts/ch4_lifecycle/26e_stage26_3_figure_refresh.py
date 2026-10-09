@@ -258,7 +258,7 @@ def run_reused() -> None:
                 {'left': 0.36, 'right': 0.98, 'bottom': 0.30, 'top': 0.97})
     fig, subs, meta = a18.build_07_category_skill_heatmap({})
     meta = {**meta, '用途': '第6章 图 6-2 放大（接近版心最大宽度并增加图高）'}
-    save('fig_6_3_category_skill_hit_heatmap_alt', fig, subs, meta)
+    save('fig_6_3_category_skill_hit_heatmap', fig, subs, meta)
 
     # ---------------- 图 8-1（复用 26c.figure_ablation） ---------------- #
     ablation = read_table('ch7/49_stage26_3_metrics_after_feature_removal.xlsx', '03_消融五配置')

@@ -27,7 +27,7 @@ import numpy as np  # noqa: E402
 from src import plot_style  # noqa: E402
 from src.script_support import load_script as _load  # noqa: E402
 
-STEM = 'fig_6_3_category_skill_hit_heatmap_alt'
+STEM = 'fig_6_3_category_skill_hit_heatmap'
 # 打印宽 15.5 cm（与论文版心一致）；面板高由 5.2 in 拉长到 6.0 in（图更高）
 DISPLAY_CM = 15.5
 PANEL_HEIGHT_IN = 6.0
