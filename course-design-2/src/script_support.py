@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
-import json
 import sys
 from pathlib import Path
 
@@ -37,8 +36,8 @@ def load_script(alias: str, relative: str):
 
 
 def load_polish():
-    """装载 ``26f_stage26_4_final_polish``（多脚本复用的正式统计范围工具集）。"""
-    return load_script('s26f', 'scripts/ch4_lifecycle/26f_stage26_4_final_polish.py')
+    """装载 ``26f_final_polish``（多脚本复用的正式统计范围工具集）。"""
+    return load_script('s26f', 'scripts/ch4_lifecycle/26f_final_polish.py')
 
 
 def apply_style(g) -> None:
@@ -75,27 +74,19 @@ def finish_figure(fig, stem: str, caption: str, registry: list,
 
 
 def dump_json(path: Path, payload) -> None:
-    """写出 UTF-8 缩进 JSON（非可序列化值转为 str）。"""
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str),
-                    encoding='utf-8')
+    """写出 UTF-8 缩进 JSON（统一委托 io_utils.write_json，非可序列化值转为 str）。"""
+    from . import io_utils
+
+    io_utils.write_json(path, payload)
 
 
 def build_assembler(groups, grouped, skill_threshold: int, text_dim: int,
                     scale_numeric: bool = False):
-    """按启用的特征组构造薪资特征装配器（D 组停用时给不可能达到的高阈值）。"""
-    from . import model_training
+    """按启用的特征组构造薪资特征装配器（委托 ablation_shap，避免重复实现）。"""
+    from . import ablation_shap
 
-    numeric, categorical, multi = [], [], []
-    for letter in groups:
-        numeric += grouped[letter]['numeric']
-        categorical += grouped[letter]['categorical']
-        multi += grouped[letter]['multi']
-    return model_training.SalaryFeatureAssembler(
-        numeric, categorical, multi,
-        skill_threshold=skill_threshold if 'D' in groups else 10 ** 9,
-        text_dim=text_dim if 'E' in groups else 0, scale_numeric=scale_numeric)
+    return ablation_shap.build_assembler_for_groups(
+        groups, grouped, skill_threshold, text_dim, scale_numeric=scale_numeric)
 
 
 # --------------------------------------------------------------------------- #

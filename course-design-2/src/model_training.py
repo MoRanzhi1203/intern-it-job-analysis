@@ -15,7 +15,6 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -25,7 +24,7 @@ from scipy import sparse
 from sklearn.decomposition import TruncatedSVD
 from sklearn.model_selection import GroupShuffleSplit, StratifiedShuffleSplit
 
-from src import schema, skill_eda, text_utils
+from src import io_utils, schema, skill_eda, text_utils
 
 SPLIT_RANDOM_STATE = 42
 SPLIT_RATIOS = (0.70, 0.15, 0.15)
@@ -381,7 +380,5 @@ def load_scope_universe(analysis: pd.DataFrame) -> dict:
 
 
 def dump_json(path: Path, payload) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str),
-                    encoding='utf-8')
-    return path
+    """写出 JSON（委托 io_utils.write_json，保持全项目统一格式）。"""
+    return io_utils.write_json(path, payload)

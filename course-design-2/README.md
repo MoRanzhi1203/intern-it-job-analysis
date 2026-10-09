@@ -16,16 +16,17 @@ course-design-2/
 │  ├─ interim/             Stage 01~06 中间层（含 skill_annotation_sample.xlsx 人工标注表）
 │  ├─ processed/           Stage 04~11 正式产物
 │  └─ features/            高维向量（npz 不入库，附 meta.json 复现记录）
-├─ src/                    共享模块（一次性实现，禁止各阶段重复造轮子）
-├─ scripts/                全部脚本（按论文章节分目录）
-│  ├─ ch3_data/            Stage 00~12 数据获取与预处理（14）
-│  ├─ ch4_lifecycle/       第 4 章 岗位特征与招聘生命周期（11）
-│  ├─ ch5_factors/         第 5 章 薪资影响因素（8）
-│  ├─ ch6_skills/          第 6 章 技能特征与薪资关联（4）
-│  ├─ ch7_model/           第 7 章 薪资预测模型（3）
-│  ├─ ch8_robust/          第 8 章 稳健性 / 泛化 / 解释（5）
-│  ├─ figures_base/        论文出图基座 18a/18b/18c（3）
-│  └─ supp/                补全任务实验与交付 48/62（2）
+├─ src/                    共享模块（扁平结构，一次性实现，禁止各阶段重复造轮子）
+├─ scripts/                全部脚本（按「角色 + 论文章节」分目录）
+│  ├─ pipeline/            数据流水线 Stage 00~12 + 总执行器（14）
+│  ├─ ch4_lifecycle/       第 4 章 岗位特征与招聘生命周期分析 + Stage26 递进链（9）
+│  ├─ ch5_factors/         第 5 章 薪资影响因素分析（3）
+│  ├─ ch6_skills/          第 6 章 技能特征与薪资关联分析（1）
+│  ├─ ch7_model/           第 7 章 薪资预测模型训练（1）
+│  ├─ ch8_robust/          第 8 章 稳健性 / 泛化 / 解释分析（1）
+│  ├─ figures/             全部出图脚本（base 出图基座 + 按章 ch4~ch8）（16）
+│  ├─ experiments/         补充实验 E1~E8（4）
+│  └─ supplementary/       补全任务交付（1）
 ├─ docs/
 │  ├─ paper/               论文终稿（.docx / .pdf，只读保护区）
 │  ├─ methodology/         方法论文档目录（流水线运行时生成）
@@ -46,16 +47,16 @@ course-design-2/
 
 ```bash
 # 全流程（复用已存在 raw，不访问 MySQL）
-python scripts/ch3_data/run_data_pipeline.py --reuse-existing-raw
+python scripts/pipeline/run_data_pipeline.py --reuse-existing-raw
 
 # 指定阶段区间
-python scripts/ch3_data/run_data_pipeline.py --from-stage 1 --to-stage 11 --reuse-existing-raw
+python scripts/pipeline/run_data_pipeline.py --from-stage 1 --to-stage 11 --reuse-existing-raw
 
 # 强制重新从 MySQL 导出 raw（仅在确需刷新原始快照时使用）
-python scripts/ch3_data/run_data_pipeline.py --force-export-raw
+python scripts/pipeline/run_data_pipeline.py --force-export-raw
 
 # 单阶段独立运行（每个脚本均可独立执行）
-python scripts/ch3_data/01_localize_raw_columns.py
+python scripts/pipeline/01_localize_raw_columns.py
 
 # 静态检查（tests/ 当前未建立，见第 8 节）
 python -m compileall src scripts
@@ -65,18 +66,18 @@ python -m compileall src scripts
 
 | Stage | 职责 | 实现脚本 |
 | --- | --- | --- |
-| 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `scripts/ch3_data/00_export_raw.py` |
-| 01 | 源记录标准化与公司属性语义槽位异常修复 | `scripts/ch3_data/01_localize_raw_columns.py` |
-| 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `scripts/ch3_data/02_audit_job_identity.py` |
-| 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `scripts/ch3_data/03_build_job_observations.py` |
-| 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `scripts/ch3_data/04_build_job_versions.py` |
-| 05 | 最终岗位实体（最终核心版本优先） | `scripts/ch3_data/05_build_unique_jobs.py` |
-| 06 | 岗位版本文本语料 | `scripts/ch3_data/06_prepare_text_corpus.py` |
-| 07 | 技能与文本特征 | `scripts/ch3_data/07_extract_job_text_features.py` |
-| 08 | 岗位描述语义时序（完整 / 去薪资两种统计范围） | `scripts/ch3_data/08_build_job_text_semantics.py` |
-| 09 | 公司实体识别 | `scripts/ch3_data/09_resolve_company_entities.py` |
-| 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/ch3_data/10_build_company_text_semantics.py` |
-| 11 | 结构化字段清洗与薪资目标解析 | `scripts/ch3_data/11_clean_structured_fields.py` |
+| Stage 00 | 原始数据导出（MySQL 只读，raw 永久不可变） | `scripts/pipeline/00_export_raw.py` |
+| Stage 01 | 源记录标准化与公司属性语义槽位异常修复 | `scripts/pipeline/01_localize_raw_columns.py` |
+| Stage 02 | 岗位身份确认（intern_id 实体键 / URL 标准化 / 1:1 校验） | `scripts/pipeline/02_audit_job_identity.py` |
+| Stage 03 | 搜索来源关系与观测快照（含去重前公司认证标签映射） | `scripts/pipeline/03_build_job_observations.py` |
+| Stage 04 | 岗位版本时序（核心 / 完整页面双签名 + 变化事件） | `scripts/pipeline/04_build_job_versions.py` |
+| Stage 05 | 最终岗位实体（最终核心版本优先） | `scripts/pipeline/05_build_unique_jobs.py` |
+| Stage 06 | 岗位版本文本语料 | `scripts/pipeline/06_prepare_text_corpus.py` |
+| Stage 07 | 技能与文本特征 | `scripts/pipeline/07_extract_job_text_features.py` |
+| Stage 08 | 岗位描述语义时序（完整 / 去薪资两种统计范围） | `scripts/pipeline/08_build_job_text_semantics.py` |
+| Stage 09 | 公司实体识别 | `scripts/pipeline/09_resolve_company_entities.py` |
+| Stage 10 | 公司简介快照 / 版本 / 语义时序 | `scripts/pipeline/10_build_company_text_semantics.py` |
+| Stage 11 | 结构化字段清洗与薪资目标解析 | `scripts/pipeline/11_clean_structured_fields.py` |
 
 正式问题的专项审计表：`ch3/14_text_semantic_refinement_audit.xlsx`（文本语义封版）、
 `ch3/16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常）、
@@ -86,7 +87,7 @@ python -m compileall src scripts
 
 | 脚本 | 职责 | 审计表 |
 | --- | --- | --- |
-| `scripts/ch3_data/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
+| `scripts/pipeline/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
 | `scripts/ch4_lifecycle/13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
 | `scripts/ch6_skills/13b_skill_eda_scope_audit.py` | 技能 EDA 两种统计范围与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
 | `scripts/ch7_model/14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
@@ -186,8 +187,8 @@ Stage 00~11 不再保留 Notebook 双实现。
 
 1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
    原 `33_business_time_dimension_analysis.xlsx` 与 `ch5/25_final_interpretation_audit.xlsx` 编号冲突，
-   前者改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
-   `49_redraw_time_cohort_figures` 同步更新，收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
+   前者改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_business_time_dimension`、读取脚本
+   `49_time_cohort_figures` 同步更新，收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
    原 `34_visual_evidence_registry.xlsx`（见第 2 条）零现行引用已删除，`ch5/26_stage25_factor_revision.xlsx` 编号唯一化
    （收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）；原 `35_*` 冲突随
    `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。
@@ -212,13 +213,20 @@ Stage 00~11 不再保留 Notebook 双实现。
 8. **26 系列递进链经评估不合并**：`26b→26j` 共 7 个脚本、约 8,270 行，含 23 处有意的跨脚本
    动态装载（`26g` 需接收 `18a/18b` 的模块对象、`26e` 需 `26c` 的两个独立模块实例），
    合并为单文件会显著降低可维护性且无法离线验证，故保留现结构。
+9. **脚本层重分类与命名规范化**（本轮）：`scripts/` 由「纯论文章节目录」改为「角色 + 章节」结构——
+   新增 `pipeline/`（Stage 00~12 数据流水线，自原 `ch3_data/` 迁入）、`figures/base|ch4..ch8/`
+   （集中全部出图/重绘脚本）、`experiments/`（E1~E8）、`supplementary/`（补全交付）；
+   分析脚本保留章节目录 `ch4_lifecycle/`~`ch8_robust/`。同步清理文件命名：去掉 `redraw_` / `exp_` /
+   `stage26_x` 等冗余中缀（如 `26b_stage26_1_temporal_tightening.py` → `26b_temporal_tightening.py`、
+   `50_redraw_city_education_company_salary.py` → `50_city_education_company_salary.py`）。全部
+   `run_data_pipeline` 阶段表、脚本间动态装载、自路径留痕字符串与 README 引用同步更新。
 
 ### 8.1 附带的路径收口
 
 - **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅已删除的历史脚本 `18d` 生成）
   与 `outputs/figures/supplementary/_stage26_5_map/`（仅已删除的历史脚本 `26i` 使用的地图缓存，可重新下载）。
 - **文件归位**：`data/skill_annotation_sample.xlsx` 从 `data/` 根移到 `data/interim/`，
-  生成脚本 `48_exp_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
+  生成脚本 `48_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
 - **文档门禁路径修正**：`run_data_pipeline.py` 的 `check_documentation()` 由读取不存在的
   `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
 - **硬编码路径收口**：`45/46/47/53/56/58/59/61/62` 等脚本中手写的 `outputs/results`、

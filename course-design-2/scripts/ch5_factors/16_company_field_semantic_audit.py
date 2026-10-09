@@ -27,7 +27,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = next(
+    _candidate for _candidate in Path(__file__).resolve().parents
+    if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -62,7 +64,7 @@ CALL_CHAIN_TARGETS = [
     ('src/modeling_dataset.py', DISPLAY_LABEL),
     ('scripts/ch4_lifecycle/13_run_eda.py', 'certification'),
     ('scripts/ch4_lifecycle/13_run_eda.py', DISPLAY_LABEL),
-    ('scripts/ch3_data/12_build_modeling_dataset.py', DISPLAY_LABEL),
+    ('scripts/pipeline/12_build_modeling_dataset.py', DISPLAY_LABEL),
     ('scripts/ch7_model/14_train_salary_model.py', DISPLAY_LABEL),
     ('scripts/ch8_robust/15_ablation_robustness_shap.py', DISPLAY_LABEL),
 ]

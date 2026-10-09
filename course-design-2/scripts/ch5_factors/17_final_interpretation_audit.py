@@ -25,7 +25,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = next(
+    _candidate for _candidate in Path(__file__).resolve().parents
+    if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 

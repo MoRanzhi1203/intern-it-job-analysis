@@ -74,7 +74,8 @@ def split_columns_by_group(numeric_columns, categorical_columns, multi_columns) 
     return grouped
 
 
-def build_assembler_for_groups(groups, grouped_columns, skill_threshold: int, text_dim: int):
+def build_assembler_for_groups(groups, grouped_columns, skill_threshold: int, text_dim: int,
+                               scale_numeric: bool = False):
     """按启用的特征组构造装配器（D 组技能阈值 = 停用时给不可能达到的高阈值）。"""
     numeric, categorical, multi = [], [], []
     for letter in groups:
@@ -87,7 +88,7 @@ def build_assembler_for_groups(groups, grouped_columns, skill_threshold: int, te
 
     return model_training.SalaryFeatureAssembler(
         numeric, categorical, multi, skill_threshold=effective_threshold,
-        text_dim=effective_text_dim)
+        text_dim=effective_text_dim, scale_numeric=scale_numeric)
 
 
 def bootstrap_mae_difference(y_true, pred_a, pred_b, rounds: int = BOOTSTRAP_ROUNDS,
