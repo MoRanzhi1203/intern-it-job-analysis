@@ -55,7 +55,6 @@ from . import project_paths  # noqa: E402
 
 # ---- 输出与登记 ----
 SCI_FIGURES_DIR = project_paths.FIGURES_DIR / 'sci'
-SCI_NOTEBOOK_PATH = project_paths.PROJECT_ROOT / 'notebooks' / '01_data_governance_sci_visualization.ipynb'
 PNG_DPI = 600
 FIGURE_REGISTRY: list = []
 
@@ -495,8 +494,13 @@ def save_sci_figure(fig, stem: str, caption: str, subfigures=None, figure_id: st
 
 
 def notebook_forbidden_calls(path: Path | None = None) -> list:
-    """扫描正式 Notebook 的代码单元，返回被禁止的显示调用命中列表。"""
-    path = Path(path or SCI_NOTEBOOK_PATH)
+    """扫描正式 Notebook 的代码单元，返回被禁止的显示调用命中列表。
+
+    项目已移除 ``notebooks/`` 目录；未显式传入路径时不扫描，直接返回空列表。
+    """
+    if path is None:
+        return []
+    path = Path(path)
     if not path.exists():
         return []
     payload = json.loads(path.read_text(encoding='utf-8'))

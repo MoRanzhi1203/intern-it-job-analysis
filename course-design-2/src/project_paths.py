@@ -3,6 +3,15 @@
 
 所有脚本、Notebook 一律通过本模块取路径，禁止硬编码绝对路径，
 也禁止在各脚本中重复实现 resolve_project_root()。
+
+引导约定
+--------
+本模块位于 ``src`` 包内，脚本在 ``import src.project_paths`` 之前必须先把项目根
+加入 ``sys.path``；因此每个入口脚本顶部保留一段**统一的最小引导**（向上查找同时含
+``data`` 与 ``scripts`` 的目录并插入 ``sys.path``）。该引导无法再向下收敛（否则
+会与「先有根路径才能导入本模块」互相依赖），请各脚本统一沿用同一写法，不要在
+脚本内另起一套根目录解析或手工拼接 ``data`` / ``outputs`` 子路径——那些一律取用
+本模块的常量。
 """
 
 from __future__ import annotations
@@ -34,18 +43,21 @@ def resolve_project_root(start: Path | None = None) -> Path:
 
 PROJECT_ROOT = resolve_project_root()
 
+# ---- 源码与脚本目录 ----
+SRC_DIR = PROJECT_ROOT / 'src'
+SCRIPTS_DIR = PROJECT_ROOT / 'scripts'
+
 # ---- 数据目录 ----
-DATA_DIR = PROJECT_ROOT / 'data'
-RAW_DIR = DATA_DIR / 'raw'
-INTERIM_DIR = DATA_DIR / 'interim'
-PROCESSED_DIR = DATA_DIR / 'processed'
-FEATURES_DIR = DATA_DIR / 'features'
+RAW_DIR = PROJECT_ROOT / 'data' / 'raw'
+INTERIM_DIR = PROJECT_ROOT / 'data' / 'interim'
+PROCESSED_DIR = PROJECT_ROOT / 'data' / 'processed'
+FEATURES_DIR = PROJECT_ROOT / 'data' / 'features'
 
 # ---- 配置目录 ----
-CONFIG_DIR = PROJECT_ROOT / 'config'
-SKILL_CONFIG_PATH = CONFIG_DIR / 'skills.yml'
-STOPWORDS_PATH = CONFIG_DIR / 'stopwords.txt'
-STRUCTURED_FIELDS_CONFIG_PATH = CONFIG_DIR / 'structured_fields.yml'
+SKILL_CONFIG_PATH = PROJECT_ROOT / 'config' / 'skills.yml'
+STOPWORDS_PATH = PROJECT_ROOT / 'config' / 'stopwords.txt'
+STRUCTURED_FIELDS_CONFIG_PATH = PROJECT_ROOT / 'config' / 'structured_fields.yml'
+COMPANY_ALIASES_PATH = PROJECT_ROOT / 'config' / 'company_aliases.yml'
 
 RAW_PARQUET = RAW_DIR / 'shixiseng_job_details.parquet'
 INTERIM_CN_PARQUET = INTERIM_DIR / 'shixiseng_job_details_cn.parquet'
@@ -57,6 +69,11 @@ PROCESSED_UNIQUE_PARQUET_V2 = PROCESSED_DIR / 'job_details_unique_v2.parquet'
 PROCESSED_CATEGORY_MEMBERSHIP_PARQUET = PROCESSED_DIR / 'job_category_membership.parquet'
 PROCESSED_VERSION_HISTORY_PARQUET = PROCESSED_DIR / 'job_version_history.parquet'
 PROCESSED_CHANGE_EVENTS_PARQUET = PROCESSED_DIR / 'job_change_events.parquet'
+# ---- Stage26.1 严格统计范围（7 天阈值）招聘周期与日级面板 ----
+JOB_STRICT_EPISODE_PARQUET = PROCESSED_DIR / 'job_strict_episode_26_1.parquet'
+JOB_STRICT_DAILY_PANEL_PARQUET = PROCESSED_DIR / 'job_strict_daily_panel_26_1.parquet'
+# ---- 技能人工标注抽样表（实验 E6 产出，人工核验用） ----
+SKILL_ANNOTATION_SAMPLE_XLSX = INTERIM_DIR / 'skill_annotation_sample.xlsx'
 
 # ---- 文本语义层（Stage 06~10） ----
 TEXT_CORPUS_PARQUET = INTERIM_DIR / 'job_text_version_corpus.parquet'
@@ -84,39 +101,35 @@ COMPANY_TEXT_EMBEDDINGS_NPZ = FEATURES_DIR / 'company_text_embeddings.npz'
 COMPANY_TEXT_EMBEDDING_INDEX_PARQUET = FEATURES_DIR / 'company_text_embedding_index.parquet'
 
 # ---- 输出目录 ----
-OUTPUTS_DIR = PROJECT_ROOT / 'outputs'
-TABLES_DIR = OUTPUTS_DIR / 'tables'
-FIGURES_DIR = OUTPUTS_DIR / 'figures'
+TABLES_DIR = PROJECT_ROOT / 'outputs' / 'tables'
+FIGURES_DIR = PROJECT_ROOT / 'outputs' / 'figures'
 # ---- 实验脚本结果目录（E1–E8 等 CSV / JSON 数值产物） ----
-OUTPUTS_RESULTS_DIR = OUTPUTS_DIR / 'results'
+OUTPUTS_RESULTS_DIR = PROJECT_ROOT / 'outputs' / 'results'
 # ---- 图件登记元数据目录（出图脚本写出的 *_registry.json，与图件本体分离） ----
-REGISTRIES_DIR = OUTPUTS_DIR / 'registries'
+REGISTRIES_DIR = PROJECT_ROOT / 'outputs' / 'registries'
 # ---- 「补全任务」等交付物目录（报告 / 派生表 / 派生图，与实验数值产物分离） ----
-DELIVERABLES_DIR = OUTPUTS_DIR / 'deliverables'
+DELIVERABLES_DIR = PROJECT_ROOT / 'outputs' / 'deliverables'
 # ---- Stage 13 正式 EDA 图目录（图名规范 01_... / 02_...） ----
 EDA_FIGURES_DIR = FIGURES_DIR / 'eda'
 # ---- Stage 14 建模图表目录 ----
 MODELING_FIGURES_DIR = FIGURES_DIR / 'modeling'
-MODELS_DIR = OUTPUTS_DIR / 'models'
-LOGS_DIR = OUTPUTS_DIR / 'logs'
+# ---- Stage26.7 业务时间维度专题图目录 ----
+TIME_FIGURES_DIR = FIGURES_DIR / 'time'
+MODELS_DIR = PROJECT_ROOT / 'outputs' / 'models'
+LOGS_DIR = PROJECT_ROOT / 'outputs' / 'logs'
 PIPELINE_LOG = LOGS_DIR / 'data_pipeline_latest.log'
 GATES_DIR = LOGS_DIR / 'gates'
 METRICS_DIR = LOGS_DIR / 'metrics'
 
 # ---- 文档目录 ----
-DOCS_DIR = PROJECT_ROOT / 'docs'
-RECORDS_DIR = DOCS_DIR / 'records'
+RECORDS_DIR = PROJECT_ROOT / 'docs' / 'records'
 # 阶段记录 md 已从项目移除：置 False 时 io_utils 的 Markdown 写函数跳过 docs/records/ 下的文件
 WRITE_STAGE_RECORDS = False
 # ---- 方法论文档目录（论文「数据预处理」章节的唯一技术来源） ----
-METHODOLOGY_DIR = DOCS_DIR / 'methodology'
+METHODOLOGY_DIR = PROJECT_ROOT / 'docs' / 'methodology'
 METHODOLOGY_PREPROCESSING_DOC = METHODOLOGY_DIR / 'data_preprocessing_pipeline.md'
 
-# ---- 归档目录（仅历史证据；已按用户要求移除，历史证据改由 git 历史承载） ----
-ARCHIVE_DIR = PROJECT_ROOT / 'archive'
-ARCHIVE_PRE_REFACTOR_DIR = ARCHIVE_DIR / 'pre_refactor'
-
-# git 历史中的归档证据路径（用于归档目录移除后的可追溯性校验）
+# ---- 归档证据路径（归档目录已移除，仅保留 git 历史中的路径用于可追溯性校验） ----
 ARCHIVE_HISTORY_PROBES = [
     'course-design-2/archive/pre_refactor/notebooks/03_job_identity_audit.ipynb',
     'course-design-2/archive/pre_refactor/notebooks/04_job_dedup_and_consistency.ipynb',
@@ -172,7 +185,6 @@ MODEL_PREDICTIONS_PARQUET = PROCESSED_DIR / 'model_predictions.parquet'
 SALARY_MODEL_DIR = MODELS_DIR / 'salary_model'
 
 # ---- 阶段记录文件名 ----
-RECORD_REFACTOR_BASELINE = '00_refactor_baseline.md'
 RECORD_RAW_EXPORT = '01_raw_export_record.md'
 RECORD_COLUMN_LOCALIZATION = '02_column_localization_record.md'
 RECORD_IDENTITY_AUDIT = '03_identity_audit_record.md'
@@ -194,8 +206,6 @@ RECORD_COMPANY_ATTRIBUTE_ANOMALY = '15_company_attribute_semantic_anomaly_record
 RECORD_PREPROCESSING_CLEANUP = '16_preprocessing_refactor_cleanup_record.md'
 # ---- Stage 07 技能需求提取记录 ----
 RECORD_JOB_SKILL_EXTRACTION = '17_job_skill_extraction_record.md'
-# ---- Stage 06 薪资泄漏修补 + 技能 EDA 两种统计范围封版记录 ----
-RECORD_SKILL_EDA_SCOPE = '18_skill_eda_scope_and_leakage_fix_record.md'
 # ---- Stage 12 建模数据集记录 ----
 RECORD_MODELING_DATASET = '19_modeling_dataset_record.md'
 # ---- Stage 13 正式 EDA 记录 ----
@@ -230,7 +240,7 @@ def ensure_directories() -> list[Path]:
     """创建流水线所需的全部目录，返回已创建的目录列表。"""
     directories = [
         RAW_DIR, INTERIM_DIR, PROCESSED_DIR, FEATURES_DIR,
-        TABLES_DIR, FIGURES_DIR, EDA_FIGURES_DIR, MODELING_FIGURES_DIR,
+        TABLES_DIR, FIGURES_DIR, EDA_FIGURES_DIR, MODELING_FIGURES_DIR, TIME_FIGURES_DIR,
         MODELS_DIR, SALARY_MODEL_DIR, LOGS_DIR, GATES_DIR, METRICS_DIR,
         OUTPUTS_RESULTS_DIR, RESULTS_E1_E3_E4_E5, RESULTS_E2_E7,
         RESULTS_E3_E4_E5_BOOTSTRAP, RESULTS_E8, REGISTRIES_DIR, DELIVERABLES_DIR,

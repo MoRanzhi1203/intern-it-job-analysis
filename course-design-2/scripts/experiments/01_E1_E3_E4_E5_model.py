@@ -21,11 +21,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT = next(
+PROJECT_ROOT = next(
     _candidate for _candidate in Path(__file__).resolve().parents
     if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
-sys.path.insert(0, str(PROJECT))
-sys.path.insert(0, str(PROJECT / 'scripts'))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 from src.script_support import load_polish  # noqa: E402
@@ -135,10 +135,10 @@ def main() -> int:
     skill_map = model_training.build_skill_map(membership, skill_eda.ALL_USABLE_SCOPES)
     ids = model_frame[schema.ID_FIELD].tolist()
     text_matrix = model_training.load_text_matrix(
-        ids, polish.project_paths.FEATURES_DIR / 'job_text_embeddings.npz',
-        polish.project_paths.FEATURES_DIR / 'job_text_embedding_index.parquet')
+        ids, project_paths.JOB_TEXT_EMBEDDINGS_NPZ,
+        project_paths.JOB_TEXT_EMBEDDING_INDEX_PARQUET)
     text_by_id = {job_id: position for position, job_id in enumerate(ids)}
-    splits = pd.read_parquet(PROJECT / 'data' / 'processed' / 'model_splits.parquet')
+    splits = pd.read_parquet(project_paths.MODEL_SPLITS_PARQUET)
     labels = splits.set_index(schema.ID_FIELD)['split']
 
     # ---- 划分（保持建模数据集原始行顺序，保证与 Stage26.4 完全一致的可复现性） ----

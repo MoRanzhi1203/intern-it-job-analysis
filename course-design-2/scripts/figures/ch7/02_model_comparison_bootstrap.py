@@ -70,7 +70,7 @@ def _w(width_cm: float) -> float:
 
 def _load_script(stem: str):
     spec = importlib.util.spec_from_file_location(
-        's_' + stem, str(PROJECT_ROOT / 'scripts' / 'experiments' / stem))
+        's_' + stem, str(project_paths.SCRIPTS_DIR / 'experiments' / stem))
     module = importlib.util.module_from_spec(spec)
     sys.modules['s_' + stem] = module
     spec.loader.exec_module(module)

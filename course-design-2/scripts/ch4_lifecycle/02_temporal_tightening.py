@@ -125,7 +125,7 @@ NEW_FILES = ([SEGMENT_PATH, EPISODE_PATH, PANEL_PATH, REGISTRY_PATH]
              + [METRICS_PATH])
 
 SKIP_DIRS = {'.git', '.pytest_cache', '__pycache__', '.ipynb_checkpoints', '.idea', '.vscode'}
-MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config', 'notebooks', 'tests']
+MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config']
 
 # ---- Safe-F（本轮收紧后的 F 组）----
 SAFE_F = ['publish_month', 'publish_weekday', 'episode_no_strict', 'is_confirmed_reopen',
@@ -183,7 +183,7 @@ def input_record(path: Path) -> dict:
 def load_stage11_salary_parser():
     """只读加载既有 Stage11 薪资解析实现（与官方薪资目标定义完全一致）。"""
     spec = importlib.util.spec_from_file_location(
-        '_stage11_salary_parser', PROJECT_ROOT / 'scripts' / 'pipeline' / '11_clean_structured_fields.py')
+        '_stage11_salary_parser', project_paths.SCRIPTS_DIR / 'pipeline' / '11_clean_structured_fields.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module.parse_salary, module.load_config()
@@ -2500,14 +2500,14 @@ def main() -> int:  # noqa: C901
               TABLES / project_paths.TABLE_MODEL_COMPARISON,
               TABLES / project_paths.TABLE_ABLATION_SHAP,
               project_paths.METRICS_DIR / 'stage_26_temporal.json',
-              PROJECT_ROOT / 'scripts' / 'pipeline' / '11_clean_structured_fields.py',
-              PROJECT_ROOT / 'src' / 'plot_style.py',
-              PROJECT_ROOT / 'src' / 'figure_finalize.py',
-              PROJECT_ROOT / 'src' / 'versioning.py',
-              PROJECT_ROOT / 'src' / 'ablation_shap.py',
-              PROJECT_ROOT / 'src' / 'model_training.py',
-              PROJECT_ROOT / 'src' / 'skill_eda.py',
-              PROJECT_ROOT / 'src' / 'eda_analysis.py'] + STAGE26_FILES
+              project_paths.SCRIPTS_DIR / 'pipeline' / '11_clean_structured_fields.py',
+              project_paths.SRC_DIR / 'plot_style.py',
+              project_paths.SRC_DIR / 'figure_finalize.py',
+              project_paths.SRC_DIR / 'versioning.py',
+              project_paths.SRC_DIR / 'ablation_shap.py',
+              project_paths.SRC_DIR / 'model_training.py',
+              project_paths.SRC_DIR / 'skill_eda.py',
+              project_paths.SRC_DIR / 'eda_analysis.py'] + STAGE26_FILES
     payload = {
         'stage': 'Stage26.1',
         '脚本路径': 'scripts/ch4_lifecycle/02_temporal_tightening.py',

@@ -655,10 +655,10 @@ def fig_s71() -> dict:
     """图 4-6（原图 4-8）：活跃计划周期薪资中位数与四分位区间（删除单图 (a) 标记）。"""
     import matplotlib.pyplot as plt
 
-    sys.path.insert(0, str(PROJECT_ROOT / 'scripts'))
+    sys.path.insert(0, str(project_paths.SCRIPTS_DIR))
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        '_consolidation', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '03_final_consolidation.py'))
+        '_consolidation', str(project_paths.SCRIPTS_DIR / 'ch4_lifecycle' / '03_final_consolidation.py'))
     module = importlib.util.module_from_spec(spec)
     sys.modules['_consolidation'] = module
     spec.loader.exec_module(module)

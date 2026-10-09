@@ -21,7 +21,7 @@ import yaml
 
 from . import project_paths, schema
 
-COMPANY_ALIAS_PATH = project_paths.PROJECT_ROOT / 'config' / 'company_aliases.yml'
+COMPANY_ALIAS_PATH = project_paths.COMPANY_ALIASES_PATH
 
 # ---- 映射方式（与提示词第 18 / 29 节严格一致） ----
 METHOD_EXACT_NORMALIZED_NAME = 'EXACT_NORMALIZED_NAME'

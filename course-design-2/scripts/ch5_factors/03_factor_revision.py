@@ -84,7 +84,7 @@ NEW_FILES = [EXCEL_PATH, METRICS_PATH,
              SUPP_DIR / f'{FIG_STEM}.png', SUPP_DIR / f'{FIG_STEM}.pdf']
 
 SKIP_DIRS = {'.git', '.pytest_cache', '__pycache__', '.ipynb_checkpoints', '.idea', '.vscode'}
-MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config', 'notebooks', 'tests']
+MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config']
 
 
 # ---------------------------------------------------------------- 通用工具
@@ -784,8 +784,8 @@ def main() -> int:
         project_paths.TABLES_DIR / 'ch3/07_observation_snapshot_audit.xlsx',
         project_paths.METRICS_DIR / 'stage_13_eda.json',
         project_paths.SALARY_MODEL_DIR / 'model_params.json',
-        project_paths.PROJECT_ROOT / 'src' / 'plot_style.py',
-        project_paths.PROJECT_ROOT / 'src' / 'figure_finalize.py',
+        project_paths.SRC_DIR / 'plot_style.py',
+        project_paths.SRC_DIR / 'figure_finalize.py',
     ]
     payload = {
         'stage': 'Stage25',

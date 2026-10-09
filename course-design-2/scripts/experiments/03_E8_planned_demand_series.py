@@ -25,16 +25,17 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT = next(
+PROJECT_ROOT = next(
     _candidate for _candidate in Path(__file__).resolve().parents
     if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
-sys.path.insert(0, str(PROJECT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import figure_finalize, plot_style, project_paths, schema  # noqa: E402
 
-EPISODE = PROJECT / 'data' / 'processed' / 'job_strict_episode_26_1.parquet'
-DAILY_PANEL = PROJECT / 'data' / 'processed' / 'job_strict_daily_panel_26_1.parquet'
-CATEGORY = PROJECT / 'data' / 'processed' / 'job_category_membership.parquet'
+EPISODE = project_paths.JOB_STRICT_EPISODE_PARQUET
+DAILY_PANEL = project_paths.JOB_STRICT_DAILY_PANEL_PARQUET
+CATEGORY = project_paths.PROCESSED_CATEGORY_MEMBERSHIP_PARQUET
 RESULTS = project_paths.OUTPUTS_RESULTS_DIR
 FIGURES = project_paths.FIGURES_DIR
 TOP_CATEGORIES = 5

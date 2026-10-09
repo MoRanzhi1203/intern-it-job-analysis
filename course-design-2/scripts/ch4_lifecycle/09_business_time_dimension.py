@@ -29,25 +29,26 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-ROOT = next(
+PROJECT_ROOT = next(
     _candidate for _candidate in Path(__file__).resolve().parents
     if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
-PROCESSED = ROOT / 'data' / 'processed'
-FEATURES = ROOT / 'data' / 'features'
-INTERIM = ROOT / 'data' / 'interim'
-TABLES = ROOT / 'outputs' / 'tables'
-FIGDIR = ROOT / 'outputs' / 'figures' / 'time'
-METRICS = ROOT / 'outputs' / 'logs' / 'metrics'
-MODELDIR = ROOT / 'outputs' / 'models' / 'salary_model'
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src import figure_finalize, project_paths  # noqa: E402
+
+PROCESSED = project_paths.PROCESSED_DIR
+FEATURES = project_paths.FEATURES_DIR
+INTERIM = project_paths.INTERIM_DIR
+TABLES = project_paths.TABLES_DIR
+FIGDIR = project_paths.TIME_FIGURES_DIR
+METRICS = project_paths.METRICS_DIR
+MODELDIR = project_paths.SALARY_MODEL_DIR
 
 ID = '实习岗位ID'
 PUBLISH = '发布时间'
 SALARY_MID = '薪资中点'
 SCOPE = '技能提取范围'
-
-sys.path.insert(0, str(ROOT))
-
-from src import figure_finalize, project_paths  # noqa: E402
 
 # ------------------------------------------------------------------ 技术时间关键词
 TECH_TIME_KEYWORDS = [
@@ -98,7 +99,7 @@ def main() -> int:
     model = pd.read_parquet(PROCESSED / 'job_salary_model_dataset.parquet')
     entity = pd.read_parquet(PROCESSED / 'job_details_unique.parquet')
     obs = pd.read_parquet(INTERIM / 'job_observation_snapshots.parquet')
-    raw = pd.read_parquet(ROOT / 'data' / 'raw' / 'shixiseng_job_details.parquet')
+    raw = pd.read_parquet(project_paths.RAW_PARQUET)
 
     analysis_hits = scan_tech_time(analysis.columns)
     model_hits = scan_tech_time(model.columns)
@@ -265,14 +266,15 @@ def main() -> int:
                   '用途': '第4章 图 4-9（E8 新图编号顺延后）重绘'})
         plt.close(fig)
         print('图T1 门禁未通过项:', figure_finalize.failed_paper_gates(diagnostics) or '无')
-    figures.append(str(png1.relative_to(ROOT)).replace('\\', '/'))
+    figures.append(str(png1.relative_to(project_paths.PROJECT_ROOT)).replace('\\', '/'))
 
     # 图T2、图T3：论文版式。绘制与门禁逻辑统一在 figures/ch4 的 01_time_cohort_figures 的 save_salary_figure /
     # save_skill_figure 中：无图内总图题、600 dpi PNG + 矢量 PDF、内向刻度、浅虚线网格，
     # 薪资图对 n < 30 的窗口加浅色底纹，技能图横轴沿用「只排给出命中率的窗口」的原有统计范围，
     # 与全文其他重绘图件保持同一版式
     figure_spec = importlib.util.spec_from_file_location(
-        '_time_cohort_figures', ROOT / 'scripts' / 'figures' / 'ch4' / '01_time_cohort_figures.py')
+        '_time_cohort_figures',
+        project_paths.SCRIPTS_DIR / 'figures' / 'ch4' / '01_time_cohort_figures.py')
     figure_module = importlib.util.module_from_spec(figure_spec)
     sys.modules['_time_cohort_figures'] = figure_module
     figure_spec.loader.exec_module(figure_module)
@@ -282,12 +284,12 @@ def main() -> int:
     diagnostics2 = figure_module.save_salary_figure(monthly, full_median, FIGDIR)
     plt.close('all')
     print('图T2 门禁未通过项:', figure_finalize.failed_paper_gates(diagnostics2) or '无')
-    figures.append(str(Path(diagnostics2['png_path']).relative_to(ROOT)).replace('\\', '/'))
+    figures.append(str(Path(diagnostics2['png_path']).relative_to(project_paths.PROJECT_ROOT)).replace('\\', '/'))
 
     diagnostics3 = figure_module.save_skill_figure(structure, FIGDIR)
     plt.close('all')
     print('图T3 门禁未通过项:', figure_finalize.failed_paper_gates(diagnostics3) or '无')
-    figures.append(str(Path(diagnostics3['png_path']).relative_to(ROOT)).replace('\\', '/'))
+    figures.append(str(Path(diagnostics3['png_path']).relative_to(project_paths.PROJECT_ROOT)).replace('\\', '/'))
 
     # ============================================================ 4. 结果表
     audit = pd.DataFrame(audit_rows)
@@ -315,7 +317,7 @@ def main() -> int:
             '时间窗口数（月）': int(monthly.shape[0]),
             'n<30 窗口数': int((monthly['有效薪资岗位数 n'] < MIN_WINDOW_N).sum()),
             '图件': figures,
-            '结果表': str(out.relative_to(ROOT)).replace('\\', '/'),
+            '结果表': str(out.relative_to(project_paths.PROJECT_ROOT)).replace('\\', '/'),
         },
         '未重训模型': True,
     }

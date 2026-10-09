@@ -126,21 +126,7 @@ NEW_FILES = ([TABLES / name for name in TABLE_FILES]
                 for suffix in ('.png', '.pdf')]
              + [REGISTRY_PATH, METRICS_PATH])
 SKIP_DIRS = {'.git', '.pytest_cache', '__pycache__', '.ipynb_checkpoints', '.idea', '.vscode'}
-MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config', 'notebooks', 'tests']
-
-STAGE26_1_MOTHER = (PROJECT_ROOT / 'docs' / 'paper'
-                    / '课程设计论文时序设定收紧修订版_Stage26.1.md')
-WORDING_PATTERNS = [
-    ('四层结构残留', r'四层'),
-    ('三层结构残留', r'三层'),
-    ('观测—版本—实体 三层简称', r'观测—版本—实体'),
-    ('图 3-3 图题三层简称', r'观测 → 版本 → 实体'),
-    ('T3 单独归并措辞', r'T3 的归并使'),
-    ('T3 归并减少周期数行', r'T3 归并减少的周期数'),
-    ('T2 间隔含 0 天', r'1 / 0 / 6'),
-    ('3,410 减少量行', r'3,410'),
-]
-
+MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config']
 
 # ============================================================================
 # 通用工具
@@ -791,17 +777,10 @@ def main() -> int:  # noqa: C901
     ])
 
     # ---- 五层结构表述 / 3,410 措辞残留审计
-    wording_rows = []
-    if STAGE26_1_MOTHER.is_file():
-        for number, line in enumerate(
-                STAGE26_1_MOTHER.read_text(encoding='utf-8').splitlines(), start=1):
-            for label, pattern in WORDING_PATTERNS:
-                if re.search(pattern, line):
-                    wording_rows.append({
-                        '文件': str(STAGE26_1_MOTHER.relative_to(PROJECT_ROOT)).replace('\\', '/'),
-                        '行号': number, '命中类型': label, '原文片段': line.strip()[:220]})
-    wording_table = pd.DataFrame(wording_rows)
-    print(f'五层 / 3,410 措辞残留命中：{len(wording_table)} 处')
+    # 论文 Markdown 源稿不在本仓库（docs/paper 下仅有 docx/pdf），无法审计措辞残留；
+    # 保留空表以维持结果表结构，命中数记为 0。
+    wording_table = pd.DataFrame(columns=['文件', '行号', '命中类型', '原文片段'])
+    print('五层 / 3,410 措辞残留审计：源稿不在仓库内，跳过（命中 0 处）')
 
     # ---------------------------------------------------------------- B 建模
     grouped = grouped_columns_with_safe_f(feature_manifest, frame)
@@ -1240,7 +1219,7 @@ def main() -> int:  # noqa: C901
               project_paths.FEATURES_DIR / 'job_text_embeddings.npz',
               project_paths.FEATURES_DIR / 'job_text_embedding_index.parquet',
               project_paths.SALARY_MODEL_DIR / 'feature_manifest.json',
-              LIFECYCLE_TABLE, STAGE26_1_MOTHER]
+              LIFECYCLE_TABLE]
     payload = {
         'stage': 'Stage26.2',
         '脚本路径': 'scripts/ch4_lifecycle/03_final_consolidation.py',

@@ -21,11 +21,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT = next(
+PROJECT_ROOT = next(
     _candidate for _candidate in Path(__file__).resolve().parents
     if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
-sys.path.insert(0, str(PROJECT))
-sys.path.insert(0, str(PROJECT / 'scripts'))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import model_training, plot_style, project_paths, schema, skill_eda  # noqa: E402
 from src.script_support import load_polish  # noqa: E402

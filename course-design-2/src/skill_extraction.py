@@ -21,7 +21,7 @@ import yaml
 
 from . import project_paths, schema
 
-SKILL_CONFIG_PATH = project_paths.PROJECT_ROOT / 'config' / 'skills.yml'
+SKILL_CONFIG_PATH = project_paths.SKILL_CONFIG_PATH
 
 LATIN_PATTERN = re.compile(r'[A-Za-z]')
 # 拉丁词边界字符：字母/数字/下划线/+# 紧邻时不算边界

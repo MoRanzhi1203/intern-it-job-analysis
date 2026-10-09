@@ -95,11 +95,11 @@ def build_schema_sheet() -> tuple:
             definition = next((f'src/schema.py:{number}' for number, line in enumerate(source, 1)
                                if line.startswith(f'{name} =')), 'src/schema.py')
         call_sites = []
-        for path in sorted((project_paths.PROJECT_ROOT / 'src').glob('*.py')):
+        for path in sorted(project_paths.SRC_DIR.glob('*.py')):
             for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
                 if f'schema.{name}' in line:
                     call_sites.append(f'{path.name}:{number}')
-        for path in sorted((project_paths.PROJECT_ROOT / 'scripts').rglob('*.py')):
+        for path in sorted(project_paths.SCRIPTS_DIR.rglob('*.py')):
             for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
                 if f'schema.{name}' in line:
                     call_sites.append(f'scripts/{path.name}:{number}')

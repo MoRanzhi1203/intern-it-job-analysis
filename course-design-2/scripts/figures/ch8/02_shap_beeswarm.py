@@ -91,7 +91,8 @@ ANCHORS = {'公司标签列表=免费健身设施': 14.88, '技术技能数': 7.
 def load_figure_rebuild():
     """载入 07_figure_rebuild 模块并还原它在导入时打的内存补丁（只复用其 SHAP 计算）。"""
     spec = importlib.util.spec_from_file_location(
-        '_figure_rebuild', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '07_figure_rebuild.py'))
+        '_figure_rebuild',
+        str(project_paths.SCRIPTS_DIR / 'ch4_lifecycle' / '07_figure_rebuild.py'))
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)

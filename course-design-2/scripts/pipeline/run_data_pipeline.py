@@ -114,22 +114,10 @@ def run_stage(stage: int, args: argparse.Namespace, logger: PipelineLogger) -> i
 def check_archive(logger: PipelineLogger) -> tuple:
     """ARCHIVE_PRE_REFACTOR：校验返工前证据可追溯。
 
-    归档目录存在时校验文件数量；
-    归档目录已被移除时，改为校验历史证据是否可从 git 历史中检出；
-    若归档目录缺失且历史证据不可检出（证据不在本仓库历史中），按用户决定判 PASS 并如实标注，
+    归档目录已从项目移除，改为校验历史证据是否可从 git 历史中检出；
+    若历史证据不可检出（证据不在本仓库历史中），按用户决定判 PASS 并如实标注，
     不据此断言可追溯性，也不伪造证据。
     """
-    archive_dir = project_paths.ARCHIVE_PRE_REFACTOR_DIR
-    if archive_dir.is_dir():
-        notebooks = sorted((archive_dir / 'notebooks').glob('*.ipynb'))
-        records = sorted((archive_dir / 'records').glob('*.md'))
-        tables = sorted((archive_dir / 'tables').glob('*.xlsx'))
-        logger.write(f'归档目录存在：notebooks {[p.name for p in notebooks]}')
-        logger.write(f'                 records {[p.name for p in records]}')
-        logger.write(f'                 tables {len(tables)} 个')
-        ok = len(notebooks) >= 4 and len(records) >= 2 and len(tables) >= 10
-        return ok, f'归档目录 notebooks {len(notebooks)} / records {len(records)} / tables {len(tables)}'
-
     found = []
     for probe in project_paths.ARCHIVE_HISTORY_PROBES:
         # 使用 :/ 前缀，保证路径规格按 git 仓库根解析，而不是按当前工作目录
@@ -160,8 +148,8 @@ def check_structure(logger: PipelineLogger) -> tuple:
         'data/raw': project_paths.RAW_DIR,
         'data/interim': project_paths.INTERIM_DIR,
         'data/processed': project_paths.PROCESSED_DIR,
-        'scripts': project_paths.PROJECT_ROOT / 'scripts',
-        'src': project_paths.PROJECT_ROOT / 'src',
+        'scripts': project_paths.SCRIPTS_DIR,
+        'src': project_paths.SRC_DIR,
         'outputs/tables': project_paths.TABLES_DIR,
         'outputs/figures': project_paths.FIGURES_DIR,
         'outputs/models': project_paths.MODELS_DIR,

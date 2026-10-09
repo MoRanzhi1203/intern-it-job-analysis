@@ -363,7 +363,7 @@ PROTECTED_SHORT_TOKENS = {'r', 'go', 'c', 'ai', 'ml', 'dl', 'cv', 'sql', 'js', '
                           'c++', 'c#', '.net', 'r语言'}
 
 LATIN_TOKEN_PATTERN = re.compile(r'[A-Za-z][A-Za-z0-9+#._\-]{0,30}')
-STOPWORDS_PATH = project_paths.PROJECT_ROOT / 'config' / 'stopwords.txt'
+STOPWORDS_PATH = project_paths.STOPWORDS_PATH
 _STOPWORDS_CACHE: set | None = None
 _JIEBA_READY = False
 

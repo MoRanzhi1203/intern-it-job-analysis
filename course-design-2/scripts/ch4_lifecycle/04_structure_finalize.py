@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Stage26.3：正文结构精简配套的**必要重算**与文本审计（只新增文件）。
+"""Stage26.3：正文结构精简配套的**必要重算**（只新增文件）。
 
 本脚本严格只读既有产物（`data/**`、`outputs/**` 既有文件、`src/**`、既有 `scripts/**`），
 只做新增计算与新增文件输出，不覆盖任何既有文件。对应提示词
@@ -12,31 +12,20 @@
 3. §19 / §32 Step 5：移除后验特征后重跑统一协议下 Random / Company Group / Retrospective
    Temporal 三种划分的正式指标、特征组维度、消融五配置（含增量配对 bootstrap）、
    模型比较、最终模型测试集结果、分组预测误差、多种子稳定性与 Company Group 多次划分；
-4. §11 正文段内公式化：生成逐文件逐行的**内联数学符号清单**（供后续构建环节实现，
-   本环节不改造构建脚本）；
-5. §5~§14 文本结构与文风审计：Q 简称、机械总起段、小结篇幅、加粗短句、开发过程语言、
-   提示式前缀、引号 / 括号 / 破折号 / 无序列表的逐项命中数对照。
-
 运行::
 
-    python scripts\\04_structure_finalize.py baseline
     python scripts\\04_structure_finalize.py compute
-    python scripts\\04_structure_finalize.py inventory
 
 新增输出::
 
-    outputs/tables/ch4/47_stage26_3_inline_math_inventory.xlsx
     outputs/tables/ch7/48_stage26_3_pre_model_diagnostics.xlsx
     outputs/tables/ch7/49_stage26_3_metrics_after_feature_removal.xlsx
-    outputs/tables/ch4/50_stage26_3_text_revision_audit.xlsx
     outputs/figures/supplementary/fig_s32_pre_model_diagnostics_subset_distribution.png/pdf
     outputs/logs/metrics/stage_26_3_structure_finalize.json
-    outputs/logs/metrics/stage_26_3_text_revision.json
 """
 from __future__ import annotations
 
 import json
-import re
 import sys
 import time
 from pathlib import Path
@@ -53,7 +42,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src import (ablation_shap, figure_finalize, io_utils, model_training,  # noqa: E402
                  plot_style, project_paths, schema, skill_eda)
 from src.script_support import (build_assembler, dump_json, fit_eval,  # noqa: E402
-                                       grouped_columns, section_length, sha256_of)
+                                       grouped_columns, sha256_of)
 
 # ============================================================================
 # 常量与统计范围（与 Stage26.2 统一协议保持一致，便于逐项对照）
@@ -132,14 +121,9 @@ REDUNDANCY_DECISIONS = {
 TABLES = project_paths.TABLES_DIR
 SUPP_DIR = project_paths.FIGURES_DIR / 'supplementary'
 METRICS_DIR = project_paths.METRICS_DIR
-SOURCE_DIR = PROJECT_ROOT / 'docs' / 'paper' / 'stage23'
-TABLE_INLINE_MATH = TABLES / 'ch4/47_stage26_3_inline_math_inventory.xlsx'
 TABLE_DIAGNOSTICS = TABLES / 'ch7/48_stage26_3_pre_model_diagnostics.xlsx'
 TABLE_METRICS = TABLES / 'ch7/49_stage26_3_metrics_after_feature_removal.xlsx'
-TABLE_TEXT_AUDIT = TABLES / 'ch4/50_stage26_3_text_revision_audit.xlsx'
 METRICS_PATH = METRICS_DIR / 'stage_26_3_structure_finalize.json'
-TEXT_METRICS_PATH = METRICS_DIR / 'stage_26_3_text_revision.json'
-TEXT_BASELINE_PATH = METRICS_DIR / 'stage_26_3_text_baseline.json'
 FIG_STEM = 'fig_s32_pre_model_diagnostics_subset_distribution'
 FIG_FLOW = 'fig_s33_salary_model_build_eval_flow'
 FLOW_STEPS = [
@@ -154,19 +138,12 @@ FLOW_STEPS = [
     ('特征组消融、公司分组划分、回顾性时间划分与 SHAP 解释', '稳健性、跨公司与跨发布时间区间泛化、模型判断依据'),
 ]
 
-CHAPTERS = ['00_摘要与Abstract.md', '01_绪论.md', '02_相关理论与分析方法.md',
-            '03_数据获取与预处理.md', '04_互联网IT实习岗位特征分析.md',
-            '05_实习岗位薪资影响因素分析.md', '06_实习岗位技能需求分析.md',
-            '07_薪资预测模型构建与结果分析.md', '08_模型稳健性与解释.md',
-            '09_总结与展望.md']
-
-NEW_FILES = [TABLE_INLINE_MATH, TABLE_DIAGNOSTICS, TABLE_METRICS, TABLE_TEXT_AUDIT,
+NEW_FILES = [TABLE_DIAGNOSTICS, TABLE_METRICS,
              SUPP_DIR / f'{FIG_STEM}.png', SUPP_DIR / f'{FIG_STEM}.pdf',
              SUPP_DIR / f'{FIG_FLOW}.png', SUPP_DIR / f'{FIG_FLOW}.pdf',
-             METRICS_PATH, TEXT_METRICS_PATH, TEXT_BASELINE_PATH]
+             METRICS_PATH]
 SKIP_DIRS = {'.git', '.pytest_cache', '__pycache__', '.ipynb_checkpoints', '.idea', '.vscode'}
-MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config',
-                       'notebooks', 'tests']
+MANIFEST_SCOPE_DIRS = ['data', 'outputs', 'docs', 'src', 'scripts', 'config']
 
 
 # ============================================================================
@@ -481,149 +458,6 @@ def figure_diagnostics(diagnostics: dict) -> dict:
     return diagnostics_figure
 
 
-# ============================================================================
-# 文本审计（§5~§14 / §27）
-# ============================================================================
-AUDIT_PATTERNS = [
-    ('研究问题 Q 简称', r'(?<![A-Za-z])Q[1-4](?![0-9A-Za-z])'),
-    ('需要说明的是', r'需要说明的是'), ('需要强调的是', r'需要强调的是'),
-    ('必须明确', r'必须明确'), ('值得注意的是', r'值得注意的是'),
-    ('需要重申的是', r'需要重申的是'), ('这里需要指出', r'这里需要指出'),
-    ('可以看到', r'可以看到'), ('可以发现', r'可以发现'),
-    ('由此可以看出', r'由此可以看出'), ('综上可以看出', r'综上可以看出'),
-    ('这意味着', r'这意味着'), ('不是……而是', r'不是[^。；\n]{0,40}而是'),
-    ('并非……而是', r'并非[^。；\n]{0,40}而是'),
-    ('中文引号 左', r'“'), ('中文引号 右', r'”'),
-    ('中文括号 左', r'（'), ('中文括号 右', r'）'),
-    ('破折号 ——', r'——'), ('短横 —', r'—(?![—])'),
-    ('行首无序列表', r'(?m)^\s*[-*•]\s+'),
-    ('开发语言 Stage2x', r'Stage2[0-9](\.[0-9])?'),
-    ('本轮', r'本轮'), ('旧F组', r'旧F组'), ('旧实现', r'旧实现'),
-    ('前期固定图件', r'前期固定图件'), ('之前版本', r'之前版本'),
-    ('本次修改', r'本次修改'), ('更早实现', r'更早实现'),
-    ('加粗短句 方法目的', r'\*\*方法目的。\*\*'),
-    ('加粗短句 变量说明', r'\*\*变量说明。\*\*'),
-    ('加粗短句 本文中如何使用', r'\*\*本文中如何使用。\*\*'),
-    ('加粗短句 方法机制', r'\*\*方法机制。\*\*'),
-    ('加粗短句 参数说明', r'\*\*参数说明。\*\*'),
-    ('章首机械总起段', r'(?m)^本章(?:说明|主要|首先|从|交代|先|以|给出|对比|在|完成|介绍|按)'),
-]
-
-COUNTED_KEYS = ['研究问题 Q 简称', '需要说明的是', '需要强调的是', '必须明确', '值得注意的是',
-                '需要重申的是', '这里需要指出', '可以看到', '可以发现', '由此可以看出',
-                '综上可以看出', '这意味着', '不是……而是', '并非……而是',
-                '中文引号 左', '中文引号 右', '中文括号 左', '中文括号 右',
-                '破折号 ——', '短横 —', '行首无序列表', '开发语言 Stage2x',
-                '本轮', '旧F组', '旧实现', '前期固定图件', '之前版本', '本次修改',
-                '更早实现', '加粗短句 方法目的', '加粗短句 变量说明',
-                '加粗短句 本文中如何使用', '加粗短句 方法机制', '加粗短句 参数说明']
-
-
-def strip_html_comments(text: str) -> str:
-    return re.sub(r'<!--.*?-->', '', text, flags=re.S)
-
-
-def han_count(text: str) -> int:
-    return len(re.findall(r'[\u4e00-\u9fff]', text))
-
-
-def sentence_count(text: str) -> int:
-    """按句号、问号、叹号切分的句数（与小结压缩统计范围一致，不含分号）。"""
-    return len([item for item in re.split(r'[。！？]', text) if item.strip()])
-
-
-def visible_body(text: str) -> str:
-    """剔除注释、插表 / 插图占位行与公式行后的可见正文。"""
-    body = strip_html_comments(text)
-    body = re.sub(r'(?m)^\s*>?\s*【插[图表][^\n]*】\s*$', '', body)
-    body = re.sub(r'(?m)^\s*\$\$.*?\$\$\s*$', '', body)
-    body = re.sub(r'(?m)^\s*[|>```].*$', '', body)
-    return body
-
-
-def summarize_chapters() -> pd.DataFrame:
-    rows = []
-    for name in CHAPTERS:
-        path = SOURCE_DIR / name
-        text = path.read_text(encoding='utf-8')
-        body = visible_body(text)
-        rows.append({'文件': name, '汉字数（可见正文）': han_count(body),
-                     '字节数': int(path.stat().st_size)})
-    return pd.DataFrame(rows)
-
-
-def audit_text() -> dict:
-    pattern_counts = {}
-    hit_rows = []
-    for name in CHAPTERS:
-        path = SOURCE_DIR / name
-        raw = path.read_text(encoding='utf-8')
-        body = visible_body(raw)
-        for label, pattern in AUDIT_PATTERNS:
-            for number, line in enumerate(raw.splitlines(), start=1):
-                for match in re.finditer(pattern, line):
-                    hit_rows.append({'文件': name, '行号': number, '命中类型': label,
-                                     '原文片段': line.strip()[:200]})
-        for label, pattern in AUDIT_PATTERNS:
-            pattern_counts[label] = pattern_counts.get(label, 0) + len(
-                re.findall(pattern, body))
-    summary = summarize_chapters()
-    return {'counts': pattern_counts, 'hits': pd.DataFrame(hit_rows),
-            'chapters': summary,
-            '总计汉字数（可见正文）': int(summary['汉字数（可见正文）'].sum())}
-
-
-def chapter_summary_block() -> pd.DataFrame:
-    """各章小结的段落数、句数与汉字数。"""
-    rows = []
-    for name in CHAPTERS:
-        text = visible_body((SOURCE_DIR / name).read_text(encoding='utf-8'))
-        lines = text.splitlines()
-        index = None
-        for position, line in enumerate(lines):
-            if re.match(r'^#{2,4}\s*\d*\.?\d*\s*本章小结', line.strip()):
-                index = position
-                break
-        if index is None:
-            continue
-        block = []
-        for line in lines[index + 1:]:
-            if re.match(r'^#{2,4}\s', line.strip()):
-                break
-            if line.strip():
-                block.append(line.strip())
-        joined = '\n'.join(block)
-        sentences = [item for item in re.split(r'[。；!？]', joined) if item.strip()]
-        rows.append({'文件': name, '小结段落数': len(block),
-                     '小结句数（含分号切分）': len(sentences),
-                     '小结句数（按句号切分）': sentence_count(joined),
-                     '小结汉字数': han_count(joined)})
-    return pd.DataFrame(rows)
-
-
-def chapter_lead_paragraph() -> pd.DataFrame:
-    """各章大标题后的第一段（用于判断是否存在机械总起段）。"""
-    rows = []
-    for name in CHAPTERS:
-        text = strip_html_comments((SOURCE_DIR / name).read_text(encoding='utf-8'))
-        lines = text.splitlines()
-        for position, line in enumerate(lines):
-            if re.match(r'^##\s+\d+\s', line.strip()):
-                for follow in lines[position + 1:]:
-                    if not follow.strip():
-                        continue
-                    rows.append({'文件': name, '标题': line.strip(),
-                                 '标题后首段': follow.strip()[:160]})
-                    break
-                break
-    return pd.DataFrame(rows)
-
-
-def mechanical_lead_count() -> int:
-    """章标题后首段不是二级标题的章数（即存在机械总起段的章数）。"""
-    leads = chapter_lead_paragraph()
-    return int(sum(1 for value in leads['标题后首段']
-                   if not str(value).strip().startswith('#')))
 
 
 # ============================================================================
@@ -1248,183 +1082,10 @@ def run_compute() -> int:
     return 0
 
 
-# ============================================================================
-# 文本审计
-# ============================================================================
-def run_baseline() -> int:
-    """记录改写前的文本审计基线（供改写后逐项对照）。"""
-    audit = audit_text()
-    leads = chapter_lead_paragraph()
-    summaries = chapter_summary_block()
-    payload = {
-        '记录时间': time.strftime('%Y-%m-%d %H:%M:%S'),
-        '命中计数': audit['counts'],
-        '总计汉字数（可见正文）': audit['总计汉字数（可见正文）'],
-        '各章汉字数': audit['chapters'].to_dict('records'),
-        '各章标题后首段': leads.to_dict('records'),
-        '章首机械总起段数量': mechanical_lead_count(),
-        '各章小结篇幅': summaries.to_dict('records'),
-        '3.2 数据采集方案': section_length(SOURCE_DIR, visible_body, han_count, '03_数据获取与预处理.md',
-                                      r'^#{2,4}\s*3\.2', r'^#{2,4}\s*3\.3'),
-    }
-    dump_json(TEXT_BASELINE_PATH, payload)
-    print(json.dumps(payload, ensure_ascii=False, indent=2)[:4000])
-    return 0
-
-
-def run_inventory() -> int:
-    """生成内联数学符号清单（表 55）与改写后文本审计（表 58）。"""
-    inventory_rows = scan_inline_math()
-    inventory = pd.DataFrame(inventory_rows)
-    write_excel(TABLE_INLINE_MATH, {'01_内联数学符号清单': inventory,
-                                    '02_按文件计数': (inventory.groupby('文件').size()
-                                                  .reset_index(name='条目数')
-                                                  if len(inventory) else
-                                                  pd.DataFrame([{'文件': '—', '条目数': 0}]))})
-
-    audit = audit_text()
-    baseline = json.loads(TEXT_BASELINE_PATH.read_text(encoding='utf-8')) \
-        if TEXT_BASELINE_PATH.is_file() else {'命中计数': {}, '各章小结篇幅': [],
-                                             '各章标题后首段': []}
-    comparison_rows = []
-    for label in COUNTED_KEYS:
-        before = int(baseline['命中计数'].get(label, 0))
-        after = int(audit['counts'].get(label, 0))
-        comparison_rows.append({'项目': label, '改前': before, '改后': after,
-                                '变化': after - before})
-    comparison_rows.append({'项目': '可见正文汉字数合计',
-                            '改前': int(baseline.get('总计汉字数（可见正文）', 0)),
-                            '改后': int(audit['总计汉字数（可见正文）']),
-                            '变化': int(audit['总计汉字数（可见正文）'])
-                            - int(baseline.get('总计汉字数（可见正文）', 0))})
-    comparison_rows.append({'项目': '章首机械总起段数量（按标题后首段判定）',
-                            '改前': int(baseline.get('章首机械总起段数量', 0)),
-                            '改后': int(mechanical_lead_count()),
-                            '变化': int(mechanical_lead_count())
-                            - int(baseline.get('章首机械总起段数量', 0))})
-    comparison = pd.DataFrame(comparison_rows)
-
-    summary_before = pd.DataFrame(baseline.get('各章小结篇幅', []))
-    summaries = chapter_summary_block()
-    summary_cols = [column for column in summary_before.columns if column != '文件']
-    summary_compare = summaries.merge(
-        summary_before[['文件'] + summary_cols] if len(summary_before) else
-        pd.DataFrame(columns=['文件']),
-        on='文件', how='left', suffixes=('（改后）', '（改前）'))
-
-    leads_before = pd.DataFrame(baseline.get('各章标题后首段', []))
-    leads_after = chapter_lead_paragraph()
-    leads_compare = leads_after.merge(
-        leads_before[['文件', '标题后首段']] if len(leads_before) else
-        pd.DataFrame(columns=['文件', '标题后首段']),
-        on='文件', how='left', suffixes=('（改后）', '（改前）'))
-
-    section = pd.DataFrame([
-        {'项目': '3.2 数据采集方案（改前）', **baseline.get('3.2 数据采集方案', {})},
-        {'项目': '3.2 数据采集方案（改后）',
-         **section_length(SOURCE_DIR, visible_body, han_count, '03_数据获取与预处理.md', r'^#{2,4}\s*3\.2', r'^#{2,4}\s*3\.3')},
-    ])
-
-    write_excel(TABLE_TEXT_AUDIT, {
-        '01_文风命中数对照': comparison,
-        '02_各章小结篇幅对照': summary_compare,
-        '03_章首段落对照': leads_compare,
-        '04_3.2压缩对照': section,
-        '05_命中明细': audit['hits'] if len(audit['hits']) else
-        pd.DataFrame([{'说明': '无命中'}]),
-        '06_各章汉字数': audit['chapters'],
-    })
-    payload = {
-        '生成时间': time.strftime('%Y-%m-%d %H:%M:%S'),
-        '内联数学符号清单条目数': int(len(inventory)),
-        '按文件计数': (inventory.groupby('文件').size().to_dict()
-                   if len(inventory) else {}),
-        '文风命中数对照': comparison.to_dict('records'),
-        '3.2 压缩对照': section.to_dict('records'),
-        '各章汉字数': audit['chapters'].to_dict('records'),
-        '总计汉字数（可见正文）': audit['总计汉字数（可见正文）'],
-    }
-    dump_json(TEXT_METRICS_PATH, payload)
-    print(comparison.to_string(index=False))
-    print(f'内联数学符号清单条目数：{len(inventory)}')
-    return 0
-
-
-# ---------------------------------------------------------------------------
-# 内联数学符号扫描
-# ---------------------------------------------------------------------------
-MATH_TOKEN_PATTERNS = [
-    ('希腊字母与统计量',
-     r'ε²|ε\^2|δ|ρ|α|β|λ|ΔMAE|Δ|φ_[0-9a-zA-Z]|\|φ_[0-9a-zA-Z]\||R²|R\^2'),
-    ('带下标数学量',
-     r'(?<![A-Za-z0-9_])[A-Za-zRrNnOoStUuqpGgDdCcHhkKmXxYy]_\{?[a-zA-Z0-9,+\-]+\}?'
-     r'(?![A-Za-z0-9])'),
-    ('帽符号与均值符号', r'ŷ_[a-zA-Z0-9]+|ŷ|ȳ|R̄_[a-zA-Z0-9]+|R̄'),
-    ('单字母数学变量',
-     r'(?<![A-Za-z0-9_])(?:N|k|H|R|X|Y|M|B|F|T|n|m|i|j|p|q|x|y|b|e|s|d|t|G|D|O|C)'
-     r'(?=\s*(?:为|表示|与|和|的|值|取|大于|小于|[=<>]))'),
-    ('绝对值与阈值比较',
-     r'\|δ\|\s*(?:小于|大于|不小于|不大于|小于等于|大于等于|[<>=])\s*[0-9.]+|'
-     r'(?:q|p)\s*(?:值)?\s*(?:小于|大于|[<>=])\s*0\.05|'
-     r'\|ρ\|\s*[<>=]\s*[0-9.]+'),
-    ('长英文变量',
-     r'Duration[_\^][a-zA-Z]+|FinalDeadline|InitialDeadline|ReopenGap|'
-     r'Start|End\b|CurrentStart|PreviousEnd'),
-]
-
-
-def scan_inline_math() -> list:
-    rows = []
-    for name in CHAPTERS:
-        path = SOURCE_DIR / name
-        for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(),
-                                      start=1):
-            stripped = line.strip()
-            if stripped.startswith('$$') or stripped.startswith('|'):
-                continue
-            for label, pattern in MATH_TOKEN_PATTERNS:
-                for match in re.finditer(pattern, line):
-                    token = match.group(0)
-                    context_start = max(match.start() - 24, 0)
-                    context_end = min(match.end() + 24, len(line))
-                    rows.append({
-                        '文件': name, '行号': number, '类型': label,
-                        '原文片段': line[max(context_start, 0):context_end].strip(),
-                        '命中文本': token,
-                        '建议 LaTeX / UnicodeMath': suggest_math(token)})
-    return rows
-
-
-SUGGESTION = {
-    'ε²': r'\varepsilon^{2}', 'δ': r'\delta', 'ρ': r'\rho', 'α': r'\alpha',
-    'β': r'\boldsymbol{\beta}', 'λ': r'\lambda', 'R²': r'R^{2}',
-    'ŷ': r'\hat{y}', 'ȳ': r'\bar{y}', 'R̄': r'\bar{R}',
-    'Start': 's', 'End': 'd', 'FinalDeadline': "d^{(f)}",
-    'InitialDeadline': "d^{(0)}", 'ReopenGap': 'G',
-}
-
-
-def suggest_math(token: str) -> str:
-    if token in SUGGESTION:
-        return SUGGESTION[token]
-    plain = token.replace('_', '').replace('^', '')
-    match = re.match(r'^([A-Za-zRrNnOoStUuqpGgDdCcHhkKmXxYy])_\{?([A-Za-z0-9,+\-]+)\}?$', token)
-    if match:
-        return f'{match.group(1)}_{{{match.group(2)}}}'
-    if token.startswith('Duration'):
-        suffix = token.split('^')[-1] if '^' in token else token.split('_')[-1]
-        return f'D_{{{suffix}}}'
-    return plain
-
-
 def main() -> int:
     mode = sys.argv[1] if len(sys.argv) > 1 else 'compute'
     if mode == 'compute':
         return run_compute()
-    if mode == 'baseline':
-        return run_baseline()
-    if mode == 'inventory':
-        return run_inventory()
     if mode == 'flow':
         print(json.dumps(figure_flow(), ensure_ascii=False, indent=2, default=str))
         return 0

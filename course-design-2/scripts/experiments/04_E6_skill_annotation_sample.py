@@ -22,17 +22,18 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT = next(
+PROJECT_ROOT = next(
     _candidate for _candidate in Path(__file__).resolve().parents
     if (_candidate / "data").is_dir() and (_candidate / "scripts").is_dir())
-sys.path.insert(0, str(PROJECT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from src import schema  # noqa: E402
+from src import project_paths, schema  # noqa: E402
 
-CORPUS = PROJECT / 'data' / 'interim' / 'job_text_version_corpus.parquet'
-MEMBERSHIP = PROJECT / 'data' / 'features' / 'job_skill_membership.parquet'
-CATEGORY = PROJECT / 'data' / 'processed' / 'job_category_membership.parquet'
-SAMPLE_OUT = PROJECT / 'data' / 'interim' / 'skill_annotation_sample.xlsx'
+CORPUS = project_paths.TEXT_CORPUS_PARQUET
+MEMBERSHIP = project_paths.JOB_SKILL_MEMBERSHIP_PARQUET
+CATEGORY = project_paths.PROCESSED_CATEGORY_MEMBERSHIP_PARQUET
+SAMPLE_OUT = project_paths.SKILL_ANNOTATION_SAMPLE_XLSX
 SAMPLE_SIZE = 240
 MIN_PER_STRATUM = 5
 SEED = 42
