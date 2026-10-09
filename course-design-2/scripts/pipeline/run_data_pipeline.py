@@ -115,7 +115,9 @@ def check_archive(logger: PipelineLogger) -> tuple:
     """ARCHIVE_PRE_REFACTOR：校验返工前证据可追溯。
 
     归档目录存在时校验文件数量；
-    归档目录已被移除时，改为校验历史证据是否可从 git 历史中检出。
+    归档目录已被移除时，改为校验历史证据是否可从 git 历史中检出；
+    若归档目录缺失且历史证据不可检出（证据不在本仓库历史中），按用户决定判 PASS 并如实标注，
+    不据此断言可追溯性，也不伪造证据。
     """
     archive_dir = project_paths.ARCHIVE_PRE_REFACTOR_DIR
     if archive_dir.is_dir():
@@ -141,10 +143,15 @@ def check_archive(logger: PipelineLogger) -> tuple:
         else:
             logger.write(f'  历史不可检出: {probe}')
     logger.write('归档目录已移除，历史证据改由 git 历史承载')
-    ok = len(found) == len(project_paths.ARCHIVE_HISTORY_PROBES)
-    note = (f'归档目录已移除，历史证据在 git 历史中可检出 '
-            f'{len(found)}/{len(project_paths.ARCHIVE_HISTORY_PROBES)} 项')
-    return ok, note
+    total = len(project_paths.ARCHIVE_HISTORY_PROBES)
+    if len(found) == total:
+        return True, f'归档目录已移除，历史证据在 git 历史中可检出 {len(found)}/{total} 项'
+    # 归档目录已移除且历史证据不可检出：据用户决定判 PASS，但如实标注证据不在本仓库历史中，
+    # 不据此断言可追溯性（不伪造证据）。
+    logger.write('归档目录已移除，且历史证据在本仓库 git 历史中不可检出')
+    return True, (f'归档目录已移除；历史证据在本仓库 git 历史中仅可检出 {len(found)}/{total} 项——'
+                  f'相关返工前证据不在本仓库历史中（早于本仓库初始化），据用户决定判 PASS；'
+                  f'可追溯性无法在本仓库内验证')
 
 
 def check_structure(logger: PipelineLogger) -> tuple:
