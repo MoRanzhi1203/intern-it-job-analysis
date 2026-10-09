@@ -62,8 +62,6 @@ COMPANY_ALIASES_PATH = PROJECT_ROOT / 'config' / 'company_aliases.yml'
 RAW_PARQUET = RAW_DIR / 'shixiseng_job_details.parquet'
 INTERIM_CN_PARQUET = INTERIM_DIR / 'shixiseng_job_details_cn.parquet'
 OBSERVATION_SNAPSHOT_PARQUET = INTERIM_DIR / 'job_observation_snapshots.parquet'
-# 旧实现（Stage 03 build_unique_jobs）输出的实体表，迁移期作为差异比较基线一次性留存
-LEGACY_UNIQUE_PARQUET = INTERIM_DIR / 'job_details_unique_legacy.parquet'
 PROCESSED_UNIQUE_PARQUET = PROCESSED_DIR / 'job_details_unique.parquet'
 PROCESSED_UNIQUE_PARQUET_V2 = PROCESSED_DIR / 'job_details_unique_v2.parquet'
 PROCESSED_CATEGORY_MEMBERSHIP_PARQUET = PROCESSED_DIR / 'job_category_membership.parquet'

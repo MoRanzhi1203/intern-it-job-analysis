@@ -22,7 +22,6 @@ data/processed/job_details_unique.parquet      最终岗位实体层
 from __future__ import annotations
 
 import os
-import shutil
 import sys
 from pathlib import Path
 
@@ -38,20 +37,6 @@ from src import dedup, io_utils, project_paths, quality, schema, versioning  # n
 
 STAGE = 'stage_05'
 TITLE = 'Stage 05 最终岗位实体构建'
-
-# 旧代表差异比较字段
-LEGACY_COMPARE_FIELDS = ['岗位标题', '薪资信息', '工作城市', '公司名称', '岗位描述']
-
-
-def capture_legacy_unique() -> Path | None:
-    """一次性留存旧实现产出的实体表，作为差异比较基线（不覆盖）。"""
-    legacy_path = project_paths.LEGACY_UNIQUE_PARQUET
-    current = project_paths.PROCESSED_UNIQUE_PARQUET
-    if not legacy_path.exists() and current.exists():
-        legacy_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(current, legacy_path)
-        print(f'已留存旧代表基线: {project_paths.relative_to_root(legacy_path)}')
-    return legacy_path if legacy_path.exists() else None
 
 
 def reconcile_versions(versioned: pd.DataFrame, versions: pd.DataFrame) -> dict:
@@ -93,10 +78,8 @@ def reconcile_versions(versioned: pd.DataFrame, versions: pd.DataFrame) -> dict:
     return checks
 
 
-def build_entity_audit_tables(versions: pd.DataFrame,
-                              legacy_diff: pd.DataFrame, legacy_overview: pd.DataFrame,
-                              version_checks: dict, category_checks: dict,
-                              legacy_path: Path | None, metrics: dict) -> dict:
+def build_entity_audit_tables(versions: pd.DataFrame, version_checks: dict,
+                              category_checks: dict, metrics: dict) -> dict:
     """构造 15 号最终实体审计表集合。"""
     id_field = schema.ID_FIELD
     overall = pd.DataFrame([
@@ -109,13 +92,6 @@ def build_entity_audit_tables(versions: pd.DataFrame,
         {'指标': '多版本岗位数', '数值': metrics['multi_version_jobs']},
         {'指标': '版本还原检查', '数值': '通过' if all(version_checks.values()) else '未通过'},
         {'指标': '分类还原检查', '数值': '通过' if all(category_checks.values()) else '未通过'},
-        {'指标': '与旧代表不同的岗位数', '数值': metrics['legacy_diff_jobs']},
-        {'指标': '薪资最终值与旧代表不同的岗位数', '数值': metrics['salary_diff_jobs']},
-        {'指标': '城市最终值与旧代表不同的岗位数', '数值': metrics['city_diff_jobs']},
-        {'指标': '公司最终值与旧代表不同的岗位数', '数值': metrics['company_diff_jobs']},
-        {'指标': '标题最终值与旧代表不同的岗位数', '数值': metrics['title_diff_jobs']},
-        {'指标': '旧代表基线来源', '数值': (project_paths.relative_to_root(legacy_path)
-                                          if legacy_path else '未留存（首次运行即旧表本身）')},
         {'指标': '临时表是否已原子替换', '数值': metrics['atomic_replaced']},
     ])
 
@@ -149,15 +125,13 @@ def build_entity_audit_tables(versions: pd.DataFrame,
     return {
         '01_总体统计': overall,
         '02_最终版本统计': final_version,
-        '03_旧代表差异概览': legacy_overview,
-        '04_旧代表差异明细': legacy_diff,
-        '05_版本还原检查': version_check_table,
-        '06_分类还原检查': category_check_table,
-        '07_字段清单': field_table,
+        '03_版本还原检查': version_check_table,
+        '04_分类还原检查': category_check_table,
+        '05_字段清单': field_table,
     }
 
 
-def write_record(metrics: dict, overall: pd.DataFrame, legacy_overview: pd.DataFrame,
+def write_record(metrics: dict, overall: pd.DataFrame,
                  basis_table: pd.DataFrame, version_checks: pd.DataFrame,
                  gate_table: pd.DataFrame | None) -> list:
     """构造 Stage 05 阶段记录。"""
@@ -212,20 +186,7 @@ def write_record(metrics: dict, overall: pd.DataFrame, legacy_overview: pd.DataF
         '| --- | --- |',
         *[f'| {row.指标} | {row.数值} |' for row in overall.itertuples(index=False)],
         '',
-        '## 5. 与旧代表的差异',
-        '',
-        f'- 旧代表基线：`{metrics["legacy_path"]}`；',
-        f'- 与旧代表不同的岗位数：{metrics["legacy_diff_jobs"]}；',
-        '',
-        '| 字段 | 差异岗位数 | 占全部岗位比例 |',
-        '| --- | --- | --- |',
-        *[f'| {row.字段} | {row.差异岗位数} | {row.占比} |'
-          for row in legacy_overview.itertuples(index=False)],
-        '',
-        '差异原因：实体选择规则由「全历史完整度优先」改为「最终核心版本优先」，'
-        '因此末期版本取值与历史最完整取值可能不同，属于本轮预期变化。',
-        '',
-        '## 6. 输出文件',
+        '## 5. 输出文件',
         '',
         f'- `{project_paths.relative_to_root(project_paths.PROCESSED_UNIQUE_PARQUET)}`（最终岗位实体层）；',
         f'- `outputs/tables/{project_paths.TABLE_ENTITY_AUDIT}`；',
@@ -234,7 +195,7 @@ def write_record(metrics: dict, overall: pd.DataFrame, legacy_overview: pd.DataF
     ]
     if gate_table is not None:
         lines += [
-            '## 7. 运行门禁',
+            '## 6. 运行门禁',
             '',
             '| 门禁项 | 状态 | 说明 |',
             '| --- | --- | --- |',
@@ -243,9 +204,8 @@ def write_record(metrics: dict, overall: pd.DataFrame, legacy_overview: pd.DataF
             '',
         ]
     lines += [
-        '## 8. 本阶段边界',
+        '## 7. 本阶段边界',
         '',
-        '- 未把旧代表字段写入正式 Parquet；',
         '- 未进入薪资解析、缺失值填补、EDA、统计检验或机器学习。',
         '',
     ]
@@ -267,8 +227,6 @@ def main() -> int:
     membership = io_utils.read_parquet(project_paths.PROCESSED_CATEGORY_MEMBERSHIP_PARQUET)
     print(f'输入: 观测快照 {len(snapshots)} 行 / 版本 {len(versions)} 行 / '
           f'变化事件 {len(events)} 行 / 分类关系 {len(membership)} 行')
-
-    legacy_path = capture_legacy_unique()
 
     # 1) 版本还原：重算版本号并与版本历史核对
     versioned = versioning.assign_snapshot_versions(snapshots)
@@ -358,11 +316,7 @@ def main() -> int:
                 all(category_checks.values()),
                 '实体表分类集合、计数、原始记录数均可由关系表完整还原')
 
-    # 6) 旧代表差异审计
-    legacy_diff, legacy_overview, diff_counts = _compare_with_legacy(entity_v2, legacy_path)
-    print('旧代表差异: ' + '；'.join(f'{key}={value}' for key, value in diff_counts.items()))
-
-    # 7) 原子替换正式实体表
+    # 6) 原子替换正式实体表
     os.replace(project_paths.PROCESSED_UNIQUE_PARQUET_V2,
                project_paths.PROCESSED_UNIQUE_PARQUET)
     final_reloaded = io_utils.read_parquet(project_paths.PROCESSED_UNIQUE_PARQUET)
@@ -389,34 +343,26 @@ def main() -> int:
         'id_unique': bool(final_reloaded[id_field].is_unique),
         'url_unique': bool(final_reloaded[schema.URL_FIELD].is_unique),
         'atomic_replaced': bool(atomic_ok),
-        'legacy_path': (project_paths.relative_to_root(legacy_path) if legacy_path else ''),
-        'legacy_diff_jobs': diff_counts['差异岗位数'],
-        'salary_diff_jobs': diff_counts['薪资信息'],
-        'city_diff_jobs': diff_counts['工作城市'],
-        'company_diff_jobs': diff_counts['公司名称'],
-        'title_diff_jobs': diff_counts['岗位标题'],
     }
     io_utils.write_json(project_paths.METRICS_DIR / f'{STAGE}.json', metrics)
 
     audit_tables = build_entity_audit_tables(
-        versions, legacy_diff, legacy_overview, version_checks, category_checks,
-        legacy_path, metrics)
+        versions, version_checks, category_checks, metrics)
     io_utils.write_excel(project_paths.TABLES_DIR / project_paths.TABLE_ENTITY_AUDIT, audit_tables)
     gates.check('ENTITY_AUDIT_EXPORT',
                 (project_paths.TABLES_DIR / project_paths.TABLE_ENTITY_AUDIT).exists(),
                 f'{len(audit_tables)} 个 Sheet 已生成')
 
     record_path = project_paths.RECORDS_DIR / project_paths.RECORD_FINAL_ENTITY
-    record_args = (metrics, audit_tables['01_总体统计'], legacy_overview, basis_table,
-                   audit_tables['05_版本还原检查'])
+    record_args = (metrics, audit_tables['01_总体统计'], basis_table,
+                   audit_tables['03_版本还原检查'])
     io_utils.write_markdown(record_path, write_record(*record_args, gate_table=None))
     gate_table = quality.summarize_gates(gates.results, order=quality.STAGE_GATE_MAP[STAGE])
     io_utils.write_markdown(record_path, write_record(*record_args, gate_table=gate_table))
     print(f'阶段记录: {project_paths.relative_to_root(record_path)}')
 
     gates.save()
-    print(f'Stage 05 完成: 最终岗位实体 {len(final_reloaded)} 行 × {final_reloaded.shape[1]} 列，'
-          f'与旧代表不同 {diff_counts["差异岗位数"]} 个岗位')
+    print(f'Stage 05 完成: 最终岗位实体 {len(final_reloaded)} 行 × {final_reloaded.shape[1]} 列')
     return 0
 
 
@@ -426,52 +372,6 @@ def _counts_match(membership: pd.DataFrame, field: str, expected: pd.Series) -> 
     aggregated = membership.groupby(id_field).apply(
         lambda part: dedup.category_counts_json(part, field), include_groups=False)
     return bool((aggregated.reindex(expected.index) == expected).all())
-
-
-def _compare_with_legacy(entity: pd.DataFrame, legacy_path: Path | None) -> tuple:
-    """与旧代表表逐字段比较，返回（差异明细, 差异概览, 计数字典）。"""
-    id_field = schema.ID_FIELD
-    if legacy_path is None:
-        empty_overview = pd.DataFrame([
-            {'字段': field, '差异岗位数': 0, '占比': 0.0} for field in LEGACY_COMPARE_FIELDS])
-        return pd.DataFrame(columns=[id_field, '字段', '旧代表取值', '最终版本取值']), \
-            empty_overview, {'差异岗位数': 0, **{field: 0 for field in LEGACY_COMPARE_FIELDS}}
-
-    legacy = io_utils.read_parquet(legacy_path)
-    legacy_frame = legacy.set_index(id_field)
-    current = entity.set_index(id_field)
-    shared_ids = current.index.intersection(legacy_frame.index)
-
-    rows = []
-    overview_rows = []
-    counts = {'差异岗位数': 0}
-    diff_any = pd.Series(False, index=shared_ids)
-    for field in LEGACY_COMPARE_FIELDS:
-        old_values = legacy_frame.loc[shared_ids, field].map(versioning.render_value)
-        new_values = current.loc[shared_ids, field].map(versioning.render_value)
-        differs = old_values != new_values
-        diff_any = diff_any | differs
-        counts[field] = int(differs.sum())
-        overview_rows.append({
-            '字段': field,
-            '差异岗位数': int(differs.sum()),
-            '占比': round(float(differs.mean()), 6),
-        })
-        for job_id in shared_ids[differs.to_numpy()]:
-            rows.append({
-                id_field: job_id,
-                '字段': field,
-                '旧代表取值': old_values.loc[job_id],
-                '最终版本取值': new_values.loc[job_id],
-            })
-    counts['差异岗位数'] = int(diff_any.sum())
-    overview_rows.append({
-        '字段': '任一字段不同',
-        '差异岗位数': counts['差异岗位数'],
-        '占比': round(float(diff_any.mean()), 6),
-    })
-    return (pd.DataFrame(rows, columns=[id_field, '字段', '旧代表取值', '最终版本取值']),
-            pd.DataFrame(overview_rows), counts)
 
 
 if __name__ == '__main__':
