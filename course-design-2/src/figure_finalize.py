@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Stage23 图表最终收口支持模块：冻结锚点校验 + 论文版（无图内总图题）导出。
 
-只服务于 Stage23 的图件收口脚本（``scripts/18a`` / ``18b`` / ``18c``）：
+只服务于 Stage23 的图件收口脚本（``scripts/figures/base/01_eda_modeling_figures`` /
+``02_supplementary_figures`` / ``03_acquisition_flow``）：
 
 - :func:`validate_anchors` / :func:`print_anchor_validation`：绘图前只读
   ``outputs/tables/*.xlsx`` 与 ``outputs/logs/metrics/*.json``，逐项断言 Stage23 冻结锚点，

@@ -88,12 +88,12 @@ python -m compileall src scripts
 | 脚本 | 职责 | 审计表 |
 | --- | --- | --- |
 | `scripts/pipeline/12_build_modeling_dataset.py` | 建模宽表与泄漏审计 | `ch3/20_modeling_dataset_audit.xlsx` |
-| `scripts/ch4_lifecycle/13_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
-| `scripts/ch6_skills/13b_skill_eda_scope_audit.py` | 技能 EDA 两种统计范围与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
-| `scripts/ch7_model/14_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
-| `scripts/ch8_robust/15_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
-| `scripts/ch5_factors/16_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
-| `scripts/ch5_factors/17_final_interpretation_audit.py` | 最终解释审计与封版 | `ch5/25_final_interpretation_audit.xlsx` |
+| `scripts/ch4_lifecycle/01_run_eda.py` | 正式 EDA 与统计检验 | `ch4/21_eda_statistical_analysis.xlsx` |
+| `scripts/ch6_skills/01_skill_eda_scope_audit.py` | 技能 EDA 两种统计范围与分层榜单 | `ch6/19_skill_eda_scope_audit.xlsx` |
+| `scripts/ch7_model/01_train_salary_model.py` | 模型对比与验证集选模 | `ch7/22_model_comparison.xlsx` |
+| `scripts/ch8_robust/01_ablation_robustness_shap.py` | 消融 / Company Group Split / TreeSHAP | `ch8/23_ablation_robustness_shap.xlsx` |
+| `scripts/ch5_factors/01_company_field_semantic_audit.py` | 公司字段语义只读取证（认证 vs 标签） | `ch5/24_company_field_semantic_audit.xlsx` |
+| `scripts/ch5_factors/02_final_interpretation_audit.py` | 最终解释审计与封版 | `ch5/25_final_interpretation_audit.xlsx` |
 
 术语纪律：**公司认证**（公司认证标签，最佳雇主 / 行业认证）与**公司标签（福利标签）**
 （公司标签列表，免费健身设施等）必须严格区分；技能 SHAP 方向以 `presence_direction`
@@ -187,8 +187,8 @@ Stage 00~11 不再保留 Notebook 双实现。
 
 1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
    原 `33_business_time_dimension_analysis.xlsx` 与 `ch5/25_final_interpretation_audit.xlsx` 编号冲突，
-   前者改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_business_time_dimension`、读取脚本
-   `49_time_cohort_figures` 同步更新，收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
+   前者改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `09_business_time_dimension`、读取脚本
+   `01_time_cohort_figures` 同步更新，收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
    原 `34_visual_evidence_registry.xlsx`（见第 2 条）零现行引用已删除，`ch5/26_stage25_factor_revision.xlsx` 编号唯一化
    （收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）；原 `35_*` 冲突随
    `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。
@@ -198,7 +198,7 @@ Stage 00~11 不再保留 Notebook 双实现。
    中的 `evidence_native/*` 图片清单引用随之失效（仅存档留痕）。论文 `.docx` 已嵌入这些截图，正文不受影响。
 3. **顶层 `results/` 已归并**：原顶层 `results/` 并入 `outputs/`，拆分为 `outputs/results/`
    （实验数值 CSV/JSON）与 `outputs/deliverables/`（「补全任务」报告 / 派生表 / 派生图）；
-   生成脚本 `62_completion_supplement.py` 与交付文档内的路径引用同步更新。
+   生成脚本 `01_completion_supplement.py` 与交付文档内的路径引用同步更新。
 4. **运行期目录已建立**：`docs/methodology`、`docs/records`、`outputs/logs/`（含 `gates`/`metrics`）
    已建立（`.gitkeep` 占位）并纳入 `project_paths.ensure_directories()`，内容由流水线运行时生成；
    `tests/`、`notebooks/`、`docs/prompts/` 三个纯占位目录已移除。
@@ -210,30 +210,34 @@ Stage 00~11 不再保留 Notebook 双实现。
    角色子目录 `(根)/eda/supplementary/time`）；`outputs/tables/` 60 张审计表重编为**连续 00–59**
    （`_legacy/` 保持历史编号）；`outputs/results/` 16 个数值产物按实验分为
    `E1_E3_E4_E5 / E2_E7 / E3_E4_E5_bootstrap / E8` 四组（`project_paths.RESULTS_*`）。
-8. **26 系列递进链经评估不合并**：`26b→26j` 共 7 个脚本、约 8,270 行，含 23 处有意的跨脚本
-   动态装载（`26g` 需接收 `18a/18b` 的模块对象、`26e` 需 `26c` 的两个独立模块实例），
-   合并为单文件会显著降低可维护性且无法离线验证，故保留现结构。
+8. **26 系列递进链经评估不合并**：`02_temporal_tightening` → `08_figures` 共 7 个脚本、约 8,270 行，
+   含 23 处有意的跨脚本动态装载（`07_figure_rebuild` 需接收 `figures/base` 的 `01`/`02` 模块对象、
+   `05_figure_refresh` 需 `03_final_consolidation` 的两个独立模块实例），合并为单文件会显著降低
+   可维护性且无法离线验证，故保留现结构。
 9. **脚本层重分类与命名规范化**（本轮）：`scripts/` 由「纯论文章节目录」改为「角色 + 章节」结构——
    新增 `pipeline/`（Stage 00~12 数据流水线，自原 `ch3_data/` 迁入）、`figures/base|ch4..ch8/`
    （集中全部出图/重绘脚本）、`experiments/`（E1~E8）、`supplementary/`（补全交付）；
-   分析脚本保留章节目录 `ch4_lifecycle/`~`ch8_robust/`。同步清理文件命名：去掉 `redraw_` / `exp_` /
-   `stage26_x` 等冗余中缀（如 `26b_stage26_1_temporal_tightening.py` → `26b_temporal_tightening.py`、
-   `50_redraw_city_education_company_salary.py` → `50_city_education_company_salary.py`）。全部
-   `run_data_pipeline` 阶段表、脚本间动态装载、自路径留痕字符串与 README 引用同步更新。
+   分析脚本保留章节目录 `ch4_lifecycle/`~`ch8_robust/`。去掉文件名中 `redraw_` / `exp_` /
+   `stage26_x` 等冗余中缀。`run_data_pipeline` 阶段表、脚本间动态装载、自路径留痕字符串与
+   README 引用同步更新。
+10. **各目录内重新编号**（本轮）：除 `pipeline/`（其 `00~12` 即权威 Stage 编号，保持不动）外，
+   其余目录按目录内 `01..N` 连续编号——`ch4_lifecycle` 01~09、`ch5_factors` 01~03、
+   `ch6_skills`/`ch7_model`/`ch8_robust` 各 01、`experiments` 01~04、`figures/base` 01~03、
+   `figures/ch4`~`ch8` 各 01~0N、`supplementary` 01。跨脚本动态装载路径与 README 引用同步更新。
 
 ### 8.1 附带的路径收口
 
 - **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅已删除的历史脚本 `18d` 生成）
   与 `outputs/figures/supplementary/_stage26_5_map/`（仅已删除的历史脚本 `26i` 使用的地图缓存，可重新下载）。
 - **文件归位**：`data/skill_annotation_sample.xlsx` 从 `data/` 根移到 `data/interim/`，
-  生成脚本 `48_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
+  生成脚本 `04_E6_skill_annotation_sample.py` 与相关交付文档同步更新。
 - **文档门禁路径修正**：`run_data_pipeline.py` 的 `check_documentation()` 由读取不存在的
   `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
-- **硬编码路径收口**：`45/46/47/53/56/58/59/61/62` 等脚本中手写的 `outputs/results`、
-  `data/processed/model_splits.parquet` 等改为经 `project_paths`（新增 `OUTPUTS_RESULTS_DIR` 常量）取得。
+- **硬编码路径收口**：出图 / 实验脚本中手写的 `outputs/results`、
+  `data/processed/model_splits.parquet` 等改为经 `project_paths`（`OUTPUTS_RESULTS_DIR` 常量）取得。
 - **数据层归档**：14 张仅被已删除的历史脚本引用的历史审计表已 `git mv` 至
   `outputs/tables/_legacy/`（顶层只保留现行审计表）；`data/processed` 中的 stage26 试验产物仍被
-  现行 `26b` 引用，保持原位。
+  现行 `scripts/ch4_lifecycle/02_temporal_tightening.py` 引用，保持原位。
 - **元数据与产物分离**：出图脚本写出的 4 个 `*_registry.json` 由 `outputs/figures/` 迁至
   `outputs/registries/`（`project_paths.REGISTRIES_DIR`）；「补全任务」交付物由 `outputs/results/`
   迁至 `outputs/deliverables/`（`project_paths.DELIVERABLES_DIR`），使 `outputs/results/` 只保留实验数值。

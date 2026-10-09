@@ -2,7 +2,7 @@
 """脚本级共享支撑：收纳原在多个 scripts/*.py 中逐份复制的通用 helper。
 
 本模块集中实现各阶段与出图脚本重复使用的通用工具（动态装载脚本、文件 SHA-256、
-26f 装载、论文样式初始化、图件收尾、JSON 落盘、特征装配器构造），各脚本导入使用。
+26f 装载（Stage26.4 工具集）、论文样式初始化、图件收尾、JSON 落盘、特征装配器构造），各脚本导入使用。
 只收纳无副作用、与具体阶段统计范围无关的工具；带阶段全局依赖的 helper 仍留在各自脚本内。
 """
 
@@ -36,8 +36,8 @@ def load_script(alias: str, relative: str):
 
 
 def load_polish():
-    """装载 ``26f_final_polish``（多脚本复用的正式统计范围工具集）。"""
-    return load_script('s26f', 'scripts/ch4_lifecycle/26f_final_polish.py')
+    """装载 ``06_final_polish``（多脚本复用的正式统计范围工具集）。"""
+    return load_script('s26f', 'scripts/ch4_lifecycle/06_final_polish.py')
 
 
 def apply_style(g) -> None:
