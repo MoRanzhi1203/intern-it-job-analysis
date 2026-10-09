@@ -32,7 +32,7 @@ course-design-2/
 │  ├─ methodology/         方法论文档目录（流水线运行时生成）
 │  └─ records/             阶段记录目录（流水线运行时生成）
 └─ outputs/
-   ├─ tables/              审计表（编号 00~59 连续；按论文章节分目录 ch3~ch9；第9章仅汇总表；_legacy/ 为历史遗留表）
+   ├─ tables/              审计表（编号 00~59 连续；按论文章节分目录 ch3~ch9；第9章仅汇总表）
    ├─ figures/             论文 docx 实际出现的图件，按论文章节分目录、以论文图号命名
    │  ├─ ch3/ ~ ch8/       fig_<章>_<序>_<slug>.png（如 ch4/fig_4_6_planned_demand_by_job_category.png）
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）
@@ -127,7 +127,6 @@ normalized URL unique = 17,144；ID ↔ normalized URL 严格 1:1；最终岗位
 ## 5. 正式审计
 
 - `outputs/tables/`：每个正式阶段 / 正式问题一张最终审计表（**编号 00–59 连续**，按论文章节归入 `ch3/`~`ch8/`）；
-  历史遗留表（旧流水线 05~12、Stage26.3~26.6 归档脚本产出）已归入 `outputs/tables/_legacy/`（见第 8.1 节）；
 - 各阶段门禁 / 指标 JSON（`outputs/logs/gates|metrics/`）与流水线日志
   （`outputs/logs/data_pipeline_latest.log`）由流水线运行时生成（目录已建立）；
 - 专项审计：`ch3/16_company_attribute_semantic_anomaly_audit.xlsx`（源记录公司属性语义槽位异常，
@@ -207,8 +206,8 @@ Stage 00~11 不再保留 Notebook 双实现。
    （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）已删除，
    仅存于 Git 历史。
 7. **产物命名与编号统一**：`outputs/figures/` 25 张图统一为 `fig_<标签>_<ASCII slug>`（沿用
-   角色子目录 `(根)/eda/supplementary/time`）；`outputs/tables/` 60 张审计表重编为**连续 00–59**
-   （`_legacy/` 保持历史编号）；`outputs/results/` 16 个数值产物按实验分为
+   角色子目录 `(根)/eda/supplementary/time`）；`outputs/tables/` 审计表重编为**连续 00–59**；
+   `outputs/results/` 16 个数值产物按实验分为
    `E1_E3_E4_E5 / E2_E7 / E3_E4_E5_bootstrap / E8` 四组（`project_paths.RESULTS_*`）。
 8. **26 系列递进链经评估不合并**：`02_temporal_tightening` → `08_figures` 共 7 个脚本、约 8,270 行，
    含 23 处有意的跨脚本动态装载（`07_figure_rebuild` 需接收 `figures/base` 的 `01`/`02` 模块对象、
@@ -235,8 +234,8 @@ Stage 00~11 不再保留 Notebook 双实现。
   `docs/prompts/README.md` 改为读取项目根 `README.md`，必要标记 `Jupyter` 校正为 README 实际包含的 `Notebook`。
 - **硬编码路径收口**：出图 / 实验脚本中手写的 `outputs/results`、
   `data/processed/model_splits.parquet` 等改为经 `project_paths`（`OUTPUTS_RESULTS_DIR` 常量）取得。
-- **数据层归档**：14 张仅被已删除的历史脚本引用的历史审计表已 `git mv` 至
-  `outputs/tables/_legacy/`（顶层只保留现行审计表）；`data/processed` 中的 stage26 试验产物仍被
+- **历史审计表清理**：14 张仅被已删除的历史脚本引用的历史审计表已删除（曾归档于
+  `outputs/tables/_legacy/`，现仅存于 Git 历史）；`data/processed` 中的 stage26 试验产物仍被
   现行 `scripts/ch4_lifecycle/02_temporal_tightening.py` 引用，保持原位。
 - **元数据与产物分离**：出图脚本写出的 4 个 `*_registry.json` 由 `outputs/figures/` 迁至
   `outputs/registries/`（`project_paths.REGISTRIES_DIR`）；「补全任务」交付物由 `outputs/results/`
