@@ -1,7 +1,6 @@
 # 记录 21：Stage 14 薪资预测模型对比、验证集选模与一次性 test 评估
 
-> 本记录由 `scripts/ch7_model/14_train_salary_model.py` 自动生成，数字全部来自真实运行结果。
-> 本轮**不做 SHAP、不做正式消融、不使用公司 Group Split 重新选主模型、不据 test 反复调参**。
+> 本记录由 `scripts/ch7_model/14_train_salary_model.py` 自动生成；本轮**不做 SHAP、不做正式消融、不使用公司 Group Split 重新选主模型、不据 test 反复调参**。
 
 ## 1. 数据划分（所有模型复用同一划分）
 
@@ -47,7 +46,7 @@
 | CatBoost | {'depth': 6, 'learning_rate': 0.05, 'iterations': 500}；{'depth': 8, 'learning_rate': 0.05, 'iterations': 500} |
 | LightGBM | {'n_estimators': 400, 'learning_rate': 0.05, 'num_leaves': 31}；{'n_estimators': 400, 'learning_rate': 0.05, 'num_leaves': 63}；{'n_estimators': 600, 'learning_rate': 0.03, 'num_leaves': 31} |
 
-- XGBoost：NOT_RUN（环境未安装 xgboost，按约定不强行安装；已使用 LightGBM）（未为了凑模型数量安装依赖）；
+- XGBoost：NOT_RUN（环境未安装 xgboost，按约定不强行安装，改用 LightGBM）；
 
 ## 5. Validation 比较与主模型选择
 
@@ -59,8 +58,7 @@
 | Ridge | {'alpha': 10.0} | 45.384395 | 85.494796 | 0.385652 |
 | Dummy | {'strategy': 'mean'} | 65.414734 | 109.093247 | -0.000301 |
 
-- 主模型按 **validation MAE 最小**选择：**LightGBM**；
-- 选择依据仅使用 train/validation，test 未参与任何选择；
+- 主模型按 **validation MAE 最小**选择：**LightGBM**（选择仅用 train/validation，test 未参与任何选择）。
 
 ## 6. Test 评估（锁定配置后只评估一次）
 
@@ -120,7 +118,4 @@
 
 ## 10. 边界
 
-- 未执行 SHAP、未执行正式消融（Stage 15）；
-- 未使用公司 Group Split 选主模型；
-- 未根据 test 结果调整任何配置；
-- 本轮未执行 git commit。
+- 未执行 SHAP、未执行正式消融（Stage 15）；未使用公司 Group Split 选主模型；未根据 test 结果调整任何配置；本轮未执行 git commit。

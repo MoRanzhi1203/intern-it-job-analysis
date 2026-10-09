@@ -1,6 +1,6 @@
 # 阶段记录：Stage 10 公司简介快照 / 版本 / 语义时序（Refinement R1）
 
-> 本文件由 `scripts/ch3_data/10_build_company_text_semantics.py` 生成，全部数字来自真实运行结果。
+> 本文件由 `scripts/ch3_data/10_build_company_text_semantics.py` 生成。
 
 ## 1. 与岗位层的关键区别
 
@@ -17,8 +17,7 @@
 - MISSING：10327；
 - 同时间多简介涉及公司数：0。
 
-> 只有 CONSISTENT 快照允许进入正式公司简介版本历史；AMBIGUOUS / MISSING 一律排除，
-且即使主候选支持率很高也不自动进入正式时序。
+> 只有 CONSISTENT 快照允许进入正式公司简介版本历史；AMBIGUOUS / MISSING 一律排除，且即使主候选支持率很高也不自动进入正式时序。
 
 ## 3. 规模
 
@@ -57,8 +56,7 @@
 | company_entity_id | 旧版本 | 新版本 | 变化时间 | 跨越歧义快照数量 |
 | --- | --- | --- | --- | --- |
 
-> A → B 之间若存在 AMBIGUOUS 快照，事件必须记录跨越歧义快照数量，
-避免把变化时间（新版本首次有效观测时间）误读为精确发生时刻。
+> A → B 之间若存在 AMBIGUOUS 快照，事件必须记录跨越歧义快照数量，避免把变化时间（新版本首次有效观测时间）误读为精确发生时刻。
 
 ## 7. 重构前后对比
 
@@ -88,9 +86,7 @@
 
 ## 9. 句向量存储与复现
 
-- 向量文件：`NOT_RUN`；索引表：`NOT_RUN`；
-- 复现记录：`NOT_RUN`；
-- 向量数组：{}；
+- 向量文件、索引表、复现记录：`NOT_RUN`；向量数组：{}；
 - 高维向量不写入 `company_profile_history.parquet`。
 
 ## 10. 运行门禁

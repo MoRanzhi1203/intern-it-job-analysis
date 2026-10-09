@@ -13,10 +13,8 @@
 | `figures_base/` | 全章出图基座 | `18a`、`18b`、`18c` |
 | `supp/` | 补全任务 | `48`、`62` |
 
-> 定位约定已随之调整：脚本用 `Path(__file__).resolve().parents[2]` 定位项目根（较原扁平结构多一层）；
-> 跨脚本装载一律写「项目根 + 相对路径」，如 `scripts/figures_base/18a_redraw_eda_modeling_figures.py`。
-> 编号说明：脚本编号仅用于排序，**权威分组以本表为准**。存在历史缺号（如缺 `57`），
-> 且 `13_run_eda` / `13b_skill_eda_scope_audit` 同属 Stage 13（`13b` 为技能 EDA 支线，避免重号）。
+> 定位约定已随之调整：脚本用 `Path(__file__).resolve().parents[2]` 定位项目根（较原扁平结构多一层）；跨脚本装载一律写「项目根 + 相对路径」，如 `scripts/figures_base/18a_redraw_eda_modeling_figures.py`。
+> 编号说明：脚本编号仅用于排序，**权威分组以本表为准**；存在历史缺号（如缺 `57`），且 `13_run_eda` / `13b_skill_eda_scope_audit` 同属 Stage 13（`13b` 为技能 EDA 支线，避免重号）。
 
 ## 1. 流水线入口
 

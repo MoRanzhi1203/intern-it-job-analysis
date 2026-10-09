@@ -1,13 +1,12 @@
 # course-design-2：互联网 IT 实习岗位薪资影响因素分析与预测
 
-> 本 README 只描述**当前有效架构**；历史返工过程与旧方案已随本轮清理删除，仅存于 Git 历史
-> （提交历史即旧实现的长期存档）。原方法论文档 `docs/methodology/data_preprocessing_pipeline.md`
-> 当前未随仓库保留（见第 8 节）。
+> 本 README 只描述**当前有效架构**，历史返工过程仅存于 Git 历史。原方法论文档
+> `docs/methodology/data_preprocessing_pipeline.md` 未随仓库保留（见第 8 节）。
 
 ## 1. 项目结构
 
-> 本节描述**磁盘上实际存在的结构**。`docs/methodology`、`docs/records`、`outputs/logs/`
-> 目录已建立（以 `.gitkeep` 占位），其中的阶段记录 / 方法论文档 / 门禁与指标 JSON 在流水线运行时生成。
+> 本节描述**磁盘上实际存在的结构**；`docs/methodology`、`docs/records`、`outputs/logs/`
+> 中的阶段记录 / 方法论文档 / 门禁与指标 JSON 在流水线运行时生成。
 
 ```text
 course-design-2/
@@ -183,31 +182,29 @@ Stage 00~11 不再保留 Notebook 双实现。
 
 ## 8. 结构治理记录
 
-以下登记项本轮已处理，改动均同步修改了脚本引用与 README：
+以下登记项已处理，改动均同步更新脚本引用与 README：
 
 1. **审计表编号冲突已消解**：`outputs/tables/` 编号统一为 00~75 且唯一。
    原 `33_business_time_dimension_analysis.xlsx` 与 `ch5/25_final_interpretation_audit.xlsx` 编号冲突，
-   前者已改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
-   `49_redraw_time_cohort_figures` 同步更新，并收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
-   原 `34_visual_evidence_registry.xlsx` 为已删除证据阶段（见第 2 条）的陈旧产物、零现行引用，已删除，
-   `ch5/26_stage25_factor_revision.xlsx` 编号唯一化（收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）。
-   （原 `35_*` 冲突已随 `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。）
-2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）与
-   `outputs/figures/evidence/`（Stage27.0 组合图）两个目录、其生成脚本（`36`/`40`/`43`/`44`）
-   及布局登记表 `35_visual_evidence_native_layout_registry.xlsx` 已按要求删除；
-   归档脚本（`41`/`42`）中的 `evidence_native/*` 图片清单引用随之失效（仅存档留痕）。
-   论文 `.docx` 内已嵌入这些截图，正文不受影响。
-3. **顶层 `results/` 已归并**：原顶层 `results/` 已并入 `outputs/`，并按语义拆分为
-   `outputs/results/`（实验数值 CSV/JSON）与 `outputs/deliverables/`（「补全任务」报告 / 派生表 / 派生图）；
+   前者改为 `ch4/59_business_time_dimension_analysis.xlsx`（写入脚本 `33_stage26_7`、读取脚本
+   `49_redraw_time_cohort_figures` 同步更新，收口到常量 `project_paths.TABLE_BUSINESS_TIME_DIMENSION`）；
+   原 `34_visual_evidence_registry.xlsx`（见第 2 条）零现行引用已删除，`ch5/26_stage25_factor_revision.xlsx` 编号唯一化
+   （收口到 `project_paths.TABLE_STAGE25_FACTOR_REVISION`）；原 `35_*` 冲突随
+   `35_visual_evidence_native_layout_registry.xlsx` 删除而消解。
+2. **证据图集已整体移除**：`outputs/figures/evidence_native/`（Stage27.0A 单图）、
+   `outputs/figures/evidence/`（Stage27.0 组合图）目录、生成脚本（`36`/`40`/`43`/`44`）
+   及布局登记表 `35_visual_evidence_native_layout_registry.xlsx` 已删除；归档脚本（`41`/`42`）
+   中的 `evidence_native/*` 图片清单引用随之失效（仅存档留痕）。论文 `.docx` 已嵌入这些截图，正文不受影响。
+3. **顶层 `results/` 已归并**：原顶层 `results/` 并入 `outputs/`，拆分为 `outputs/results/`
+   （实验数值 CSV/JSON）与 `outputs/deliverables/`（「补全任务」报告 / 派生表 / 派生图）；
    生成脚本 `62_completion_supplement.py` 与交付文档内的路径引用同步更新。
 4. **运行期目录已建立**：`docs/methodology`、`docs/records`、`outputs/logs/`（含 `gates`/`metrics`）
-   已建立（`.gitkeep` 占位）并纳入 `project_paths.ensure_directories()` 的幂等创建列表；
-   其中的阶段记录 / 方法论 / 门禁与指标 JSON 仍由流水线运行时生成；
-   `tests/`、`notebooks/`、`docs/prompts/` 三个纯占位目录已随本轮清理移除。
+   已建立（`.gitkeep` 占位）并纳入 `project_paths.ensure_directories()`，内容由流水线运行时生成；
+   `tests/`、`notebooks/`、`docs/prompts/` 三个纯占位目录已移除。
 5. **仓库根目录遗留**：`_s24/prot_before.json` 为历史遗留、零引用，已于上一轮删除。
 6. **返工脚本已删除**：18 个"零引用且已被取代 / 目标目录已不存在"的返工脚本
-   （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）
-   已随本轮清理删除，仅存于 Git 历史（提交历史可追溯）。
+   （Stage23.1、Stage26.x 中途稿、Stage27.0 / 27.0A 论文装配链、Word 装配与一次性补丁等）已删除，
+   仅存于 Git 历史。
 7. **产物命名与编号统一**：`outputs/figures/` 25 张图统一为 `fig_<标签>_<ASCII slug>`（沿用
    角色子目录 `(根)/eda/supplementary/time`）；`outputs/tables/` 60 张审计表重编为**连续 00–59**
    （`_legacy/` 保持历史编号）；`outputs/results/` 16 个数值产物按实验分为
@@ -216,7 +213,7 @@ Stage 00~11 不再保留 Notebook 双实现。
    动态装载（`26g` 需接收 `18a/18b` 的模块对象、`26e` 需 `26c` 的两个独立模块实例），
    合并为单文件会显著降低可维护性且无法离线验证，故保留现结构。
 
-### 8.1 本轮附带的路径收口
+### 8.1 附带的路径收口
 
 - **孤儿产物清理**：删除零引用产物 `outputs/figures/_stage23_1_registry.json`（仅已删除的历史脚本 `18d` 生成）
   与 `outputs/figures/supplementary/_stage26_5_map/`（仅已删除的历史脚本 `26i` 使用的地图缓存，可重新下载）。

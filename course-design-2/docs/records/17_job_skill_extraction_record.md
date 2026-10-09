@@ -1,7 +1,6 @@
 # 记录 17：Stage 07 岗位技能需求提取与文本特征
 
-> 本记录由 `scripts/ch3_data/07_extract_job_text_features.py` 自动生成，数字全部来自真实运行结果；
-> 技能提取只使用**模型安全版**岗位描述（不引入薪资文字），且只对应**最终核心版本**。
+> 本记录由 `scripts/ch3_data/07_extract_job_text_features.py` 自动生成。技能提取只使用**模型安全版**岗位描述（不引入薪资文字），只对应**最终核心版本**。
 
 ## 1. 词典结构（config/skills.yml，单一权威来源）
 
@@ -90,7 +89,7 @@
 - 岗位 × 规范技能 long-format：`data\features\job_skill_membership.parquet`（37442 行，(intern_id, canonical_skill) 重复 0 行）；
 - 技能审计表：`outputs\tables\ch3\18_job_skill_extraction_audit.xlsx`；
 
-> 高频技能 multi-hot（skill_Python / skill_Java / …）属于**建模输入矩阵**，在 Stage 12 建模宽表阶段由 long-format 临时展开，不写入核心岗位实体表；低频技能继续保留在 long table 用于技能需求分析。
+> 高频技能 multi-hot（skill_Python / skill_Java / …）属**建模输入矩阵**，由 Stage 12 建模宽表阶段的 long-format 临时展开，不写入核心岗位实体表；低频技能保留在 long table 用于技能需求分析。
 
 ## 7. 运行门禁（Stage 07）
 
