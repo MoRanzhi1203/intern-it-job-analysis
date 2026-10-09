@@ -121,29 +121,29 @@ def save(stem: str, fig, subfigures, meta: dict):
 # 一、复用既有绘图函数（已在别处冻结的数据与逻辑）
 # =========================================================================== #
 def run_reused() -> None:
-    a18 = _load('_s26e_18a', 'scripts/figures/base/01_eda_modeling_figures.py')
-    b18 = _load('_s26e_18b', 'scripts/figures/base/02_supplementary_figures.py')
-    c26 = _load('_s26e_26c', 'scripts/ch4_lifecycle/03_final_consolidation.py')
+    eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
+    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
+    consolidation = _load('_consolidation', 'scripts/ch4_lifecycle/03_final_consolidation.py')
 
     # ---- 02_supplementary_figures 的全局锚点与只读宽表（与 02_supplementary_figures.main 完全一致） ---- #
-    b18.DATA = b18.load_data()
-    b18.JOB = b18.build_job_frame()
-    b18.V = b18.build_anchor_values(b18.DATA, b18.JOB)
-    V = b18.V
-    V['stats_table'] = b18.DATA['stats']
-    V['label_block'] = b18.DATA['stats'][
-        b18.DATA['stats']['检验块'] == '单标签二元比较（present vs absent；Mann–Whitney + BH-FDR）'].copy()
-    kw = b18.DATA['stats'][b18.DATA['stats']['检验块'] == '多组比较（Kruskal–Wallis）'].copy()
+    supplementary_figures.DATA = supplementary_figures.load_data()
+    supplementary_figures.JOB = supplementary_figures.build_job_frame()
+    supplementary_figures.V = supplementary_figures.build_anchor_values(supplementary_figures.DATA, supplementary_figures.JOB)
+    V = supplementary_figures.V
+    V['stats_table'] = supplementary_figures.DATA['stats']
+    V['label_block'] = supplementary_figures.DATA['stats'][
+        supplementary_figures.DATA['stats']['检验块'] == '单标签二元比较（present vs absent；Mann–Whitney + BH-FDR）'].copy()
+    kw = supplementary_figures.DATA['stats'][supplementary_figures.DATA['stats']['检验块'] == '多组比较（Kruskal–Wallis）'].copy()
     V['kw_table'] = kw
-    V['robust_extreme'] = b18.DATA['robust_extreme']
-    V['robust_target'] = b18.DATA['robust_target']
-    V['ablation'] = b18.DATA['ablation']
-    V['manifest'] = b18.DATA['manifest']
-    V['leak_blacklist'] = b18.DATA['leak_blacklist']
-    V['skill_threshold'] = b18.DATA['skill_threshold']
-    V['text_dim'] = b18.DATA['text_dim']
-    tag_sets = b18.JOB['公司标签列表'].map(b18.as_tag_set)
-    TOP5 = b18.TOP5_TAGS
+    V['robust_extreme'] = supplementary_figures.DATA['robust_extreme']
+    V['robust_target'] = supplementary_figures.DATA['robust_target']
+    V['ablation'] = supplementary_figures.DATA['ablation']
+    V['manifest'] = supplementary_figures.DATA['manifest']
+    V['leak_blacklist'] = supplementary_figures.DATA['leak_blacklist']
+    V['skill_threshold'] = supplementary_figures.DATA['skill_threshold']
+    V['text_dim'] = supplementary_figures.DATA['text_dim']
+    tag_sets = supplementary_figures.JOB['公司标签列表'].map(supplementary_figures.as_tag_set)
+    TOP5 = supplementary_figures.TOP5_TAGS
     masks = {tag: tag_sets.map(lambda values, tag=tag: tag in values) for tag in TOP5}
     V['top5_counts'] = {tag: int(masks[tag].sum()) for tag in TOP5}
     V['top5_intersection'] = int(tag_sets.map(
@@ -160,7 +160,7 @@ def run_reused() -> None:
     V['top5_jaccard'] = jaccard
 
     # ---- 时间序列图件所需的冻结数据（与 03_final_consolidation.main 完全一致：冻结日级表） ---- #
-    episodes = pd.read_parquet(c26.EPISODE_PATH)
+    episodes = pd.read_parquet(consolidation.EPISODE_PATH)
     daily = read_table('ch4/37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
     dates = pd.to_datetime(daily['date'])
     date_min, date_max = dates.min(), dates.max()
@@ -170,20 +170,20 @@ def run_reused() -> None:
 
     # ---------------- 图 4-1 ----------------
     _apply_mode('stack', 15.5, 2.8, flat)
-    fig, subs, meta = a18.build_01_sample_structure({})
+    fig, subs, meta = eda_figures.build_01_sample_structure({})
     meta = {**meta, '用途': '第4章 图 4-1 重制（1×2 横排 → 2×1 纵排）'}
     save('fig_s34_formal_sample_skill_extraction_structure', fig, subs, meta)
 
     # ---------------- 图 4-3 ----------------
     _apply_mode('stack', 10.5, 2.8, flat)
-    fig, subs, meta = a18.build_02_salary_distribution({})
+    fig, subs, meta = eda_figures.build_02_salary_distribution({})
     meta = {**meta, '用途': '第4章 图 4-3 重制（1×2 横排 → 2×1 纵排）'}
     save('fig_s35_salary_midpoint_distribution', fig, subs, meta)
 
     # ---------------- 图 4-4（复用 03_final_consolidation.figure_duration，只改输出文件名） ---------------- #
-    c26.FIG_STEMS[1] = 'fig_s36_recruitment_duration_distribution'
+    consolidation.FIG_STEMS[1] = 'fig_s36_recruitment_duration_distribution'
     _apply_mode('stack', 10.5, 2.8, flat)
-    c26.figure_duration(episodes, [])
+    consolidation.figure_duration(episodes, [])
     report('fig_s36_recruitment_duration_distribution', 10.5)
     # ---------------- 图 4-5（2×1 纵排，图例置于坐标区上方） ---------------- #
     _apply_mode('stack', 15.5, 3.0,
@@ -201,7 +201,7 @@ def run_reused() -> None:
           ('C_t_7d', '每日结束（7 日滚动）', plot_style.ACCENT_COLOR, 1.8)]),
     ]
     for (letter, title, series_list), ax in zip(panels, axes):
-        handles = c26._window_marks(ax, date_min, date_max)
+        handles = consolidation._window_marks(ax, date_min, date_max)
         for column, label, color, width in series_list:
             ax.plot(dates, daily[column], color=color, linewidth=width, label=label)
         ax.set_xlabel('业务日期（由岗位发布时间 / 投递截止日期重构）')
@@ -221,26 +221,26 @@ def run_reused() -> None:
 
     # ---------------- 图 5-1（1×3 横排 → 3×1 纵排） ---------------- #
     _apply_mode('stack', 10.5, 2.15, flat)
-    fig, subs, meta = a18.build_04_structured_factor_salary({})
+    fig, subs, meta = eda_figures.build_04_structured_factor_salary({})
     meta = {**meta, '用途': '第5章 图 5-1 重制（1×3 横排 → 3×1 纵排）'}
     save('fig_s40_city_education_company_size_salary', fig, subs, meta)
 
     # ---------------- 图 5-2 ----------------
     _apply_mode('stack', 15.5, 2.8, wide_left)
-    fig, subs = b18.fig_s04(0)
+    fig, subs = supplementary_figures.fig_s04(0)
     save('fig_s41_certification_salary_distribution', fig, subs,
          {'数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
           '用途': '第5章 图 5-2 重制（1×2 横排 → 2×1 纵排）'})
 
     # ---------------- 图 5-3 ----------------
     _apply_mode('stack', 15.5, 2.8, wide_left)
-    fig, subs = b18.fig_s05s06(0)
+    fig, subs = supplementary_figures.fig_s05s06(0)
     save('fig_s42_benefit_label_salary_association', fig, subs,
          {'数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
           '用途': '第5章 图 5-3 重制（1×2 横排 → 2×1 纵排）'})
 
     # ---------------- 图 5-4（复用 ch5_factors/03_factor_revision.figure_s17） ---------------- #
-    f25 = _load('_s26e_25', 'scripts/ch5_factors/03_factor_revision.py')
+    factor_revision = _load('_factor_revision', 'scripts/ch5_factors/03_factor_revision.py')
     excl = pd.read_excel(TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION,
                          sheet_name='01_岗位大类_二元检验')
     sub = pd.read_excel(TABLES_DIR / project_paths.TABLE_STAGE25_FACTOR_REVISION,
@@ -250,29 +250,29 @@ def run_reused() -> None:
         sub.head(10)[['类别', 'present岗位数', 'q值_BHFDR', 'Cliff_delta']].assign(字段='岗位细分类')],
         ignore_index=True)
     top_binary['abs_delta'] = top_binary['Cliff_delta'].abs()
-    f25.FIG_STEM = 'fig_s43_salary_factor_evidence_multi_category'
+    factor_revision.FIG_STEM = 'fig_s43_salary_factor_evidence_multi_category'
     _apply_mode('stack', 15.5, 2.8, wide_left)
-    f25.figure_s17(f25.exclusive_factor_table(), top_binary)
+    factor_revision.figure_s17(factor_revision.exclusive_factor_table(), top_binary)
     report('fig_s43_salary_factor_evidence_multi_category', 15.5)
 
     # ---------------- 图 6-2（热力图明显放大） ---------------- #
     _apply_mode('single', 15.5, 5.2,
                 {'left': 0.36, 'right': 0.98, 'bottom': 0.30, 'top': 0.97})
-    fig, subs, meta = a18.build_07_category_skill_heatmap({})
+    fig, subs, meta = eda_figures.build_07_category_skill_heatmap({})
     meta = {**meta, '用途': '第6章 图 6-2 放大（接近版心最大宽度并增加图高）'}
     save('fig_6_3_category_skill_hit_heatmap', fig, subs, meta)
 
     # ---------------- 图 8-1（复用 03_final_consolidation.figure_ablation） ---------------- #
     ablation = read_table('ch7/49_stage26_3_metrics_after_feature_removal.xlsx', '03_消融五配置')
-    c26.FIG_STEMS[0] = 'fig_s45_feature_group_ablation_comparison'
+    consolidation.FIG_STEMS[0] = 'fig_s45_feature_group_ablation_comparison'
     _apply_mode('single', 15.5, 4.2,
                 {'left': 0.10, 'right': 0.98, 'bottom': 0.34, 'top': 0.84})
-    c26.figure_ablation(ablation, [])
+    consolidation.figure_ablation(ablation, [])
     report('fig_s45_feature_group_ablation_comparison', 15.5)
 
     # ---------------- 图 8-4 ----------------
     _apply_mode('stack', 10.5, 2.8, wide_left)
-    fig, subs = b18.fig_s10(0)
+    fig, subs = supplementary_figures.fig_s10(0)
     save('fig_s47_robustness_check_comparison', fig, subs,
          {'数据来源': 'ch8/23_ablation_robustness_shap.xlsx / 05_极端值敏感性、06_目标稳健性',
           '用途': '第8章 图 8-4 重制（1×2 横排 → 2×1 纵排）'})
@@ -282,9 +282,9 @@ def run_reused() -> None:
 # 二、按提示词删除重复面板后单独重绘的图件
 # =========================================================================== #
 def run_custom() -> None:
-    c26 = _load('_s26e_26c2', 'scripts/ch4_lifecycle/03_final_consolidation.py')
+    consolidation = _load('_consolidation_b', 'scripts/ch4_lifecycle/03_final_consolidation.py')
     daily = read_table('ch4/37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')
-    category_daily = c26.build_category_daily()
+    category_daily = consolidation.build_category_daily()
     dates = pd.to_datetime(daily['date'])
     date_min, date_max = dates.min(), dates.max()
 
@@ -292,7 +292,7 @@ def run_custom() -> None:
     _apply_mode('single', 15.5, 3.7,
                 {'left': 0.14, 'right': 0.98, 'bottom': 0.28, 'top': 0.80})
     fig, ax = plt.subplots(figsize=(5.85, 3.7))
-    handles = c26._window_marks(ax, date_min, date_max)
+    handles = consolidation._window_marks(ax, date_min, date_max)
     lines = []
     for position, (category, series) in enumerate(category_daily.items()):
         values = series.reindex(dates).to_numpy('float64')
@@ -320,7 +320,7 @@ def run_custom() -> None:
     _apply_mode('single', 15.5, 3.7,
                 {'left': 0.15, 'right': 0.98, 'bottom': 0.28, 'top': 0.80})
     fig, ax = plt.subplots(figsize=(5.85, 3.7))
-    handles = c26._window_marks(ax, date_min, date_max)
+    handles = consolidation._window_marks(ax, date_min, date_max)
     band = ax.fill_between(dates, daily['salary_p25'], daily['salary_p75'],
                            color=plot_style.MAIN_COLOR, alpha=0.18, linewidth=0,
                            label='P25~P75（IQR）')
@@ -342,7 +342,7 @@ def run_custom() -> None:
           '用途': '第4章 图 4-7（删除与图 4-5 重复的活跃数量面板并放大）'})
 
     # ---------------- 图 7-1：薪资预测模型构建与评估流程 ---------------- #
-    m26d = _load('_s26e_26d', 'scripts/ch4_lifecycle/04_structure_finalize.py')
+    structure_finalize = _load('_structure_finalize', 'scripts/ch4_lifecycle/04_structure_finalize.py')
     steps = [
         ('14,883 个正式薪资样本', '来自 17,144 个唯一岗位实体中薪资可解析的岗位'),
         ('A/B/C/D/E 特征组与 Safe-F', '岗位基础、地域、公司、技能与文本语义，加发布时间位置'),
@@ -354,7 +354,7 @@ def run_custom() -> None:
         ('训练集与验证集重拟合', '测试集一次性评估，不参与模型与参数选择'),
         ('消融、分组划分、时间划分与 SHAP', '稳健性、跨公司与跨发布时间区间泛化'),
     ]
-    assert len(steps) == len(m26d.FLOW_STEPS)
+    assert len(steps) == len(structure_finalize.FLOW_STEPS)
     _apply_mode('single', 10.5, 6.5,
                 {'left': 0.02, 'right': 0.98, 'bottom': 0.02, 'top': 0.98})
     from matplotlib.patches import FancyArrowPatch, Rectangle  # noqa: PLC0415

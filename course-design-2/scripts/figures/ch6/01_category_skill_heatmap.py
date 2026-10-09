@@ -90,12 +90,12 @@ def percent_colorbar(fig) -> dict:
 
 
 def main() -> int:
-    g = _load('_g26_stage26_4', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    a18 = _load('_g18a_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
+    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+    eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
     _apply_style(g)
     g._apply_mode(*MODE_ARGS)
 
-    fig, subfigures, meta = a18.build_07_category_skill_heatmap({})
+    fig, subfigures, meta = eda_figures.build_07_category_skill_heatmap({})
     labels = align_column_labels(fig.axes[0])
     colorbar_box = stretch_colorbar(fig)
     colorbar_info = percent_colorbar(fig)

@@ -222,29 +222,29 @@ def round_labels(fig, ndigits: int = 3) -> None:
 # =========================================================================== #
 # 复用既有绘图函数重绘（内存内版式重映射）
 # =========================================================================== #
-def setup_supplementary_figures(b18) -> None:
+def setup_supplementary_figures(supplementary_figures) -> None:
     """按 figures/base/02_supplementary_figures.main 的同一顺序载入冻结锚点（只读，不写回任何文件）。
 
     与 scripts/ch4_lifecycle/05_figure_refresh.py 的装载块一致，
     使图内数值与 Stage23 冻结锚点一一对应。
     """
-    b18.DATA = b18.load_data()
-    b18.JOB = b18.build_job_frame()
-    b18.V = b18.build_anchor_values(b18.DATA, b18.JOB)
-    values = b18.V
-    values['stats_table'] = b18.DATA['stats']
-    values['label_block'] = b18.DATA['stats'][
-        b18.DATA['stats']['检验块'] == '单标签二元比较（present vs absent；Mann–Whitney + BH-FDR）'].copy()
-    values['kw_table'] = b18.DATA['stats'][
-        b18.DATA['stats']['检验块'] == '多组比较（Kruskal–Wallis）'].copy()
-    values['robust_extreme'] = b18.DATA['robust_extreme']
-    values['robust_target'] = b18.DATA['robust_target']
-    values['ablation'] = b18.DATA['ablation']
-    values['manifest'] = b18.DATA['manifest']
-    values['skill_threshold'] = b18.DATA['skill_threshold']
-    values['text_dim'] = b18.DATA['text_dim']
-    tag_sets = b18.JOB['公司标签列表'].map(b18.as_tag_set)
-    top5 = b18.TOP5_TAGS
+    supplementary_figures.DATA = supplementary_figures.load_data()
+    supplementary_figures.JOB = supplementary_figures.build_job_frame()
+    supplementary_figures.V = supplementary_figures.build_anchor_values(supplementary_figures.DATA, supplementary_figures.JOB)
+    values = supplementary_figures.V
+    values['stats_table'] = supplementary_figures.DATA['stats']
+    values['label_block'] = supplementary_figures.DATA['stats'][
+        supplementary_figures.DATA['stats']['检验块'] == '单标签二元比较（present vs absent；Mann–Whitney + BH-FDR）'].copy()
+    values['kw_table'] = supplementary_figures.DATA['stats'][
+        supplementary_figures.DATA['stats']['检验块'] == '多组比较（Kruskal–Wallis）'].copy()
+    values['robust_extreme'] = supplementary_figures.DATA['robust_extreme']
+    values['robust_target'] = supplementary_figures.DATA['robust_target']
+    values['ablation'] = supplementary_figures.DATA['ablation']
+    values['manifest'] = supplementary_figures.DATA['manifest']
+    values['skill_threshold'] = supplementary_figures.DATA['skill_threshold']
+    values['text_dim'] = supplementary_figures.DATA['text_dim']
+    tag_sets = supplementary_figures.JOB['公司标签列表'].map(supplementary_figures.as_tag_set)
+    top5 = supplementary_figures.TOP5_TAGS
     masks = {tag: tag_sets.map(lambda items, tag=tag: tag in items) for tag in top5}
     values['top5_counts'] = {tag: int(masks[tag].sum()) for tag in top5}
     values['top5_intersection'] = int(tag_sets.map(
@@ -262,13 +262,13 @@ def setup_supplementary_figures(b18) -> None:
 
 
 def run_reused() -> list:
-    a18 = _load('_s26g_18a', 'scripts/figures/base/01_eda_modeling_figures.py')
-    b18 = _load('_s26g_18b', 'scripts/figures/base/02_supplementary_figures.py')
-    c26 = _load('_s26g_26c', 'scripts/ch4_lifecycle/03_final_consolidation.py')
-    setup_supplementary_figures(b18)
+    eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
+    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
+    consolidation = _load('_consolidation', 'scripts/ch4_lifecycle/03_final_consolidation.py')
+    setup_supplementary_figures(supplementary_figures)
 
     # 图 5-2 的 ε² 统计注释框属于「图内说明框」，按 §12 整体移入正文
-    b18.note = lambda *args, **kwargs: None
+    supplementary_figures.note = lambda *args, **kwargs: None
     # 图 4-3 的 annotate_stats 同样是多行统计注释框
     plot_style.annotate_stats = lambda *args, **kwargs: None
 
@@ -278,7 +278,7 @@ def run_reused() -> list:
     _apply_mode('stack', 10.5, 2.75,
                 {'left': 0.17, 'right': 0.975, 'bottom': 0.135, 'top': 0.955,
                  'hspace': 0.42})
-    fig, subs, meta = a18.build_02_salary_distribution({})
+    fig, subs, meta = eda_figures.build_02_salary_distribution({})
     results.append(save('fig_4_2_salary_midpoint_distribution', fig, subs,
                         {**meta, '图内文字': '已删除 Median/IQR 统计注释框，只保留 P50/P90 参考线',
                          '用途': '第4章 图 4-3 重制（1×2 横排 → 2×1 纵排）'}))
@@ -318,7 +318,7 @@ def run_reused() -> list:
     _apply_mode('stack', 10.5, 2.15,
                 {'left': 0.20, 'right': 0.975, 'bottom': 0.115, 'top': 0.955,
                  'hspace': 0.72})
-    fig, subs, meta = a18.build_04_structured_factor_salary({})
+    fig, subs, meta = eda_figures.build_04_structured_factor_salary({})
     results.append(save('fig_5_4_city_education_company_size_salary', fig, subs,
                         {**meta, '用途': '第5章 图 5-1 重制（1×3 横排 → 3×1 纵排）'}))
 
@@ -326,7 +326,7 @@ def run_reused() -> list:
     _apply_mode('stack', 15.5, 2.85,
                 {'left': 0.30, 'right': 0.975, 'bottom': 0.145, 'top': 0.90,
                  'hspace': 0.72})
-    fig, subs = b18.fig_s04(0)
+    fig, subs = supplementary_figures.fig_s04(0)
     round_labels(fig, 3)
     results.append(save('fig_5_5_certification_salary_distribution', fig, subs,
                         {'数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（成对比较）',
@@ -336,7 +336,7 @@ def run_reused() -> list:
     # ---------------- 图 5-3（拆分：福利标签薪资关联效应） ---------------- #
     _apply_mode('single', 15.5, 4.6,
                 {'left': 0.115, 'right': 0.975, 'bottom': 0.155, 'top': 0.86})
-    fig, subs = b18.fig_s05(0)
+    fig, subs = supplementary_figures.fig_s05(0)
     results.append(save('fig_s61_benefit_label_salary_effect', fig, subs,
                         {'数据来源': 'ch4/21_eda_statistical_analysis.xlsx / 11_统计检验（标签块）',
                          '图内文字': '已删除进入比较数 / 显著数 / 上限与阈值说明框',
@@ -347,8 +347,8 @@ def run_reused() -> list:
                 {'left': 0.235, 'right': 0.975, 'bottom': 0.135, 'top': 0.925,
                  'hspace': 0.70})
     fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
-    b18.tag_overlap_bars(axes[0])
-    b18.tag_jaccard_heatmap(axes[1])
+    supplementary_figures.tag_overlap_bars(axes[0])
+    supplementary_figures.tag_jaccard_heatmap(axes[1])
     captions = [('a', '高效应福利标签与集合统计范围的岗位规模'),
                 ('b', '高效应福利标签两两 Jaccard 相似度')]
     for (letter, caption), ax in zip(captions, axes):
@@ -364,22 +364,22 @@ def run_reused() -> list:
     # ---------------- 图 6-2（热力图放大） ---------------- #
     _apply_mode('single', 15.5, 6.6,
                 {'left': 0.29, 'right': 0.975, 'bottom': 0.30, 'top': 0.975})
-    fig, subs, meta = a18.build_07_category_skill_heatmap({})
+    fig, subs, meta = eda_figures.build_07_category_skill_heatmap({})
     results.append(save('fig_6_3_category_skill_hit_heatmap', fig, subs,
                         {**meta, '用途': '第6章 图 6-2 继续放大（版心最大宽度 + 增加图高）'}))
 
     # ---------------- 图 4-6 与图 4-7（自定义：删除重复面板与色块） ---------------- #
-    results.extend(run_lifecycle_figures(c26, daily, dates))
+    results.extend(run_lifecycle_figures(consolidation, daily, dates))
 
     # ---------------- 图 8-6（技能 SHAP，按新模型结果重绘） ---------------- #
     results.append(run_skill_shap())
     return results
 
 
-def run_lifecycle_figures(c26, daily, dates) -> list:
+def run_lifecycle_figures(consolidation, daily, dates) -> list:
     """图 4-6 / 图 4-7：删除重复面板与时间区域色块，只保留有解释价值的内容。"""
     results = []
-    category_daily = c26.build_category_daily()
+    category_daily = consolidation.build_category_daily()
 
     _apply_mode('single', 15.5, 4.3,
                 {'left': 0.115, 'right': 0.975, 'bottom': 0.235, 'top': 0.80})
@@ -433,7 +433,7 @@ def run_lifecycle_figures(c26, daily, dates) -> list:
 # =========================================================================== #
 def build_final_shap() -> dict:
     """复现 Stage26.4 最终模型（训练集 + 验证集重拟合）并计算测试集 TreeSHAP。"""
-    f26 = _load('_s26g_26f', 'scripts/ch4_lifecycle/06_final_polish.py')
+    final_polish = _load('_final_polish', 'scripts/ch4_lifecycle/06_final_polish.py')
     from src import skill_eda  # noqa: PLC0415
 
     model_frame = io_utils.read_parquet(project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
@@ -452,8 +452,8 @@ def build_final_shap() -> dict:
     frame['publish_weekday'] = job_ids.map(publish).dt.weekday.to_numpy()
     random_labels = pd.Series(splits['split'].to_numpy(), index=job_ids)
 
-    grouped = f26.grouped_columns(feature_manifest, frame)
-    grouped_new = f26.drop_features(grouped, f26.REMOVED_FINAL)
+    grouped = final_polish.grouped_columns(feature_manifest, frame)
+    grouped_new = final_polish.drop_features(grouped, final_polish.REMOVED_FINAL)
     skill_map = model_training.build_skill_map(membership, skill_eda.ALL_USABLE_SCOPES)
     text_matrix = model_training.load_text_matrix(
         job_ids.tolist(), project_paths.FEATURES_DIR / 'job_text_embeddings.npz',
@@ -467,13 +467,13 @@ def build_final_shap() -> dict:
     def text_for(block):
         return text_matrix[[text_by_id[job_id] for job_id in block[schema.ID_FIELD]]]
 
-    assembler = f26.build_assembler(f26.MODEL_FEATURE_GROUPS, grouped_new,
-                                    f26.SKILL_THRESHOLD, f26.TEXT_DIM)
+    assembler = final_polish.build_assembler(final_polish.MODEL_FEATURE_GROUPS, grouped_new,
+                                    final_polish.SKILL_THRESHOLD, final_polish.TEXT_DIM)
     assembler.fit(train_valid, skill_map, text_for(train_valid))
     matrix_fit = assembler.transform(train_valid, skill_map, text_for(train_valid))
     matrix_test = assembler.transform(test_frame, skill_map, text_for(test_frame))
-    model = model_training.make_model('LightGBM', f26.LIGHTGBM_PARAMS,
-                                      random_state=f26.SEED)
+    model = model_training.make_model('LightGBM', final_polish.LIGHTGBM_PARAMS,
+                                      random_state=final_polish.SEED)
     model.fit(matrix_fit, train_valid[schema.SALARY_MID_FIELD].to_numpy('float64'))
     prediction = np.asarray(model.predict(matrix_test), dtype='float64')
     truth = test_frame[schema.SALARY_MID_FIELD].to_numpy('float64')

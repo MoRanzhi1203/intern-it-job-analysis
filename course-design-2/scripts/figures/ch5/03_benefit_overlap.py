@@ -51,17 +51,17 @@ def main() -> int:
 
     from src import plot_style
 
-    g = _load('_g26_stage26_4', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    b18 = _load('_b18_supplementary', 'scripts/figures/base/02_supplementary_figures.py')
+    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
     _apply_style(g)
-    g.setup_supplementary_figures(b18)
+    g.setup_supplementary_figures(supplementary_figures)
     # 与 07_figure_rebuild 一致：最大两两 Jaccard 说明框已移入正文，此处不再绘制
-    b18.note = lambda *args, **kwargs: None
+    supplementary_figures.note = lambda *args, **kwargs: None
     g._apply_mode(*MODE_ARGS)
 
     fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
-    b18.tag_overlap_bars(axes[0])
-    b18.tag_jaccard_heatmap(axes[1])
+    supplementary_figures.tag_overlap_bars(axes[0])
+    supplementary_figures.tag_jaccard_heatmap(axes[1])
     for (letter, caption), ax in zip(CAPTIONS, axes):
         plot_style.add_subfigure_caption(ax, letter, caption)
     fig.subplots_adjust()

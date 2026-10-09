@@ -117,7 +117,7 @@ def project_manifest(root, scope_dirs, skip_dirs, new_files) -> dict:
     return manifest
 
 
-def grouped_columns(feature_manifest: dict, frame, safe_f_stage26_1, safe_f_final) -> dict:
+def grouped_columns(feature_manifest: dict, frame, safe_f_leakage, safe_f_final) -> dict:
     """按 Stage12 Feature Manifest 分组，剔除 Safe-F 泄漏字段并追加 SafeF 组。"""
     from . import ablation_shap
 
@@ -126,7 +126,7 @@ def grouped_columns(feature_manifest: dict, frame, safe_f_stage26_1, safe_f_fina
         feature_manifest['multi_value_columns'])
     for _, spec in grouped.items():
         for key in spec:
-            spec[key] = [column for column in spec[key] if column not in safe_f_stage26_1]
+            spec[key] = [column for column in spec[key] if column not in safe_f_leakage]
     grouped['SafeF'] = {'numeric': [column for column in safe_f_final
                                     if column in frame.columns],
                         'categorical': [], 'multi': []}

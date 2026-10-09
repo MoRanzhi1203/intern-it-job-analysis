@@ -82,15 +82,15 @@ def clean_labels(fig) -> list:
 
 
 def main() -> int:
-    g = _load('_g26_stage26_4', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    b18 = _load('_b18_supplementary', 'scripts/figures/base/02_supplementary_figures.py')
+    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
     _apply_style(g)
-    g.setup_supplementary_figures(b18)
+    g.setup_supplementary_figures(supplementary_figures)
     # 与 07_figure_rebuild 一致：ε² 统计注释框已移入正文，此处不再绘制
-    b18.note = lambda *args, **kwargs: None
+    supplementary_figures.note = lambda *args, **kwargs: None
     g._apply_mode(*MODE_ARGS)
 
-    fig, subfigures = b18.fig_s04(0)
+    fig, subfigures = supplementary_figures.fig_s04(0)
     g.round_labels(fig, 3)
     changed = clean_labels(fig)
     diagnostics = g.save(STEM, fig, subfigures, {

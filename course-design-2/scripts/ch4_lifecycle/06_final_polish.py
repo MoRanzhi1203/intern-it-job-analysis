@@ -514,7 +514,7 @@ def run_compute() -> int:  # noqa: C901
     print('=' * 96)
     manifest_before = project_manifest()
     print(f'运行前既有文件 SHA-256 清单：{len(manifest_before)} 个')
-    stage26_3 = json.loads(
+    structure_metrics = json.loads(
         (METRICS_DIR / 'stage_26_3_structure_finalize.json').read_text(encoding='utf-8'))
 
     model_frame = io_utils.read_parquet(project_paths.JOB_SALARY_MODEL_DATASET_PARQUET)
@@ -595,8 +595,8 @@ def run_compute() -> int:  # noqa: C901
         new_numeric = sum(len(grouped_new[letter]['numeric']) for letter in groups)
         new_result = fit_eval(frame, random_labels, groups, grouped_new, skill_map,
                               text_matrix, text_by_id, SKILL_THRESHOLD, TEXT_DIM)
-        old_dim = int(stage26_3['消融五配置'][list(
-            pd.DataFrame(stage26_3['消融五配置'])['配置']).index(label)]['特征维度'])
+        old_dim = int(structure_metrics['消融五配置'][list(
+            pd.DataFrame(structure_metrics['消融五配置'])['配置']).index(label)]['特征维度'])
         dimension_rows.append({'配置': label, '编码后特征维度（Stage26.3）': old_dim,
                                '编码后特征维度（Stage26.4）': new_result['特征维度'],
                                '维度变化': int(new_result['特征维度'] - old_dim),
@@ -657,7 +657,7 @@ def run_compute() -> int:  # noqa: C901
         result = fit_eval(frame, labels, MODEL_FEATURE_GROUPS, grouped_new, skill_map,
                           text_matrix, text_by_id, SKILL_THRESHOLD, TEXT_DIM)
         unified_cache[label] = result
-        old_row = pd.DataFrame(stage26_3['三种划分统一协议'])
+        old_row = pd.DataFrame(structure_metrics['三种划分统一协议'])
         old = old_row[old_row['划分方式'] == label].iloc[0]
         unified_rows.append({
             '划分方式': label, 'Train n': result['n_train'],

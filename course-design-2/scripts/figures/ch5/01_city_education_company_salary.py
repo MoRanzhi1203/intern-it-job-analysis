@@ -55,12 +55,12 @@ def clean_labels_and_unify_axis(fig) -> float:
 
 
 def main() -> int:
-    g = _load('_g26_stage26_4', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    a18 = _load('_g18a_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
+    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+    eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
     _apply_style(g)
     g._apply_mode(*MODE_ARGS)
 
-    fig, _, meta = a18.build_04_structured_factor_salary({})
+    fig, _, meta = eda_figures.build_04_structured_factor_salary({})
     span = clean_labels_and_unify_axis(fig)
     subfigures = [(chr(ord('a') + index), label, ax)
                   for index, (label, ax) in enumerate(zip(PANELS, fig.axes))]

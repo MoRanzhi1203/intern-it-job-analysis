@@ -91,7 +91,7 @@ ANCHORS = {'公司标签列表=免费健身设施': 14.88, '技术技能数': 7.
 def load_figure_rebuild():
     """载入 07_figure_rebuild 模块并还原它在导入时打的内存补丁（只复用其 SHAP 计算）。"""
     spec = importlib.util.spec_from_file_location(
-        '_s60_26g', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '07_figure_rebuild.py'))
+        '_figure_rebuild', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '07_figure_rebuild.py'))
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -225,12 +225,12 @@ def main() -> int:
                          'legend.fontsize': FONTS['legend'],
                          'axes.unicode_minus': False})
 
-    g26 = load_figure_rebuild()
+    figure_rebuild = load_figure_rebuild()
     print('=' * 92)
     print('重绘图 8-7 SHAP 蜂群图：整图横置（特征在横轴，色条随坐标区自然缩短）')
     print(f"无头模式：backend={snapshot['backend']} headless={snapshot['headless']}")
     print('=' * 92)
-    block = g26.build_final_shap()
+    block = figure_rebuild.build_final_shap()
     print('模型复核：特征维度=%d，测试集 MAE=%.6f / RMSE=%.6f / R²=%.6f'
           % (block['特征维度'], block['测试集指标']['MAE'], block['测试集指标']['RMSE'],
              block['测试集指标']['R2']))

@@ -658,9 +658,9 @@ def fig_s71() -> dict:
     sys.path.insert(0, str(PROJECT_ROOT / 'scripts'))
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        '_s26j_26c', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '03_final_consolidation.py'))
+        '_consolidation', str(PROJECT_ROOT / 'scripts' / 'ch4_lifecycle' / '03_final_consolidation.py'))
     module = importlib.util.module_from_spec(spec)
-    sys.modules['_s26j_26c'] = module
+    sys.modules['_consolidation'] = module
     spec.loader.exec_module(module)
 
     daily = _read('ch4/37_stage26_1_lifecycle_statistics.xlsx', '08_日级指标明细')

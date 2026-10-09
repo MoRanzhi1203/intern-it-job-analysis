@@ -752,7 +752,7 @@ def leakage_audit(frame: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
     return table
 
 
-def stage26_f_comparison() -> pd.DataFrame:
+def legacy_f_group_comparison() -> pd.DataFrame:
     decisions = {
         'publish_month': ('保留', '保留', '—', '来源与语义不变。'),
         'publish_weekday': ('保留', '保留', '—', '来源与语义不变。'),
@@ -899,7 +899,7 @@ def run_ablation(model_frame: pd.DataFrame, splits: pd.DataFrame, grouped: dict,
 # ============================================================================
 def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, grouped: dict,
                        skill_map: dict, text_matrix: np.ndarray, text_by_id: dict,
-                       stage25_skill_threshold: int, stage25_text_dim: int,
+                       frozen_skill_threshold: int, frozen_text_dim: int,
                        random_metrics: dict) -> dict:
     axis = model_frame[schema.ID_FIELD].map(entity_publish)
     if axis.isna().any():
@@ -1159,7 +1159,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
                 group_test, skill_map, text_for(group_test))), dtype='float64'))
 
     group_metrics = company_group_metrics(skill_threshold, text_dim)
-    group_metrics_s25 = company_group_metrics(stage25_skill_threshold, stage25_text_dim)
+    group_metrics_frozen = company_group_metrics(frozen_skill_threshold, frozen_text_dim)
 
     def row(label, metrics, note, reference=None):
         block = {'划分方式': label, '数据子集': 'test', 'n': metrics['n'],
@@ -1199,7 +1199,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
     comparison_table = pd.DataFrame([
         row('Random Split（同分布泛化）', random_eval,
             '同一协议：A+B+C+D+E、固定 model_splits 同一 Random Split、固定 LightGBM 与 '
-            f'Stage25 技能阈值 / 文本维度（{stage25_skill_threshold} / {stage25_text_dim}），'
+            f'Stage25 技能阈值 / 文本维度（{frozen_skill_threshold} / {frozen_text_dim}），'
             '只在 random train 上拟合估计器'),
         row('Company Group Split（跨公司泛化）', group_metrics,
             f'同一协议：仅在 company_group train 上拟合估计器；技能阈值 / 文本维度取 '
@@ -1220,9 +1220,9 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
             {'n': int(frozen_group_row['n']), 'MAE': frozen_group_value,
              'RMSE': float(frozen_group_row['RMSE']), 'R2': float(frozen_group_row['R²'])},
             '只读引用既有正式结果（31 号表 04）'),
-        row('Company Group Split（Stage25 配置精确复现）', group_metrics_s25,
-            f'技能阈值 / 文本维度 = Stage25 正式取值（{stage25_skill_threshold} / '
-            f'{stage25_text_dim}），仅用于确认既有结果可精确复现', frozen_group_value),
+        row('Company Group Split（Stage25 配置精确复现）', group_metrics_frozen,
+            f'技能阈值 / 文本维度 = Stage25 正式取值（{frozen_skill_threshold} / '
+            f'{frozen_text_dim}），仅用于确认既有结果可精确复现', frozen_group_value),
     ])
 
     forbidden = ['观测时间', '数据创建时间', '数据更新时间', '版本首次观测时间', '版本末次观测时间',
@@ -1300,7 +1300,7 @@ def run_temporal_split(model_frame: pd.DataFrame, entity_publish: pd.Series, gro
             'train_only_metrics': train_only_metrics, 'final_key': final_key,
             'final_params': final_params, 'skill_threshold': skill_threshold,
             'text_dim': text_dim, 'random_metrics': random_eval, 'group_metrics': group_metrics,
-            'group_metrics_stage25_config': group_metrics_s25, 'reproduction': reproduction,
+            'group_metrics_stage25_config': group_metrics_frozen, 'reproduction': reproduction,
             'drift_table': drift_table, 'overlap_ids': int(overlap_ids),
             'company_overlap': int(company_overlap), 'crawl_hits': crawl_hits,
             'safe_f_temporal': {'valid': valid_metrics_f, 'test': test_metrics_f,
@@ -1601,10 +1601,10 @@ def main() -> int:  # noqa: C901
     print('Stage26.1 招聘生命周期与时序设定收紧（数据与建模实测）')
     print('=' * 96)
     manifest_before = project_manifest(PROJECT_ROOT, MANIFEST_SCOPE_DIRS, SKIP_DIRS, NEW_FILES)
-    stage26_before = {str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'): sha256_of(path)
+    frozen_before = {str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'): sha256_of(path)
                       for path in STAGE26_FILES}
     print(f'运行前既有文件 SHA-256 清单：{len(manifest_before)} 个；'
-          f'Stage26 只读产物 {len(stage26_before)} 个')
+          f'Stage26 只读产物 {len(frozen_before)} 个')
 
     obs = io_utils.read_parquet(project_paths.OBSERVATION_SNAPSHOT_PARQUET)
     analysis = io_utils.read_parquet(project_paths.JOB_ANALYSIS_DATASET_PARQUET,
@@ -2321,8 +2321,8 @@ def main() -> int:  # noqa: C901
         (project_paths.SALARY_MODEL_DIR / 'feature_manifest.json').read_text(encoding='utf-8'))
     model_params = json.loads(
         (project_paths.SALARY_MODEL_DIR / 'model_params.json').read_text(encoding='utf-8'))
-    stage25_skill_threshold = int(model_params['skill_threshold'])
-    stage25_text_dim = int(model_params['text_dim'])
+    frozen_skill_threshold = int(model_params['skill_threshold'])
+    frozen_text_dim = int(model_params['text_dim'])
     grouped = grouped_columns_with_safe_f(feature_manifest, f_frame)
     skill_map = model_training.build_skill_map(membership, skill_eda.ALL_USABLE_SCOPES)
     all_ids = f_frame[schema.ID_FIELD].tolist()
@@ -2333,7 +2333,7 @@ def main() -> int:  # noqa: C901
     print(f'Safe-F：{SAFE_F}；未匹配代表 Episode 的建模样本 {len(f_missing)} 个')
 
     step_i = run_ablation(f_frame, splits, grouped, skill_map, text_matrix, text_by_id,
-                          stage25_skill_threshold, stage25_text_dim)
+                          frozen_skill_threshold, frozen_text_dim)
     base_dim = int(step_i['ablation_table'].set_index('配置').loc['A+B+C+D+E', '特征维度'])
     safe_dim = int(step_i['ablation_table'].set_index('配置').loc['A+B+C+D+E+SafeF', '特征维度'])
     sheets_46 = {
@@ -2353,7 +2353,7 @@ def main() -> int:  # noqa: C901
         '04_消融结果': step_i['sheets']['04_消融结果'],
         '05_增量与bootstrap': step_i['sheets']['05_增量与bootstrap'],
         '06_特征维度对照': step_i['sheets']['06_特征维度对照'],
-        '07_与Stage26旧F组对照': stage26_f_comparison(),
+        '07_与Stage26旧F组对照': legacy_f_group_comparison(),
     }
     io_utils.write_excel(TABLES / TABLE_FILES[2], sheets_46)
     safe_increment = step_i['increment_table'][
@@ -2367,7 +2367,7 @@ def main() -> int:  # noqa: C901
     random_metrics = {'n': int(random_row['n_test']), 'MAE': float(random_row['test_MAE']),
                       'RMSE': float(random_row['test_RMSE']), 'R2': float(random_row['test_R2'])}
     step_j = run_temporal_split(f_frame, entity_publish, grouped, skill_map, text_matrix,
-                                text_by_id, stage25_skill_threshold, stage25_text_dim,
+                                text_by_id, frozen_skill_threshold, frozen_text_dim,
                                 random_metrics)
     sheets_47 = step_j['sheets']
     sheets_47['01_Temporal划分'] = step_j['sheets']['01_Temporal划分']
@@ -2377,11 +2377,11 @@ def main() -> int:  # noqa: C901
           f" / R² {step_j['train_only_metrics']['R2']}")
 
     # ---- Step 7：敏感性对照（48 号表）----
-    stage26_metrics = json.loads(
+    legacy_metrics = json.loads(
         (project_paths.METRICS_DIR / 'stage_26_temporal.json').read_text(encoding='utf-8'))
-    stage26_step_b = stage26_metrics['StepB_周期识别']
-    stage26_step_i = stage26_metrics['StepI_F组消融']
-    stage26_f_increment = [row for row in stage26_step_i['增量与bootstrap']
+    legacy_step_b = legacy_metrics['StepB_周期识别']
+    legacy_step_i = legacy_metrics['StepI_F组消融']
+    legacy_f_increment = [row for row in legacy_step_i['增量与bootstrap']
                            if row['比较（加入特征组后）'].startswith('A+B+C+D+E+F vs')]
     strict_reopen = reopen_table[reopen_table['检验对象'].str.startswith('Strict')].iloc[0]
     relaxed_reopen = reopen_table[reopen_table['检验对象'].str.startswith('Relaxed')].iloc[0]
@@ -2389,23 +2389,23 @@ def main() -> int:  # noqa: C901
         {'对照项': '统计范围层级', 'Stage26 Candidate 统计范围': 'Version → Episode（唯一发布时间）',
          'Stage26.1 Strict': 'Version → Candidate Segment → Strict Episode',
          'Stage26.1 Relaxed': 'Version → Candidate Segment → Relaxed Episode'},
-        {'对照项': 'Episode / 周期数', 'Stage26 Candidate 统计范围': f"{stage26_step_b['episode_rows']:,}",
+        {'对照项': 'Episode / 周期数', 'Stage26 Candidate 统计范围': f"{legacy_step_b['episode_rows']:,}",
          'Stage26.1 Strict': f'{len(episodes):,}',
          'Stage26.1 Relaxed': f'{len(relaxed_episodes):,}'},
         {'对照项': '多周期岗位数', 'Stage26 Candidate 统计范围':
-            f"{stage26_step_b['multi_episode_jobs']:,}",
+            f"{legacy_step_b['multi_episode_jobs']:,}",
          'Stage26.1 Strict': f'{int((strict_per_job >= 2).sum()):,}',
          'Stage26.1 Relaxed': f'{int((relaxed_per_job >= 2).sum()):,}'},
         {'对照项': 'episode_count 最大值', 'Stage26 Candidate 统计范围':
-            f"{stage26_step_b['max_episode_count']}",
+            f"{legacy_step_b['max_episode_count']}",
          'Stage26.1 Strict': f'{int(strict_per_job.max())}',
          'Stage26.1 Relaxed': f'{int(relaxed_per_job.max())}'},
         {'对照项': '日级面板规模（行）', 'Stage26 Candidate 统计范围':
-            f"{stage26_metrics['StepD_日级面板']['行数']:,}",
+            f"{legacy_metrics['StepD_日级面板']['行数']:,}",
          'Stage26.1 Strict': f"{panel_info['rows']:,}",
          'Stage26.1 Relaxed': f"{int(relaxed_duration.sum()):,}（未落盘，仅用于对照）"},
         {'对照项': 'max N_t（活跃周期数）', 'Stage26 Candidate 统计范围':
-            f"{stage26_metrics['StepE_时序指标']['汇总'][0]['max']:,.0f}",
+            f"{legacy_metrics['StepE_时序指标']['汇总'][0]['max']:,.0f}",
          'Stage26.1 Strict': f"{int(daily['N_t'].max()):,}",
          'Stage26.1 Relaxed': f"{int(relaxed_daily['N_t'].max()):,}"},
         {'对照项': '生命周期效应量（是否重招 vs 薪资，Cliff\'s δ）',
@@ -2422,8 +2422,8 @@ def main() -> int:  # noqa: C901
          'Stage26.1 Strict': f'{len(SAFE_F)} 个 / {safe_dim} 维（A+B+C+D+E+SafeF）',
          'Stage26.1 Relaxed': f'{len(SAFE_F)} 个 / {safe_dim} 维（同一 Safe-F）'},
         {'对照项': 'F / Safe-F 预测增量（ΔMAE，validation / test）',
-         'Stage26 Candidate 统计范围': (f"{stage26_f_increment[0]['ΔMAE（无该组 − 有该组）']} / "
-                              f"{stage26_f_increment[1]['ΔMAE（无该组 − 有该组）']}"),
+         'Stage26 Candidate 统计范围': (f"{legacy_f_increment[0]['ΔMAE（无该组 − 有该组）']} / "
+                              f"{legacy_f_increment[1]['ΔMAE（无该组 − 有该组）']}"),
          'Stage26.1 Strict': (f"{safe_increment.iloc[0]['ΔMAE（无该组 − 有该组）']} / "
                               f"{safe_increment.iloc[1]['ΔMAE（无该组 − 有该组）']}"
                               f"（CI 是否跨 0：{safe_increment.iloc[0]['CI是否跨0']} / "
@@ -2568,8 +2568,8 @@ def main() -> int:  # noqa: C901
                 round(float(daily['salary_median'].min()), 4),
                 round(float(daily['salary_median'].median()), 4),
                 round(float(daily['salary_median'].max()), 4)],
-            'Stage26 对照': {'行数': stage26_metrics['StepD_日级面板']['行数'],
-                         'max N_t': stage26_metrics['StepE_时序指标']['汇总'][0]['max']},
+            'Stage26 对照': {'行数': legacy_metrics['StepD_日级面板']['行数'],
+                         'max N_t': legacy_metrics['StepE_时序指标']['汇总'][0]['max']},
             '统计范围': SCOPE_ACTIVE},
         'Step6_生命周期统计': {
             '持续时长（Strict，final）': duration_rows.iloc[0].dropna().to_dict(),
@@ -2593,7 +2593,7 @@ def main() -> int:  # noqa: C901
             'Safe-F 清单': SAFE_F, 'Safe-F 个数': len(SAFE_F),
             'Safe-F 特征统计': step_i['sheets']['03_SafeF特征清单'].to_dict('records'),
             'FutureLeakage审计': leak_table.to_dict('records'),
-            '与Stage26旧F组对照': stage26_f_comparison().to_dict('records'),
+            '与Stage26旧F组对照': legacy_f_group_comparison().to_dict('records'),
             '编码后维度': {'A+B+C+D+E': base_dim, 'A+B+C+D+E+SafeF': safe_dim,
                        'Stage25正式': 320, 'Stage26旧F组': 333},
             '消融结果': step_i['ablation_table'].to_dict('records'),
@@ -2638,7 +2638,7 @@ def main() -> int:  # noqa: C901
 
     # ---- 既有文件未修改证据 ----
     manifest_after = project_manifest(PROJECT_ROOT, MANIFEST_SCOPE_DIRS, SKIP_DIRS, NEW_FILES)
-    stage26_after = {str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'): sha256_of(path)
+    frozen_after = {str(path.relative_to(PROJECT_ROOT)).replace('\\', '/'): sha256_of(path)
                      for path in STAGE26_FILES}
     changed = sorted(path for path in manifest_before
                      if path in manifest_after and manifest_after[path] != manifest_before[path])
@@ -2666,16 +2666,16 @@ def main() -> int:  # noqa: C901
               else '存在内容变化/删除/清单内新增，需人工复核')}
     payload['Stage26产物未修改证据'] = {
         '文件数': len(STAGE26_FILES),
-        '逐文件一致': {path: bool(stage26_before[path] == stage26_after[path])
-                   for path in stage26_before},
+        '逐文件一致': {path: bool(frozen_before[path] == frozen_after[path])
+                   for path in frozen_before},
         '结论': (f'Stage26 的 {len(STAGE26_FILES)} 个只读产物文件（9 张表 35~43 + 1 个 '
               'metrics JSON + 图S18~图S22 共 5 张图的 PNG/PDF 10 个文件 + 3 个 parquet）'
               '全部 SHA-256 前后一致' if
-              all(stage26_before[path] == stage26_after[path] for path in stage26_before)
+              all(frozen_before[path] == frozen_after[path] for path in frozen_before)
               else '存在不一致，需人工复核'),
         '文件清单': [{'路径': path, '字节数': int((PROJECT_ROOT / path).stat().st_size),
-                  'SHA256_前': stage26_before[path], 'SHA256_后': stage26_after[path]}
-                 for path in sorted(stage26_before)]}
+                  'SHA256_前': frozen_before[path], 'SHA256_后': frozen_after[path]}
+                 for path in sorted(frozen_before)]}
     io_utils.write_json(METRICS_PATH, payload)
 
     print('-' * 96)
