@@ -133,22 +133,20 @@ print(model.summary())     # 系数 + 标准误 / CI + p 值
 # 来源：scripts/figures/ch5/01_city_education_company_salary.py
 import re
 
+import matplotlib.pyplot as plt
 from src.script_support import apply_style as _apply_style
 from src.script_support import load_script as _load
 
-STEM = 'fig_5_4_city_education_company_size_salary'
 PANELS = ['城市', '学历要求', '公司规模']
-# 与 07_figure_rebuild 中「图 5-1（1×3 → 3×1）」完全相同的版式参数
 MODE_ARGS = ('stack', 10.5, 2.15,
              {'left': 0.20, 'right': 0.975, 'bottom': 0.115, 'top': 0.955, 'hspace': 0.72})
 
 
 def clean_labels_and_unify_axis(fig) -> float:
-    """清理纵轴名与子图名中的括号与冗余文字，并把三个子图统一到同一横轴量程。"""
     limits = [float(max(patch.get_width() for patch in ax.patches)) for ax in fig.axes]
     span = max(limits) * 1.22
     for ax, label in zip(fig.axes, PANELS):
-        ax.set_xlim(0.0, span)          # 统一横轴量程，柱长可跨子图比较
+        ax.set_xlim(0.0, span)
         ax.set_ylabel(label)
         for text in ax.texts:
             matched = re.match(r'^\(([a-z])\)\s', str(text.get_text()).strip())
@@ -157,18 +155,14 @@ def clean_labels_and_unify_axis(fig) -> float:
     return span
 
 
-def main() -> int:
-    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
-    _apply_style(g)                 # 应用全文统一样式
-    g._apply_mode(*MODE_ARGS)       # 论文版版式：1×3 → 3×1 竖排
+g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+eda_figures = _load('_eda_figures', 'scripts/figures/base/01_eda_modeling_figures.py')
+_apply_style(g)
+g._apply_mode(*MODE_ARGS)
 
-    # 复用 18a 的 build_04_structured_factor_salary：29 号表 04/05/06 三类结构化因素的薪资中点中位数
-    fig, _, meta = eda_figures.build_04_structured_factor_salary({})
-    span = clean_labels_and_unify_axis(fig)
-    subfigures = [(chr(ord('a') + index), label, ax)
-                  for index, (label, ax) in enumerate(zip(PANELS, fig.axes))]
-    g.save(STEM, fig, subfigures, meta)     # 统一导出 600 dpi PNG + 矢量 PDF
+fig, _, meta = eda_figures.build_04_structured_factor_salary({})
+clean_labels_and_unify_axis(fig)
+plt.show()
 ```
 
 ![城市、学历与公司规模的薪资中点中位数](images/07/fig_5_4_city_education_company_size_salary.png)
@@ -179,40 +173,28 @@ def main() -> int:
 # 来源：scripts/figures/ch5/02_certification_salary.py
 import re
 
+import matplotlib.pyplot as plt
 from src.script_support import apply_style as _apply_style
 from src.script_support import load_script as _load
 
-STEM = 'fig_5_5_certification_salary_distribution'
-# 与 07_figure_rebuild 中「图 5-2（1×2 → 2×1，删除统计注释框）」完全相同的版式参数
 MODE_ARGS = ('stack', 15.5, 2.85,
              {'left': 0.30, 'right': 0.975, 'bottom': 0.145, 'top': 0.90, 'hspace': 0.72})
 
 
-def clean_labels(fig) -> list:
-    """去掉三处括号写法，返回改动清单（只改文字，不动任何图形元素）。"""
+def clean_labels(fig) -> None:
     ax_a, ax_b = fig.axes[0], fig.axes[1]
-    changed = []
 
-    # (a) 图刻度标签由 set_xticklabels 设置，FixedFormatter 会按存储字符串重绘，须整体回写
     labels = []
     for label in ax_a.get_xticklabels():
         content = str(label.get_text())
         replaced = re.sub(r'\(n = ([\d,]+)\)', r'n = \1', content)
         labels.append(replaced)
-        if replaced != content:
-            changed.append('%s → %s' % (content.replace('\n', ' / '),
-                                        replaced.replace('\n', ' / ')))
     ax_a.set_xticklabels(labels)
 
-    content = str(ax_b.get_xlabel())
     ax_b.set_xlabel("组间效应量 |Cliff's δ|")
-    changed.append('%s → %s' % (content, ax_b.get_xlabel()))
 
-    # (b) 图横轴收紧到数据与数值标签刚好容纳的范围，去掉右侧无对应数据的空白
     delta_max = max(float(line.get_xdata()[0]) for line in ax_b.lines)
-    previous_limit = float(ax_b.get_xlim()[1])
     ax_b.set_xlim(0.0, delta_max * 1.25)
-    changed.append('(b) 横轴上限 %.3f → %.3f' % (previous_limit, ax_b.get_xlim()[1]))
 
     legend = ax_b.get_legend()
     if legend is not None:
@@ -221,23 +203,19 @@ def clean_labels(fig) -> list:
             replaced = content.replace('（q < 0.05）', ' q < 0.05')
             if replaced != content:
                 text.set_text(replaced)
-                changed.append('%s → %s' % (content, replaced))
-    return changed
 
 
-def main() -> int:
-    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
-    _apply_style(g)
-    g.setup_supplementary_figures(supplementary_figures)   # 载入冻结锚点，保证图内数值与统计结果一致
-    # 与 07_figure_rebuild 一致：ε² 统计注释框已移入正文，此处不再绘制
-    supplementary_figures.note = lambda *args, **kwargs: None
-    g._apply_mode(*MODE_ARGS)       # 论文版版式：1×2 → 2×1 竖排
+g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
+_apply_style(g)
+g.setup_supplementary_figures(supplementary_figures)
+supplementary_figures.note = lambda *args, **kwargs: None
+g._apply_mode(*MODE_ARGS)
 
-    fig, subfigures = supplementary_figures.fig_s04(0)      # 复用 18b 的公司认证薪资分布图
-    g.round_labels(fig, 3)
-    clean_labels(fig)
-    g.save(STEM, fig, subfigures, {})                       # 统一导出 600 dpi PNG + 矢量 PDF
+fig, subfigures = supplementary_figures.fig_s04(0)
+g.round_labels(fig, 3)
+clean_labels(fig)
+plt.show()
 ```
 
 ![公司认证状态的薪资分布与组间比较](images/07/fig_5_5_certification_salary_distribution.png)
@@ -246,48 +224,33 @@ def main() -> int:
 
 ```python
 # 来源：scripts/figures/ch5/03_benefit_overlap.py
-import re
+from matplotlib import pyplot as plt
 
+from src import plot_style
 from src.script_support import apply_style as _apply_style
 from src.script_support import load_script as _load
 
-STEM = 'fig_5_6_high_effect_benefit_label_cluster'
 CAPTIONS = [('a', '高效应福利标签、交集与并集的岗位规模'),
             ('b', '高效应福利标签两两 Jaccard 相似度')]
-# 版式与 07_figure_rebuild 一致，仅把子图间距 hspace 由 0.70 收紧到 0.45
 MODE_ARGS = ('stack', 15.5, 2.9,
              {'left': 0.235, 'right': 0.975, 'bottom': 0.135, 'top': 0.925, 'hspace': 0.45})
 
 
-def heatmap_cells(ax) -> int:
-    """返回 (b) 图当前展示的 Jaccard 格子数。"""
-    return len([text for text in ax.texts
-                if re.match(r'^\d\.\d{3}$', str(text.get_text()))])
+g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
+supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
+_apply_style(g)
+g.setup_supplementary_figures(supplementary_figures)
+supplementary_figures.note = lambda *args, **kwargs: None
+g._apply_mode(*MODE_ARGS)
 
+fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
+supplementary_figures.tag_overlap_bars(axes[0])
+supplementary_figures.tag_jaccard_heatmap(axes[1])
+for (letter, caption), ax in zip(CAPTIONS, axes):
+    plot_style.add_subfigure_caption(ax, letter, caption)
+fig.subplots_adjust()
 
-def main() -> int:
-    from matplotlib import pyplot as plt
-
-    from src import plot_style
-
-    g = _load('_figure_rebuild', 'scripts/ch4_lifecycle/07_figure_rebuild.py')
-    supplementary_figures = _load('_supplementary_figures', 'scripts/figures/base/02_supplementary_figures.py')
-    _apply_style(g)
-    g.setup_supplementary_figures(supplementary_figures)   # 载入冻结锚点，保证图内数值与统计结果一致
-    # 与 07_figure_rebuild 一致：最大两两 Jaccard 说明框已移入正文，此处不再绘制
-    supplementary_figures.note = lambda *args, **kwargs: None
-    g._apply_mode(*MODE_ARGS)       # 论文版版式：上下两子图
-
-    # 上下两子图：福利标签规模条形图 + 5×5 Jaccard 热力图
-    fig, axes = plt.subplots(2, 1, figsize=(5.85, 5.8))
-    supplementary_figures.tag_overlap_bars(axes[0])
-    supplementary_figures.tag_jaccard_heatmap(axes[1])
-    for (letter, caption), ax in zip(CAPTIONS, axes):
-        plot_style.add_subfigure_caption(ax, letter, caption)
-    fig.subplots_adjust()
-
-    g.save(STEM, fig, [(letter, caption, ax)
-                       for (letter, caption), ax in zip(CAPTIONS, axes)], {})   # 统一导出 600 dpi PNG + 矢量 PDF
+plt.show()
 ```
 
 ![高效应福利标签的共现结构](images/07/fig_5_6_high_effect_benefit_label_cluster.png)
@@ -303,14 +266,11 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.ticker import FixedLocator, FuncFormatter
 
-from src import figure_finalize, plot_style, project_paths
+from src import plot_style, project_paths
 
-STEM = 'fig_5_7_median_regression_cluster_bootstrap'
 CSV = project_paths.RESULTS_E2_E7 / 'quantile_regression_cluster_bootstrap.csv'
-FIGDIR = project_paths.FIGURES_DIR
 PRINT_WIDTH_CM = 16.0
 PRINT_HEIGHT_CM = 16.5
-# 横轴对称对数压缩的线性段阈值（元/天）：|系数| ≤ 200 段保持线性，更大值段按对数压缩
 SYMLOG_LINTHRESH = 200.0
 TICKS = [-100, -50, 0, 50, 100, 200, 400, 700]
 CM = 1.0 / 2.54
@@ -319,18 +279,15 @@ FONTS = {'axis_label': 12.0, 'tick': 11.0, 'legend': 11.0, 'annotation': 10.5}
 
 
 def _w(width_cm: float) -> float:
-    """按目标打印宽度（cm）换算绘图物理宽度（英寸）。"""
     return width_cm * CM * FONT_SCALE
 
 
 def _label(name: str) -> str:
-    """变量名拆成「因素 / 取值」两行，避免长名占满左侧。"""
     factor, _, value = str(name).partition('=')
     return '%s\n%s' % (factor, value) if value else str(name)
 
 
 def load_representative() -> pd.DataFrame:
-    """只读冻结结果，取代表性变量并按公司级区间宽度降序（与摘要表一致）。"""
     frame = pd.read_csv(CSV)
     frame = frame[frame['是否代表性变量'].astype(str).str.lower().isin(['true', '1'])]
     frame = frame.reindex(frame['公司级区间宽度'].sort_values(ascending=False).index)
@@ -338,7 +295,6 @@ def load_representative() -> pd.DataFrame:
 
 
 def build_figure(frame: pd.DataFrame):
-    """单面板森林图：行底纹 + 带端帽的两类 95% 区间 + 菱形点估计，横轴 symlog。"""
     height = PRINT_HEIGHT_CM / PRINT_WIDTH_CM * _w(PRINT_WIDTH_CM)
     fig, ax = plt.subplots(figsize=(_w(PRINT_WIDTH_CM), height))
 
@@ -349,7 +305,6 @@ def build_figure(frame: pd.DataFrame):
     cluster_upper = frame['公司级 CI95 上界'].to_numpy('float64')
     coefficient = frame['系数'].to_numpy('float64')
 
-    # 隔行浅底纹：帮助视线在同一行的两条区间之间横向对齐
     for row in y[::2]:
         ax.axhspan(row - 0.5, row + 0.5, facecolor='#f2f2f2', edgecolor='none', zorder=0.4)
 
@@ -363,11 +318,9 @@ def build_figure(frame: pd.DataFrame):
                 capthick=1.4, zorder=3, label='公司级 cluster bootstrap 95% 区间')
     ax.scatter(coefficient, y, marker='D', s=15, color='#333333', zorder=4)
     ax.axvline(0, color=plot_style.MUTED_COLOR, linestyle='--', linewidth=0.9, zorder=2)
-    # 压缩起点：虚线以上按对数排布，直观标出「折叠」发生的位置
     ax.axvline(SYMLOG_LINTHRESH, color=plot_style.MUTED_COLOR, linestyle=':',
                linewidth=0.8, zorder=2)
 
-    # 横轴对称对数压缩：|系数| ≤ 200 段保持线性（100~200 不折叠），更大值段压缩
     ax.set_xscale('symlog', linthresh=SYMLOG_LINTHRESH)
     ax.xaxis.set_major_locator(FixedLocator(TICKS))
     ax.xaxis.set_major_formatter(
@@ -387,17 +340,15 @@ def build_figure(frame: pd.DataFrame):
     return fig, ax
 
 
-def main() -> int:
-    plot_style.setup_sci_style()
-    plot_style.FONT_SIZES.update(FONTS)
-    plt.rcParams.update({'axes.labelsize': FONTS['axis_label'],
-                         'xtick.labelsize': FONTS['tick'],
-                         'ytick.labelsize': FONTS['tick']})
+plot_style.setup_sci_style()
+plot_style.FONT_SIZES.update(FONTS)
+plt.rcParams.update({'axes.labelsize': FONTS['axis_label'],
+                     'xtick.labelsize': FONTS['tick'],
+                     'ytick.labelsize': FONTS['tick']})
 
-    frame = load_representative()
-    fig, _ = build_figure(frame)
-    figure_finalize.save_paper_figure(fig, FIGDIR, STEM, subfigures=[])   # 导出 600 dpi PNG + 矢量 PDF
-    return 0
+frame = load_representative()
+fig, _ = build_figure(frame)
+plt.show()
 ```
 
 ![代表性中位数回归系数的岗位级与公司级 bootstrap 95% 区间对照](images/07/fig_5_7_median_regression_cluster_bootstrap.png)
