@@ -32,7 +32,7 @@ course-design-2/
 │  ├─ methodology/         方法论文档目录（流水线运行时生成）
 │  └─ records/             阶段记录目录（流水线运行时生成）
 └─ outputs/
-   ├─ tables/              审计表（编号 00~59 连续；按论文章节分目录 ch3~ch8；_legacy/ 为历史遗留表）
+   ├─ tables/              审计表（编号 00~59 连续；按论文章节分目录 ch3~ch9；第9章仅汇总表；_legacy/ 为历史遗留表）
    ├─ figures/             论文 docx 实际出现的图件，按论文章节分目录、以论文图号命名
    │  ├─ ch3/ ~ ch8/       fig_<章>_<序>_<slug>.png（如 ch4/fig_4_6_planned_demand_by_job_category.png）
    ├─ models/salary_model/ 正式薪资模型产物（pipeline + manifest + schema）

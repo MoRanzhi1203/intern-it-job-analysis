@@ -235,6 +235,7 @@ def ensure_directories() -> list[Path]:
         RECORDS_DIR, METHODOLOGY_DIR,
         *[FIGURES_DIR / f'ch{i}' for i in range(3, 9)],
         *[TABLES_DIR / f'ch{i}' for i in range(3, 9)],
+        TABLES_DIR / 'ch9',  # 第9章（主要结论）仅有汇总表、无图件
     ]
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)
